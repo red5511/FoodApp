@@ -1,4 +1,4 @@
-package com.foodapp.foodapp.config;
+package com.foodapp.foodapp.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,5 +1,6 @@
 package com.foodapp.foodapp.config;
 
+import com.foodapp.foodapp.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,17 @@ public class SecurityConfiguration {
         httpSecurity.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers(
+                        "/swagger-ui/**",
+                        "/v2/api-docs",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**",
+                        "/swagger-resources",
+                        "/swagger-resources/**",
+                        "/configuration/ui",
+                        "/configuration/security",
+                        "webjars/**",
+                        "swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

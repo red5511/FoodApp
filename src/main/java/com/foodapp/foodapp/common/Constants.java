@@ -1,4 +1,4 @@
-package com.foodapp.foodapp.config;
+package com.foodapp.foodapp.common;
 
 public class Constants {
     public static final String BASE_PATH = "/";

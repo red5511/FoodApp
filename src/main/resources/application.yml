@@ -19,3 +19,13 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: sendingtesting123@gmail.com
+    password: bepyqhcwxbrurnst #6K5ady)R
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true

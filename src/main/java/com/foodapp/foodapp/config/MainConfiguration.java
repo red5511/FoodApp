@@ -1,9 +1,18 @@
 package com.foodapp.foodapp.config;
 
 import com.foodapp.foodapp.auth.AuthenticationService;
+import com.foodapp.foodapp.auth.token.ActivationTokenConfirmationRepository;
+import com.foodapp.foodapp.auth.token.ActivationTokenConfirmationService;
+import com.foodapp.foodapp.security.JwtAuthenticationFilter;
+import com.foodapp.foodapp.security.JwtService;
+import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
+import com.foodapp.foodapp.user.email.EmailSender;
+import com.foodapp.foodapp.user.email.EmailService;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -21,8 +30,9 @@ public class MainConfiguration {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(final UserRepository userRepository) {
-        return new UserDetailsServiceImpl(userRepository);
+    public UserDetailsService userDetailsService(final UserRepository userRepository,
+                                                 final ActivationTokenConfirmationService tokenConfirmationService) {
+        return new UserDetailsServiceImpl(userRepository, tokenConfirmationService);
     }
 
     @Bean
@@ -48,15 +58,30 @@ public class MainConfiguration {
     public AuthenticationService authenticationService(final UserRepository userRepository,
                                                        final PasswordEncoder passwordEncoder,
                                                        final JwtService jwtService,
-                                                       final AuthenticationManager authenticationManager) {
+                                                       final AuthenticationManager authenticationManager,
+                                                       final EmailSender emailSender,
+                                                       final UserDetailsServiceImpl userDetailsService) {
         return new AuthenticationService(userRepository,
                 passwordEncoder,
                 jwtService,
-                authenticationManager);
+                authenticationManager,
+                emailSender,
+                userDetailsService);
     }
 
     @Bean
-    public JwtService jwtService(){
+    public JwtService jwtService(ApplicationContext context) {
         return new JwtService();
     }
+
+    @Bean
+    public EmailSender emailService(final JavaMailSender javaMailSender) {
+        return new EmailService(javaMailSender);
+    }
+
+    @Bean
+    public ActivationTokenConfirmationService tokenConfirmationService(final ActivationTokenConfirmationRepository tokenConfirmationRepository){
+        return new ActivationTokenConfirmationService(tokenConfirmationRepository);
+    }
+
 }
