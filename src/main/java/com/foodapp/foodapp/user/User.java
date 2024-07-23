@@ -6,15 +6,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-@Getter
+@Data
 @Builder
 @Entity
-@Table(name = "_user")
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "_user")
 public class User implements UserDetails {
     @Id
     @SequenceGenerator(name = "_user_sequence", sequenceName = "_user_sequence", allocationSize = 1)
@@ -32,6 +33,8 @@ public class User implements UserDetails {
     @Builder.Default
     @Setter
     private Boolean enabled = false;
+    private String createdBy;
+    private LocalDateTime createdOn;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

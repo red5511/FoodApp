@@ -1,4 +1,4 @@
-package com.foodapp.foodapp.auth.token;
+package com.foodapp.foodapp.auth.activationToken;
 
 import com.foodapp.foodapp.user.User;
 import lombok.AllArgsConstructor;

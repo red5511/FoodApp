@@ -1,8 +1,10 @@
 package com.foodapp.foodapp.config;
 
 import com.foodapp.foodapp.auth.AuthenticationService;
-import com.foodapp.foodapp.auth.token.ActivationTokenConfirmationRepository;
-import com.foodapp.foodapp.auth.token.ActivationTokenConfirmationService;
+import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationRepository;
+import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationService;
+import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenRepository;
+import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
 import com.foodapp.foodapp.security.JwtService;
 import com.foodapp.foodapp.user.UserDetailsServiceImpl;
@@ -60,13 +62,15 @@ public class MainConfiguration {
                                                        final JwtService jwtService,
                                                        final AuthenticationManager authenticationManager,
                                                        final EmailSender emailSender,
-                                                       final UserDetailsServiceImpl userDetailsService) {
+                                                       final UserDetailsServiceImpl userDetailsService,
+                                                       final PasswordResetTokenService passwordResetTokenService) {
         return new AuthenticationService(userRepository,
                 passwordEncoder,
                 jwtService,
                 authenticationManager,
                 emailSender,
-                userDetailsService);
+                userDetailsService,
+                passwordResetTokenService);
     }
 
     @Bean
@@ -80,8 +84,14 @@ public class MainConfiguration {
     }
 
     @Bean
-    public ActivationTokenConfirmationService tokenConfirmationService(final ActivationTokenConfirmationRepository tokenConfirmationRepository){
+    public ActivationTokenConfirmationService tokenConfirmationService(
+            final ActivationTokenConfirmationRepository tokenConfirmationRepository) {
         return new ActivationTokenConfirmationService(tokenConfirmationRepository);
+    }
+
+    @Bean
+    public PasswordResetTokenService passwordResetTokenService(final PasswordResetTokenRepository passwordResetTokenRepository) {
+        return new PasswordResetTokenService(passwordResetTokenRepository);
     }
 
 }
