@@ -42,6 +42,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
+            else{
+                throw new SecurityException("Jtw is invalid");//todo ja musze rzucac exceotiony? ziomek tak nie mial po porstu totak puszczal
+            }
         } else {
             throw new SecurityException("Wrong jwt!");
         }

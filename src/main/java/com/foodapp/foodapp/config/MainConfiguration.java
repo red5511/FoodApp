@@ -3,6 +3,7 @@ package com.foodapp.foodapp.config;
 import com.foodapp.foodapp.auth.AuthenticationService;
 import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationRepository;
 import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationService;
+import com.foodapp.foodapp.auth.jwtToken.JwtTokenRepository;
 import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenRepository;
 import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
@@ -63,19 +64,21 @@ public class MainConfiguration {
                                                        final AuthenticationManager authenticationManager,
                                                        final EmailSender emailSender,
                                                        final UserDetailsServiceImpl userDetailsService,
-                                                       final PasswordResetTokenService passwordResetTokenService) {
+                                                       final PasswordResetTokenService passwordResetTokenService,
+                                                       final JwtTokenRepository jwtTokenRepository) {
         return new AuthenticationService(userRepository,
                 passwordEncoder,
                 jwtService,
                 authenticationManager,
                 emailSender,
                 userDetailsService,
-                passwordResetTokenService);
+                passwordResetTokenService,
+                jwtTokenRepository);
     }
 
     @Bean
-    public JwtService jwtService(ApplicationContext context) {
-        return new JwtService();
+    public JwtService jwtService(final JwtTokenRepository jwtTokenRepository) {
+        return new JwtService(jwtTokenRepository);
     }
 
     @Bean

@@ -1,5 +1,8 @@
 package com.foodapp.foodapp.auth;
 
+import com.foodapp.foodapp.auth.jwtToken.JwtToken;
+import com.foodapp.foodapp.auth.jwtToken.JwtTokenRepository;
+import com.foodapp.foodapp.auth.jwtToken.TokenType;
 import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
 import com.foodapp.foodapp.security.JwtService;
 import com.foodapp.foodapp.user.Role;
@@ -18,7 +21,8 @@ import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private static final String EMAIL_REGEX = "^[\\\\w!#$%&'*+/=?`{|}~^-]+(?:\\\\.[\\\\w!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\\\.[a-zA-Z0-9-]+)*\\\\.[a-zA-Z]{2,}$";
+    private static final String EMAIL_REGEX =
+            "^[\\\\w!#$%&'*+/=?`{|}~^-]+(?:\\\\.[\\\\w!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\\\.[a-zA-Z0-9-]+)*\\\\.[a-zA-Z]{2,}$";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -26,8 +30,9 @@ public class AuthenticationService {
     private final EmailSender emailService;
     private final UserDetailsServiceImpl userDetailsService;
     private final PasswordResetTokenService passwordResetTokenService;
+    private final JwtTokenRepository jwtTokenRepository;
 
-
+    @Transactional
     public AuthenticationResponse register(final RegisterRequest request) {
         validEmail(request.getEmail());
         User user = User.builder()
@@ -40,17 +45,23 @@ public class AuthenticationService {
                 .build();
         var activationToken = userDetailsService.registerUser(user);
         emailService.sendUserActivationEmail(request.getEmail(), activationToken);
-        var jwtToken = jwtService.generateToken(user);
+//        var jwtToken = jwtService.generateToken(user);
+//        saveJwtToken(user, jwtToken);
         return AuthenticationResponse.builder()
-                .token(jwtToken)
+                .token("i dont generate it")
                 .build();
     }
 
+    @Transactional
     public AuthenticationResponse authenticate(final AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user =
                 userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new SecurityException("Wrong email or password"));
+        if (!user.getEnabled()) {
+            throw new IllegalStateException("Account isn`t activated, pleas check your email");
+        }
         var jwtToken = jwtService.generateToken(user);
+        saveJwtToken(user, jwtToken);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -67,6 +78,29 @@ public class AuthenticationService {
         var passwordResetToken = passwordResetTokenService.processAndGetToken(resetToken);
         var user = passwordResetToken.getUser();
         userDetailsService.updatePassword(user, passwordEncoder.encode(newPassword));
+        revokeAllUserTokens(user);
+    }
+
+    private void revokeAllUserTokens(final User user) {
+        var validUserTokens = jwtTokenRepository.findAllValidTokenByUser(user.getId());
+        if (validUserTokens.isEmpty())
+            return;
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        jwtTokenRepository.saveAll(validUserTokens);
+    }
+
+    private void saveJwtToken(final User user, final String jwtToken) {
+        var token = JwtToken.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
+        jwtTokenRepository.save(token);
     }
 
     private void validEmail(final String email) {

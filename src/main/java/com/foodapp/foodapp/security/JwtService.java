@@ -1,10 +1,12 @@
 package com.foodapp.foodapp.security;
 
+import com.foodapp.foodapp.auth.jwtToken.JwtTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.security.Key;
@@ -13,8 +15,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@AllArgsConstructor
 public class JwtService {
     private static final String SECRETE_KEY = "3634383642413744313139453535453845313843423236333141433534";
+    private final JwtTokenRepository jwtTokenRepository;
 
     public String extractUsername(final String token) {
         return extractClaim(token, Claims::getSubject);
@@ -29,27 +33,31 @@ public class JwtService {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    public String generateToken(final Map<String, Object> extraClaims, final UserDetails userDetails){
+    public String generateToken(final Map<String, Object> extraClaims, final UserDetails userDetails) {
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 240 ))// todo refresh token
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 240))// todo refresh token
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
 
     }
 
-    public boolean isTokenValid(final String token, final UserDetails userDetails){
+    public boolean isTokenValid(final String token, final UserDetails userDetails) {
         String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        var jwtToken = jwtTokenRepository.findByToken(token).orElseThrow(() -> new SecurityException("Invalid token"));
+        return username.equals(userDetails.getUsername()) &&
+                !isTokenExpired(token) &&
+                !jwtToken.isRevoked() &&
+                !jwtToken.isExpired();
     }
 
-    private boolean isTokenExpired(final String token){
+    private boolean isTokenExpired(final String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(final String token){
+    private Date extractExpiration(final String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
