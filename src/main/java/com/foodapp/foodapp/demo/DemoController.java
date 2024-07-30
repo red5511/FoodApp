@@ -30,7 +30,6 @@ public class DemoController {
     @ApiResponse(responseCode = "200", description = "User has been created")
     @GetMapping("/demo")
     public ResponseEntity<String> sayHello() {
-        var xd = companyRepository.findById(1L);
         return ResponseEntity.ok("Hi man");
     }
 
@@ -38,15 +37,6 @@ public class DemoController {
     @ApiResponse(responseCode = "200", description = "hello returned correctly")
     @GetMapping("/api/v1/auth/test")
     public ResponseEntity<String> sayHello2() {
-        companyRepository.save(Company.builder()
-                .address("xd")
-                .content(Content.builder()
-                        .openHours(OpenHours.builder()
-                                .mondayStart(LocalTime.now())
-                                .mondayEnd(LocalTime.now().plusHours(8))
-                                .build())
-                        .build())
-                .build());
         return ResponseEntity.ok("Hi man");
     }
 }

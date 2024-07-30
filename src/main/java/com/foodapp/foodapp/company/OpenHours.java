@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 
 @Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OpenHours {
+public class OpenHours implements Serializable {
     private LocalTime mondayStart;
     private LocalTime mondayEnd;
 

@@ -6,13 +6,16 @@ import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationServi
 import com.foodapp.foodapp.auth.jwtToken.JwtTokenRepository;
 import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenRepository;
 import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
+import com.foodapp.foodapp.company.CompanyRepository;
+import com.foodapp.foodapp.company.CompanyService;
+import com.foodapp.foodapp.product.ProductRepository;
+import com.foodapp.foodapp.product.ProductService;
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
 import com.foodapp.foodapp.security.JwtService;
 import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
 import com.foodapp.foodapp.user.email.EmailSender;
 import com.foodapp.foodapp.user.email.EmailService;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -97,4 +100,13 @@ public class MainConfiguration {
         return new PasswordResetTokenService(passwordResetTokenRepository);
     }
 
+    @Bean
+    public CompanyService companyService(final CompanyRepository companyRepository) {
+        return new CompanyService(companyRepository);
+    }
+
+    @Bean
+    public ProductService productService(final ProductRepository productRepository) {
+        return new ProductService(productRepository);
+    }
 }

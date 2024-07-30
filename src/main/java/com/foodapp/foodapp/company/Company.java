@@ -20,7 +20,6 @@ public class Company {
     private String name;
     private String address;
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
     private Content content;
     @Enumerated(EnumType.STRING)
     private CompanyType companyType;
@@ -29,5 +28,6 @@ public class Company {
     private Boolean locked = false;
     private String createdBy;
     private LocalDateTime createdOn;
+    private LocalDateTime modifiedOn;
 
 }
