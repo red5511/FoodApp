@@ -4,6 +4,7 @@ import com.foodapp.foodapp.product.request.DeleteProductRequest;
 import com.foodapp.foodapp.product.request.ModifyProductRequest;
 import com.foodapp.foodapp.product.request.SaveProductRequest;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/product")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Product")
 public class ProductController {
     private final ProductService productService;
 

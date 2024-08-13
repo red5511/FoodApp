@@ -1,4 +1,4 @@
-package com.foodapp.foodapp.auth;
+package com.foodapp.foodapp.auth.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

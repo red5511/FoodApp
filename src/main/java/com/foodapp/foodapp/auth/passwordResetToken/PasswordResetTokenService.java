@@ -11,7 +11,7 @@ public class PasswordResetTokenService {
 
     private final PasswordResetTokenRepository passwordResetTokenRepository;
 
-    public PasswordResetToken createToken(User user) {
+    public PasswordResetToken createToken(final User user) {
         String token = UUID.randomUUID().toString();
         PasswordResetToken passwordResetToken = PasswordResetToken.builder()
                 .token(token)

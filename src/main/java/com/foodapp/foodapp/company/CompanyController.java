@@ -4,6 +4,7 @@ import com.foodapp.foodapp.company.request.DeleteCompanyRequest;
 import com.foodapp.foodapp.company.request.ModifyCompanyRequest;
 import com.foodapp.foodapp.company.request.SaveCompanyRequest;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/company")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Company")
 public class CompanyController {
     private final CompanyService companyService;
 

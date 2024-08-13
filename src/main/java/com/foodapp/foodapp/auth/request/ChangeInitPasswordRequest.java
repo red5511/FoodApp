@@ -1,4 +1,4 @@
-package com.foodapp.foodapp.auth;
+package com.foodapp.foodapp.auth.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
+public class ChangeInitPasswordRequest {
     private String email;
-    private String password;
 }

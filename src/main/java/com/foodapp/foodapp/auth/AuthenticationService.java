@@ -1,9 +1,13 @@
 package com.foodapp.foodapp.auth;
 
+import com.foodapp.foodapp.advice.BusinessException;
 import com.foodapp.foodapp.auth.jwtToken.JwtToken;
 import com.foodapp.foodapp.auth.jwtToken.JwtTokenRepository;
 import com.foodapp.foodapp.auth.jwtToken.TokenType;
 import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
+import com.foodapp.foodapp.auth.request.AuthenticationRequest;
+import com.foodapp.foodapp.auth.request.RegisterRequest;
+import com.foodapp.foodapp.auth.response.AuthenticationResponse;
 import com.foodapp.foodapp.security.JwtService;
 import com.foodapp.foodapp.user.Role;
 import com.foodapp.foodapp.user.User;
@@ -11,6 +15,7 @@ import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
 import com.foodapp.foodapp.user.email.EmailSender;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,8 +26,7 @@ import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private static final String EMAIL_REGEX =
-            "^[\\\\w!#$%&'*+/=?`{|}~^-]+(?:\\\\.[\\\\w!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\\\.[a-zA-Z0-9-]+)*\\\\.[a-zA-Z]{2,}$";
+    private static final String EMAIL_REGEX = "^(.+)@(\\S+)$";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -33,7 +37,7 @@ public class AuthenticationService {
     private final JwtTokenRepository jwtTokenRepository;
 
     @Transactional
-    public AuthenticationResponse register(final RegisterRequest request) {
+    public AuthenticationResponse register(final RegisterRequest request) throws BusinessException {
         validEmail(request.getEmail());
         User user = User.builder()
                 .firstName(request.getFirstName())
@@ -45,20 +49,19 @@ public class AuthenticationService {
                 .build();
         var activationToken = userDetailsService.registerUser(user);
         emailService.sendUserActivationEmail(request.getEmail(), activationToken);
-//        var jwtToken = jwtService.generateToken(user);
-//        saveJwtToken(user, jwtToken);
         return AuthenticationResponse.builder()
                 .token("i dont generate it")
                 .build();
     }
 
     @Transactional
+    @SneakyThrows
     public AuthenticationResponse authenticate(final AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user =
                 userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new SecurityException("Wrong email or password"));
         if (!user.getEnabled()) {
-            throw new IllegalStateException("Account isn`t activated, pleas check your email");
+            throw new BusinessException("Account isn`t activated, pleas check your email");
         }
         var jwtToken = jwtService.generateToken(user);
         saveJwtToken(user, jwtToken);
@@ -67,8 +70,9 @@ public class AuthenticationService {
                 .build();
     }
 
+    @SneakyThrows
     public void initPasswordChange(final String email) {
-        var user = userRepository.findByEmail(email).orElseThrow(() -> new SecurityException("Wrong email or password"));
+        var user = userRepository.findByEmail(email).orElseThrow(() -> new BusinessException("Bad credentials"));
         var passwordResetToken = passwordResetTokenService.createToken(user);
         emailService.sendPasswordResetEmail(email, passwordResetToken.getToken());
     }
@@ -103,12 +107,12 @@ public class AuthenticationService {
         jwtTokenRepository.save(token);
     }
 
-    private void validEmail(final String email) {
+    private void validEmail(final String email) throws BusinessException {
         var isValid = Pattern.compile(EMAIL_REGEX)
                 .matcher(email)
                 .matches();
-//        if (!isValid) { todo lepszy regex czy cos
-//            throw new IllegalStateException("Bad structure of email");
-//        }
+        if (!isValid) {
+            throw new BusinessException("Bad structure of email");
+        }
     }
 }
