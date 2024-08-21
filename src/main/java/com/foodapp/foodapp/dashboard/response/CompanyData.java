@@ -1,4 +1,4 @@
-package com.foodapp.foodapp.company.request;
+package com.foodapp.foodapp.dashboard.response;
 
 import com.foodapp.foodapp.company.OpenHours;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaveCompanyRequest {
-    private String name;
-    private String address;
+public class CompanyData {
+    private String companyName;
+    private String companyAddress;
     private OpenHours openHours;
-    private String userEmail;
 }

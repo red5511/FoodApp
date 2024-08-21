@@ -1,11 +1,13 @@
 package com.foodapp.foodapp.company;
 
+import com.foodapp.foodapp.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @Builder
@@ -23,9 +25,14 @@ public class Company {
     private Content content;
     @Enumerated(EnumType.STRING)
     private CompanyType companyType;
-    @Builder.Default
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "company_user",
+            joinColumns = @JoinColumn(name = "_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "company_id"))
+    private Set<User> companyUsers;
     @Setter
-    private Boolean locked = false;
+    private boolean locked;
     private String createdBy;
     private LocalDateTime createdOn;
     private LocalDateTime modifiedOn;

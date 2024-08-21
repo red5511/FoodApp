@@ -8,8 +8,10 @@ import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenRepository;
 import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
 import com.foodapp.foodapp.company.CompanyRepository;
 import com.foodapp.foodapp.company.CompanyService;
+import com.foodapp.foodapp.dashboard.DashboardService;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.product.ProductService;
+import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
 import com.foodapp.foodapp.security.JwtService;
 import com.foodapp.foodapp.user.UserDetailsServiceImpl;
@@ -135,12 +137,24 @@ public class MainConfiguration {
     }
 
     @Bean
-    public CompanyService companyService(final CompanyRepository companyRepository) {
-        return new CompanyService(companyRepository);
+    public CompanyService companyService(final CompanyRepository companyRepository,
+                                         final UserDetailsServiceImpl userDetailsService) {
+        return new CompanyService(companyRepository, userDetailsService);
+    }
+
+    @Bean
+    public DashboardService dashboardService(final CompanyService companyService,
+                                             final ContextProvider contextValidator) {
+        return new DashboardService(companyService, contextValidator);
     }
 
     @Bean
     public ProductService productService(final ProductRepository productRepository) {
         return new ProductService(productRepository);
+    }
+
+    @Bean
+    public ContextProvider contextValidator() {
+        return new ContextProvider();
     }
 }
