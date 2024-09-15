@@ -14,6 +14,7 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id"})
 public class Company {
     @Id
     @SequenceGenerator(name = "company_sequence", sequenceName = "company_sequence", allocationSize = 1)
@@ -28,8 +29,8 @@ public class Company {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "company_user",
-            joinColumns = @JoinColumn(name = "_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "company_id"))
+            joinColumns = @JoinColumn(name = "company_id"),
+            inverseJoinColumns = @JoinColumn(name = "_user_id"))
     private Set<User> companyUsers;
     @Setter
     private boolean locked;

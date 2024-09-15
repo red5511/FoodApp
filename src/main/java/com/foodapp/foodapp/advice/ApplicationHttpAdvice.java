@@ -1,5 +1,6 @@
 package com.foodapp.foodapp.advice;
 
+import io.jsonwebtoken.security.SignatureException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,12 @@ public class ApplicationHttpAdvice {
     public ResponseEntity handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
         var firstEx = ex.getBindingResult().getAllErrors().stream().findFirst().get();
         var businessException = new BusinessException(firstEx.getDefaultMessage());
+        return handleException(businessException, businessException.getStatus());
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity handleExpiredJwtException(final SignatureException ex) {
+        var businessException = new BusinessException(ex.getMessage(), null, HttpStatus.UNAUTHORIZED);
         return handleException(businessException, businessException.getStatus());
     }
 

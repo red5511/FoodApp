@@ -5,12 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class DashboardGetInitConfigResponse {
-    private Set<Integer> companyIds;
+    private List<CompanyData> companyDataList;
 }

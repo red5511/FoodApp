@@ -19,6 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "_user")
 @ToString
+@EqualsAndHashCode(of = {"id"})
 public class User implements UserDetails {
     @Id
     @SequenceGenerator(name = "_user_sequence", sequenceName = "_user_sequence", allocationSize = 1)

@@ -1,13 +1,14 @@
 package com.foodapp.foodapp.dashboard;
 
-import com.foodapp.foodapp.company.Company;
 import com.foodapp.foodapp.company.CompanyService;
+import com.foodapp.foodapp.dashboard.response.CompanyData;
 import com.foodapp.foodapp.dashboard.response.DashboardGetCompanyResponse;
 import com.foodapp.foodapp.dashboard.response.DashboardGetInitConfigResponse;
 import com.foodapp.foodapp.security.ContextProvider;
 import lombok.AllArgsConstructor;
 
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 public class DashboardService {
@@ -29,11 +30,35 @@ public class DashboardService {
     }
 
     public DashboardGetInitConfigResponse getInitConfig() {
-        var companyIds = contextValidator.getCompanyList().stream()
-                .map(Company::getId)
-                .collect(Collectors.toSet());
+        var companyDataList = contextValidator.getCompanyList().stream()
+                .map(company -> CompanyData.builder()
+                        .companyId(company.getId())
+                        .companyName(company.getName())
+                        .companyAddress(company.getAddress())
+                        .openHours(company.getContent().getOpenHours())
+                        .build())
+                .toList();
+        var companyDataList2 = contextValidator.getCompanyList().stream()
+                .map(company -> CompanyData.builder()
+                        .companyId(company.getId())
+                        .companyName(company.getName())
+                        .companyAddress(company.getAddress())
+                        .openHours(company.getContent().getOpenHours())
+                        .build())
+                .toList();
+        var companyDataList3 = contextValidator.getCompanyList().stream()
+                .map(company -> CompanyData.builder()
+                        .companyId(company.getId())
+                        .companyName(company.getName())
+                        .companyAddress(company.getAddress())
+                        .openHours(company.getContent().getOpenHours())
+                        .build())
+                .toList();
+        List<CompanyData> xd = new ArrayList<>();
+        xd.addAll(companyDataList);
+        xd.addAll(companyDataList2);
         return DashboardGetInitConfigResponse.builder()
-                .companyIds(companyIds)
+                .companyDataList(xd)
                 .build();
     }
 }

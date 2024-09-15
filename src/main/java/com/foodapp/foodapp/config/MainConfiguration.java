@@ -31,6 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -67,8 +68,9 @@ public class MainConfiguration {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(final JwtService jwtService,
-                                                           final UserDetailsService userDetailsService) {
-        return new JwtAuthenticationFilter(jwtService, userDetailsService);
+                                                           final UserDetailsService userDetailsService,
+                                                           final HandlerExceptionResolver handlerExceptionResolver) {
+        return new JwtAuthenticationFilter(jwtService, userDetailsService, handlerExceptionResolver);
     }
 
     @Bean
@@ -138,8 +140,9 @@ public class MainConfiguration {
 
     @Bean
     public CompanyService companyService(final CompanyRepository companyRepository,
-                                         final UserDetailsServiceImpl userDetailsService) {
-        return new CompanyService(companyRepository, userDetailsService);
+                                         final UserDetailsServiceImpl userDetailsService,
+                                         final UserRepository userRepository) {
+        return new CompanyService(companyRepository, userDetailsService, userRepository);
     }
 
     @Bean
