@@ -7,8 +7,8 @@ import com.foodapp.foodapp.user.User;
 import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +28,7 @@ public class CompanyService {
         return companyRepository.findById(companyId);
     }
 
+    @SneakyThrows
     public void saveCompany(final SaveCompanyRequest request) {
         Set<User> userSet = new HashSet<>();
         User user = null;
@@ -41,10 +42,9 @@ public class CompanyService {
                 .content(Content.builder()
                         .openHours(request.getOpenHours())
                         .build())
-                .createdOn(LocalDateTime.now())
                 .companyUsers(userSet)
                 .build();
-        if (user != null){
+        if (user != null) {
             user.getCompanies().add(company);
             userRepository.save(user);
         }
@@ -58,7 +58,6 @@ public class CompanyService {
                 .content(Content.builder()
                         .openHours(request.getOpenHours())
                         .build())
-                .modifiedOn(LocalDateTime.now())
                 .build();
         companyRepository.save(company);
     }

@@ -18,7 +18,6 @@ public class ActivationTokenConfirmationService {
     public String initTokenConfirmation(final User user) {
         String token = UUID.randomUUID().toString();
         ActivationTokenConfirmation tokenConfirmation = ActivationTokenConfirmation.builder()
-                .createdOn(LocalDateTime.now())
                 .expiredAt(LocalDateTime.now().plusMinutes(15))
                 .activationToken(token)
                 .user(user)

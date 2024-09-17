@@ -17,7 +17,6 @@ public class PasswordResetTokenService {
                 .token(token)
                 .user(user)
                 .expiredAt(LocalDateTime.now().plusMinutes(15))
-                .createdOn(LocalDateTime.now())
                 .build();
 
         return passwordResetTokenRepository.save(passwordResetToken);
@@ -27,7 +26,6 @@ public class PasswordResetTokenService {
         var passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
         var passwordResetToken = passwordResetTokenOptional.orElseThrow(() -> new SecurityException("Wrong password reset token"));
         verifyToken(passwordResetToken);
-        passwordResetToken.setChangedAt(LocalDateTime.now());
         passwordResetTokenRepository.save(passwordResetToken);
         return passwordResetToken;
     }
@@ -36,7 +34,7 @@ public class PasswordResetTokenService {
         if (passwordResetToken.getExpiredAt().isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("Token expired");
         }
-        if (passwordResetToken.getChangedAt() != null) {
+        if (passwordResetToken.getLastModifiedBy() != null) {
             throw new IllegalStateException("Token already used!");
         }
     }

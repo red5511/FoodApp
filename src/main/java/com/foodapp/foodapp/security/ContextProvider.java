@@ -5,10 +5,18 @@ import com.foodapp.foodapp.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Optional;
 import java.util.Set;
 
 @AllArgsConstructor
 public class ContextProvider {
+    public Optional<Integer> getUserId() {
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User user) {
+            return Optional.ofNullable(user.getId());
+        }
+        return Optional.empty();
+    }
 
     public Set<Company> getCompanyList() {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

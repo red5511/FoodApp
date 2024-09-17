@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +23,8 @@ public class ApplicationHttpAdvice {
     public ResponseEntity handleBusinessException(final AuthenticationException ex) {
         if (ex instanceof BadCredentialsException) {
             return handleException(ex, HttpStatus.FORBIDDEN);
+        } else if (ex instanceof UsernameNotFoundException) {
+            return handleException(ex, HttpStatus.UNAUTHORIZED);
         }
         return handleException();
     }

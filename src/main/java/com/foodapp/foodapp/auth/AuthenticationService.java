@@ -45,7 +45,6 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
-                .createdOn(LocalDateTime.now())
                 .build();
         var activationToken = userDetailsService.registerUser(user);
         emailService.sendUserActivationEmail(request.getEmail(), activationToken);

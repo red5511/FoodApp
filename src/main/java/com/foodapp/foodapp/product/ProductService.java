@@ -16,7 +16,6 @@ public class ProductService {
                 .name(request.getName())
                 .price(request.getPrice())
                 .description(request.getDescription())
-                .createdOn(LocalDateTime.now())
                 .build();
         productRepository.save(product);
     }
@@ -26,7 +25,6 @@ public class ProductService {
                 .name(request.getName())
                 .price(request.getPrice())
                 .description(request.getDescription())
-                .modifiedOn(LocalDateTime.now())
                 .build();
         productRepository.save(product);
     }

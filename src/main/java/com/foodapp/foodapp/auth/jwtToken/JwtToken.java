@@ -1,18 +1,19 @@
 package com.foodapp.foodapp.auth.jwtToken;
 
+import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class JwtToken {
+public class JwtToken extends BaseEntity {
 
     @Id
     @GeneratedValue

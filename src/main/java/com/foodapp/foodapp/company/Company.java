@@ -1,21 +1,22 @@
 package com.foodapp.foodapp.company;
 
+import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-@Builder
+@SuperBuilder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"})
-public class Company {
+@EqualsAndHashCode(of = {"id"}, callSuper = true)
+public class Company extends BaseEntity {
     @Id
     @SequenceGenerator(name = "company_sequence", sequenceName = "company_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "company_sequence")
@@ -34,8 +35,5 @@ public class Company {
     private Set<User> companyUsers;
     @Setter
     private boolean locked;
-    private String createdBy;
-    private LocalDateTime createdOn;
-    private LocalDateTime modifiedOn;
 
 }

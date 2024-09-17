@@ -2,14 +2,12 @@ package com.foodapp.foodapp.dashboard;
 
 import com.foodapp.foodapp.dashboard.response.DashboardGetCompanyResponse;
 import com.foodapp.foodapp.dashboard.response.DashboardGetInitConfigResponse;
+import com.foodapp.foodapp.dashboard.response.DashboardGetOrdersResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/dashboard")
@@ -28,4 +26,9 @@ public class DashboardController {
     public ResponseEntity<DashboardGetCompanyResponse> getCompany(final @PathVariable Integer companyId) {
         return ResponseEntity.ok(dashboardService.getCompany(companyId));
     }
+//
+//    @PostMapping
+//    public ResponseEntity<DashboardGetOrdersResponse> getOrders(final @PathVariable Integer companyId) {
+//        return ResponseEntity.ok(dashboardService.getOrders(companyId));
+//    }
 }

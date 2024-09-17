@@ -33,4 +33,11 @@ public class BusinessException extends Throwable {
         this.status = httpStatus;
         this.parameters = parameters != null ? new HashMap<>(parameters) : new HashMap<>();
     }
+
+    public BusinessException(final String errorCode,
+                             final HttpStatus httpStatus) {
+        this.errorCode = errorCode;
+        this.status = httpStatus;
+        this.parameters = new HashMap<>();
+    }
 }

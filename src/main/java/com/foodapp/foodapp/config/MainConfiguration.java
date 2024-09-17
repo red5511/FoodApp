@@ -160,4 +160,9 @@ public class MainConfiguration {
     public ContextProvider contextValidator() {
         return new ContextProvider();
     }
+
+    @Bean
+    public ApplicationAuditAware applicationAuditAware(final ContextProvider contextProvider) {
+        return new ApplicationAuditAware(contextProvider);
+    }
 }
