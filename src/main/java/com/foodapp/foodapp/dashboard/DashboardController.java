@@ -23,12 +23,17 @@ public class DashboardController {
     }
 
     @GetMapping("/company/{companyId}")
-    public ResponseEntity<DashboardGetCompanyResponse> getCompany(final @PathVariable Integer companyId) {
+    public ResponseEntity<DashboardGetCompanyResponse> getCompany(final @PathVariable Long companyId) {
         return ResponseEntity.ok(dashboardService.getCompany(companyId));
     }
+
+    @GetMapping("/orders/{companyId}")
+    public ResponseEntity<DashboardGetOrdersResponse> getActiveOrders(final @PathVariable Long companyId) {
+        return ResponseEntity.ok(dashboardService.getActiveOrders(companyId));
+    }
 //
-//    @PostMapping
-//    public ResponseEntity<DashboardGetOrdersResponse> getOrders(final @PathVariable Integer companyId) {
-//        return ResponseEntity.ok(dashboardService.getOrders(companyId));
+//    @GetMapping("/order/{companyId}")
+//    public ResponseEntity<DashboardGetOrdersResponse> getOrderDetails(final @PathVariable Integer companyId) {
+//        return ResponseEntity.ok(dashboardService.getActiveOrders(companyId));
 //    }
 }

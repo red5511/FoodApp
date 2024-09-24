@@ -8,6 +8,8 @@ springdoc:
 spring:
   application:
     name: foodApp
+  profiles:
+    active: ENABLE_SCHEDULER_WEBSOCKET_TEST
   datasource:
     url: jdbc:postgresql://localhost:5332/food_app
     username: 'red55'

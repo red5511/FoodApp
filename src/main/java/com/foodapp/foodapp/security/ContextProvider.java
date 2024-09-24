@@ -10,7 +10,7 @@ import java.util.Set;
 
 @AllArgsConstructor
 public class ContextProvider {
-    public Optional<Integer> getUserId() {
+    public Optional<Long> getUserId() {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof User user) {
             return Optional.ofNullable(user.getId());
@@ -26,7 +26,7 @@ public class ContextProvider {
         return Set.of();
     }
 
-    public void validateCompanyAccess(final Integer companyId) {
+    public void validateCompanyAccess(final Long companyId) {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof User user) {
             var companyIds = user.getCompanies().stream()

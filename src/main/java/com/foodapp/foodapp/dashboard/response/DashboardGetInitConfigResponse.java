@@ -1,5 +1,6 @@
 package com.foodapp.foodapp.dashboard.response;
 
+import com.foodapp.foodapp.company.CompanyDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,5 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DashboardGetInitConfigResponse {
-    private List<CompanyData> companyDataList;
+    private boolean isReceivingOrdersActive;
+    private List<CompanyDto> companyDataList;
 }

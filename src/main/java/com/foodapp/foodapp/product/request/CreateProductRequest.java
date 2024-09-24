@@ -1,5 +1,6 @@
 package com.foodapp.foodapp.product.request;
 
+import com.foodapp.foodapp.product.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +10,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaveProductRequest {
-    private String name;
-    private String price;
-    private String imgUrl;
-    private String description;
+public class CreateProductRequest {
+    private ProductDto product;
 }

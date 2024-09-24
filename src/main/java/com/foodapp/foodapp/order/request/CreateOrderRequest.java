@@ -1,4 +1,4 @@
-package com.foodapp.foodapp.dashboard.response;
+package com.foodapp.foodapp.order.request;
 
 import com.foodapp.foodapp.order.OrderDto;
 import lombok.AllArgsConstructor;
@@ -6,12 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DashboardGetOrdersResponse {
-    private List<OrderDto> orderList;
+public class CreateOrderRequest {
+    private OrderDto order;
 }

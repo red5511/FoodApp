@@ -1,6 +1,8 @@
 package com.foodapp.foodapp.config;
 
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
+import com.foodapp.foodapp.security.JwtService;
+import com.foodapp.foodapp.security.JwtSocketChannelInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -33,7 +36,9 @@ public class SecurityConfiguration {
                         "/configuration/ui",
                         "/configuration/security",
                         "webjars/**",
-                        "swagger-ui.html").permitAll()
+                        "swagger-ui.html",
+                        "/ws/**",
+                        "/api/v1/ws/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -41,5 +46,11 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
+    }
+
+    @Bean
+    public JwtSocketChannelInterceptor jwtSocketChannelInterceptor(final JwtService jwtService,
+                                                                   final UserDetailsService userDetailsService) {
+        return new JwtSocketChannelInterceptor(jwtService, userDetailsService);
     }
 }

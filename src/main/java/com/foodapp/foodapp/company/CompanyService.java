@@ -7,7 +7,7 @@ import com.foodapp.foodapp.user.User;
 import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
 import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -24,11 +24,11 @@ public class CompanyService {
         return user.getCompanies();
     }
 
-    public Optional<Company> getCompanyById(final Integer companyId) {
+    public Optional<Company> getCompanyById(final Long companyId) {
         return companyRepository.findById(companyId);
     }
 
-    @SneakyThrows
+    @Transactional
     public void saveCompany(final SaveCompanyRequest request) {
         Set<User> userSet = new HashSet<>();
         User user = null;
@@ -36,11 +36,12 @@ public class CompanyService {
             user = (User) userDetailsService.loadUserByUsername(request.getUserEmail());
             userSet.add(user);
         }
+        var companyDto = request.getCompany();
         var company = Company.builder()
-                .name(request.getName())
-                .address(request.getAddress())
+                .name(companyDto.getName())
+                .address(companyDto.getAddress())
                 .content(Content.builder()
-                        .openHours(request.getOpenHours())
+                        .openHours(companyDto.getOpenHours())
                         .build())
                 .companyUsers(userSet)
                 .build();
@@ -52,11 +53,12 @@ public class CompanyService {
     }
 
     public void modifyCompany(final ModifyCompanyRequest request) {
+        var companyDto = request.getCompanyDto();
         var company = Company.builder()
-                .name(request.getName())
-                .address(request.getAddress())
+                .name(companyDto.getName())
+                .address(companyDto.getAddress())
                 .content(Content.builder()
-                        .openHours(request.getOpenHours())
+                        .openHours(companyDto.getOpenHours())
                         .build())
                 .build();
         companyRepository.save(company);

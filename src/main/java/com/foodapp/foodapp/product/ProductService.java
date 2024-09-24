@@ -1,35 +1,44 @@
 package com.foodapp.foodapp.product;
 
+import com.foodapp.foodapp.company.CompanyRepository;
+import com.foodapp.foodapp.product.request.CreateProductRequest;
 import com.foodapp.foodapp.product.request.DeleteProductRequest;
 import com.foodapp.foodapp.product.request.ModifyProductRequest;
-import com.foodapp.foodapp.product.request.SaveProductRequest;
+import com.foodapp.foodapp.security.ContextProvider;
 import lombok.AllArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final CompanyRepository companyRepository;
+    private final ContextProvider contextProvider;
 
-    public void saveProduct(final SaveProductRequest request) {
-        var product = Product.builder()
-                .name(request.getName())
-                .price(request.getPrice())
-                .description(request.getDescription())
-                .build();
+    public void saveProduct(final CreateProductRequest request) {
+        contextProvider.validateCompanyAccess(request.getProduct().getCompanyId());
+        var product = buildProduct(request.getProduct());
         productRepository.save(product);
     }
 
     public void modifyProduct(final ModifyProductRequest request) {
-        var product = Product.builder()
-                .name(request.getName())
-                .price(request.getPrice())
-                .description(request.getDescription())
-                .build();
+        contextProvider.validateCompanyAccess(request.getProduct().getCompanyId());
+        var product = buildProduct(request.getProduct());
         productRepository.save(product);
     }
 
     public void deleteProduct(final DeleteProductRequest request) {
+        contextProvider.validateCompanyAccess(request.getCompanyId());
         productRepository.deleteById(request.getProductId());
+    }
+
+    private Product buildProduct(final ProductDto productDto) {
+        var company = companyRepository.findById(productDto.getCompanyId())
+                .orElseThrow(() -> new SecurityException("Company id not valid"));
+        return Product.builder()
+                .name(productDto.getName())
+                .price(productDto.getPrice())
+                .description(productDto.getDescription())
+                .imgUrl(productDto.getImgUrl())
+                .company(company)
+                .build();
     }
 }

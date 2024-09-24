@@ -9,8 +9,11 @@ import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
 import com.foodapp.foodapp.company.CompanyRepository;
 import com.foodapp.foodapp.company.CompanyService;
 import com.foodapp.foodapp.dashboard.DashboardService;
+import com.foodapp.foodapp.order.OrderRepository;
+import com.foodapp.foodapp.order.OrderService;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.product.ProductService;
+import com.foodapp.foodapp.scheduler.SchedulerForTestingService;
 import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
 import com.foodapp.foodapp.security.JwtService;
@@ -20,7 +23,9 @@ import com.foodapp.foodapp.user.email.EmailSender;
 import com.foodapp.foodapp.user.email.EmailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -147,13 +152,16 @@ public class MainConfiguration {
 
     @Bean
     public DashboardService dashboardService(final CompanyService companyService,
-                                             final ContextProvider contextValidator) {
-        return new DashboardService(companyService, contextValidator);
+                                             final ContextProvider contextValidator,
+                                             final OrderService orderService) {
+        return new DashboardService(companyService, contextValidator, orderService);
     }
 
     @Bean
-    public ProductService productService(final ProductRepository productRepository) {
-        return new ProductService(productRepository);
+    public ProductService productService(final ProductRepository productRepository,
+                                         final CompanyRepository companyRepository,
+                                         final ContextProvider contextProvider) {
+        return new ProductService(productRepository, companyRepository, contextProvider);
     }
 
     @Bean
@@ -164,5 +172,19 @@ public class MainConfiguration {
     @Bean
     public ApplicationAuditAware applicationAuditAware(final ContextProvider contextProvider) {
         return new ApplicationAuditAware(contextProvider);
+    }
+
+    @Bean
+    public OrderService orderService(final OrderRepository orderRepository,
+                                     final CompanyRepository companyRepository,
+                                     final SimpMessagingTemplate messagingTemplate) {
+        return new OrderService(orderRepository, companyRepository, messagingTemplate);
+    }
+
+    @Bean
+    @Profile("ENABLE_SCHEDULER_WEBSOCKET_TEST")
+    public SchedulerForTestingService schedulerForTestingService(final OrderService orderService,
+                                                                 final OrderRepository orderRepository) {
+        return new SchedulerForTestingService(orderService, orderRepository);
     }
 }

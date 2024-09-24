@@ -1,9 +1,12 @@
 package com.foodapp.foodapp.dashboard;
 
+import com.foodapp.foodapp.company.CompanyDto;
 import com.foodapp.foodapp.company.CompanyService;
-import com.foodapp.foodapp.dashboard.response.CompanyData;
 import com.foodapp.foodapp.dashboard.response.DashboardGetCompanyResponse;
 import com.foodapp.foodapp.dashboard.response.DashboardGetInitConfigResponse;
+import com.foodapp.foodapp.dashboard.response.DashboardGetOrdersResponse;
+import com.foodapp.foodapp.order.OrderService;
+import com.foodapp.foodapp.order.OrderStatus;
 import com.foodapp.foodapp.security.ContextProvider;
 import lombok.AllArgsConstructor;
 
@@ -14,8 +17,17 @@ import java.util.List;
 public class DashboardService {
     private final CompanyService companyService;
     private final ContextProvider contextValidator;
+    private final OrderService orderService;
 
-    public DashboardGetCompanyResponse getCompany(final Integer companyId) {
+    public DashboardGetOrdersResponse getActiveOrders(final Long companyId) {
+        contextValidator.validateCompanyAccess(companyId);
+        var orders = orderService.getOrders(companyId, OrderStatus.WAITING_FOR_ACCEPTANCE);
+        return DashboardGetOrdersResponse.builder()
+                .orderList(orders)
+                .build();
+    }
+
+    public DashboardGetCompanyResponse getCompany(final Long companyId) {
         contextValidator.validateCompanyAccess(companyId);
         var companyOptional = companyService.getCompanyById(companyId);
         if (companyOptional.isPresent()) {
@@ -31,30 +43,33 @@ public class DashboardService {
 
     public DashboardGetInitConfigResponse getInitConfig() {
         var companyDataList = contextValidator.getCompanyList().stream()
-                .map(company -> CompanyData.builder()
-                        .companyId(company.getId())
-                        .companyName(company.getName())
-                        .companyAddress(company.getAddress())
+                .map(company -> CompanyDto.builder()
+                        .id(company.getId())
+                        .name(company.getName())
+                        .address(company.getAddress())
                         .openHours(company.getContent().getOpenHours())
+                        .isReceivingOrdersActive(company.isReceivingOrdersActive())
                         .build())
                 .toList();
         var companyDataList2 = contextValidator.getCompanyList().stream()
-                .map(company -> CompanyData.builder()
-                        .companyId(company.getId())
-                        .companyName(company.getName())
-                        .companyAddress(company.getAddress())
+                .map(company -> CompanyDto.builder()
+                        .id(company.getId())
+                        .name(company.getName())
+                        .address(company.getAddress())
                         .openHours(company.getContent().getOpenHours())
+                        .isReceivingOrdersActive(company.isReceivingOrdersActive())
                         .build())
                 .toList();
         var companyDataList3 = contextValidator.getCompanyList().stream()
-                .map(company -> CompanyData.builder()
-                        .companyId(company.getId())
-                        .companyName(company.getName())
-                        .companyAddress(company.getAddress())
+                .map(company -> CompanyDto.builder()
+                        .id(company.getId())
+                        .name(company.getName())
+                        .address(company.getAddress())
                         .openHours(company.getContent().getOpenHours())
+                        .isReceivingOrdersActive(company.isReceivingOrdersActive())
                         .build())
                 .toList();
-        List<CompanyData> xd = new ArrayList<>();
+        List<CompanyDto> xd = new ArrayList<>();
         xd.addAll(companyDataList);
         xd.addAll(companyDataList2);
         return DashboardGetInitConfigResponse.builder()
@@ -62,3 +77,5 @@ public class DashboardService {
                 .build();
     }
 }
+//kwtnmdal-95
+//kwtnmdal-96

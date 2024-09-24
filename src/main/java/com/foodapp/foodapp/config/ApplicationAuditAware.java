@@ -7,11 +7,11 @@ import org.springframework.data.domain.AuditorAware;
 import java.util.Optional;
 
 @AllArgsConstructor
-public class ApplicationAuditAware implements AuditorAware<Integer> {
+public class ApplicationAuditAware implements AuditorAware<Long> {
     private final ContextProvider contextProvider;
 
     @Override
-    public Optional<Integer> getCurrentAuditor() {
+    public Optional<Long> getCurrentAuditor() {
         return contextProvider.getUserId();
     }
 

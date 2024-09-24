@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DeleteProductRequest {
     private Long productId;
+    private Long companyId;
 }

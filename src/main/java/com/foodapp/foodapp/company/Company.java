@@ -20,7 +20,7 @@ public class Company extends BaseEntity {
     @Id
     @SequenceGenerator(name = "company_sequence", sequenceName = "company_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "company_sequence")
-    private Integer id;
+    private Long id;
     private String name;
     private String address;
     @JdbcTypeCode(SqlTypes.JSON)
@@ -35,5 +35,8 @@ public class Company extends BaseEntity {
     private Set<User> companyUsers;
     @Setter
     private boolean locked;
+    @Setter
+    @Column(columnDefinition = "boolean default false")
+    private boolean isReceivingOrdersActive;
 
 }

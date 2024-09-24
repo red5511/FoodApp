@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.company.request;
 
-import com.foodapp.foodapp.company.OpenHours;
+import com.foodapp.foodapp.company.CompanyDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SaveCompanyRequest {
-    private String name;
-    private String address;
-    private OpenHours openHours;
+    private CompanyDto company;
     private String userEmail;
 }

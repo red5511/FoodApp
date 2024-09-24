@@ -17,7 +17,7 @@ public class JwtToken extends BaseEntity {
 
     @Id
     @GeneratedValue
-    public Integer id;
+    public Long id;
 
     @Column(unique = true)
     public String token;

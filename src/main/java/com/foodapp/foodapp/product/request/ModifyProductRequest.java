@@ -1,5 +1,6 @@
 package com.foodapp.foodapp.product.request;
 
+import com.foodapp.foodapp.product.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class ModifyProductRequest {
-    private String name;
-    private String price;
-    private String imgUrl;
-    private String description;
+    private ProductDto product;
 }

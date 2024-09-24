@@ -7,7 +7,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.security.Key;
 import java.util.Date;
@@ -46,7 +48,7 @@ public class JwtService {
 
     public boolean isTokenValid(final String token, final UserDetails userDetails) {
         String username = extractUsername(token);
-        var jwtToken = jwtTokenRepository.findByToken(token).orElseThrow(() -> new SecurityException("Invalid token"));
+        var jwtToken = jwtTokenRepository.findByToken(token).orElseThrow(() -> new UsernameNotFoundException("Invalid JTW token"));
         return username.equals(userDetails.getUsername()) &&
                 !isTokenExpired(token) &&
                 !jwtToken.isRevoked() &&

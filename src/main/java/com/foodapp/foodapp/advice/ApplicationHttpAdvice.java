@@ -1,7 +1,9 @@
 package com.foodapp.foodapp.advice;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,6 +19,17 @@ public class ApplicationHttpAdvice {
     @ExceptionHandler({BusinessException.class})
     public ResponseEntity handleBusinessException(final BusinessException ex) {
         return handleException(ex, ex.getStatus());
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity handleBusinessException(final DataIntegrityViolationException ex) {
+        return handleException();
+    }
+
+    @ExceptionHandler({JwtException.class})
+    public ResponseEntity handleBusinessException(final JwtException ex) {
+        var businessException = new BusinessException(ex.getMessage());
+        return handleException(businessException, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({AuthenticationException.class})
@@ -41,6 +54,12 @@ public class ApplicationHttpAdvice {
         var businessException = new BusinessException(ex.getMessage(), null, HttpStatus.UNAUTHORIZED);
         return handleException(businessException, businessException.getStatus());
     }
+
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity handleDefaultException(final Exception ex) {
+//        var businessException = new BusinessException(ex.getMessage(), null, HttpStatus.EXPECTATION_FAILED);
+//        return handleException(businessException, businessException.getStatus());
+//    }
 
     private ResponseEntity<BusinessExceptionResponse> handleException(final BusinessException ex, final HttpStatus httpStatus) {
         var errorResponse = BusinessExceptionResponse.builder()

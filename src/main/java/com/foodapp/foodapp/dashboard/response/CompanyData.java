@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompanyData {
-    private Integer companyId;
+    private Long companyId;
     private String companyName;
     private String companyAddress;
     private OpenHours openHours;

@@ -2,7 +2,7 @@ package com.foodapp.foodapp.product;
 
 import com.foodapp.foodapp.product.request.DeleteProductRequest;
 import com.foodapp.foodapp.product.request.ModifyProductRequest;
-import com.foodapp.foodapp.product.request.SaveProductRequest;
+import com.foodapp.foodapp.product.request.CreateProductRequest;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/save")
-    public ResponseEntity<String> saveProduct(final @RequestBody SaveProductRequest request) {
+    public ResponseEntity<String> saveProduct(final @RequestBody CreateProductRequest request) {
         productService.saveProduct(request);
         return ResponseEntity.ok("Saved");
     }
