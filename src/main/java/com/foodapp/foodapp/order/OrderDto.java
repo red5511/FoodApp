@@ -1,5 +1,6 @@
 package com.foodapp.foodapp.order;
 
+import com.foodapp.foodapp.product.ProductDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,6 +11,7 @@ import java.util.Set;
 @Builder
 @Getter
 public class OrderDto {
+    private Long id;
     private Long companyId;
     private String name;
     private BigDecimal price;
@@ -19,5 +21,5 @@ public class OrderDto {
     private String deliveryAddress;
     private String customerName;
     private LocalDateTime deliveryTime;
-    private Set<Integer> productIds;
+    private Set<ProductDto> products;
 }

@@ -19,20 +19,6 @@ public class OrderService {
     private final ContextProvider contextProvider;
     private final OrderValidator orderValidator;
 
-    public static OrderDto mapToOrderDto(final Order order) {
-        return OrderDto.builder()
-                .name("Zamówienie" + order.getId())
-                .companyId(order.getCompany().getId())
-                .description(order.getDescription())
-                .price(order.getPrice())
-                .orderType(order.getOrderType())
-                .status(order.getStatus())
-                .customerName(order.getCustomerName())
-                .deliveryAddress(order.getDeliveryAddress())
-                .deliveryTime(order.getDeliveryTime())
-                .build();
-    }
-
     public void sendNewOrdersNotification(final String userEmail, final OrderDto orderDto) {
         messagingTemplate.convertAndSendToUser(userEmail, "/order", orderDto);
     }
@@ -65,7 +51,7 @@ public class OrderService {
 
     public List<OrderDto> getOrders(final Long companyId, final OrderStatus orderStatus) {
         return orderRepository.findByCompanyIdAndStatus(companyId, orderStatus).stream()
-                .map(OrderService::mapToOrderDto)
+                .map(OrderMapper::mapToOrderDto)
                 .collect(Collectors.toList());
     }
 }

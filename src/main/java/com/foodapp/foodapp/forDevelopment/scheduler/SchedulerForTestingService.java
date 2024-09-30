@@ -5,12 +5,16 @@ import com.foodapp.foodapp.company.Company;
 import com.foodapp.foodapp.company.CompanyRepository;
 import com.foodapp.foodapp.forDevelopment.TechnicalContextDev;
 import com.foodapp.foodapp.order.*;
+import com.foodapp.foodapp.product.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
 
 @AllArgsConstructor
 @Slf4j
@@ -18,19 +22,24 @@ public class SchedulerForTestingService {
     private final OrderService orderService;
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
+    private final ProductRepository productRepository;
 
     @Scheduled(fixedRate = 15000)
     @TechnicalContextDev
+    @Transactional
     public void sendTestOrderToWebsocket() {
         var order = createOrderForTest();
         order = orderRepository.save(order);
         log.info("Sending order to ts");
-        orderService.sendNewOrdersNotification("maciekfranczak@onet.eu", OrderService.mapToOrderDto(order));
+        orderService.sendNewOrdersNotification("maciekfranczak@onet.eu", OrderMapper.mapToOrderDto(order));
     }
 
     public Order createOrderForTest() {
-        Company company =
-                companyRepository.findById(1L).orElseThrow(() -> new IllegalStateException("Send new order - wrong company id"));
+        var company = companyRepository.findById(1L).orElseThrow(
+                () -> new IllegalStateException("Send new order - wrong company id"));
+        var product =
+                productRepository.findById(1L).orElseThrow(
+                        () -> new IllegalStateException("Send new order - wrong product id"));
         return Order.builder()
                 .deliveryTime(LocalDateTime.now())
                 .deliveryAddress("Sikorskiego 43")
@@ -44,6 +53,7 @@ public class SchedulerForTestingService {
                 .company(Company.builder()
                         .build())
                 .company(company)
+                .products(new HashSet<>(Arrays.asList(product)))
                 .build();
     }
 
