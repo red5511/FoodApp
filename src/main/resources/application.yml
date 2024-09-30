@@ -9,7 +9,7 @@ spring:
   application:
     name: foodApp
   profiles:
-    active: ENABLE_SCHEDULER_WEBSOCKET_TEST
+    active: ENABLE_SCHEDULER_WEBSOCKET_TEST,TEST
   datasource:
     url: jdbc:postgresql://localhost:5332/food_app
     username: 'red55'
@@ -34,3 +34,5 @@ spring:
         smtp:
           auth: true
           starttls.enable: true
+app:
+  time-to-accept-order: 2

@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 @Data
 @SuperBuilder
@@ -24,7 +24,7 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
     private String name;
-    private BigInteger price;
+    private BigDecimal price;
     private String imgUrl;
     private String description;
     private boolean soldOut;

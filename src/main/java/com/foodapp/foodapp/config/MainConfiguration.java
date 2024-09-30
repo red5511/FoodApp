@@ -11,9 +11,9 @@ import com.foodapp.foodapp.company.CompanyService;
 import com.foodapp.foodapp.dashboard.DashboardService;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.order.OrderService;
+import com.foodapp.foodapp.order.OrderValidator;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.product.ProductService;
-import com.foodapp.foodapp.scheduler.SchedulerForTestingService;
 import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
 import com.foodapp.foodapp.security.JwtService;
@@ -21,9 +21,9 @@ import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
 import com.foodapp.foodapp.user.email.EmailSender;
 import com.foodapp.foodapp.user.email.EmailService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -47,6 +47,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 
 @Configuration
 public class MainConfiguration {
+    @Value("${app.time-to-accept-order}")
+    private Long timeToAcceptOrder;
+
     @Bean
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -177,14 +180,19 @@ public class MainConfiguration {
     @Bean
     public OrderService orderService(final OrderRepository orderRepository,
                                      final CompanyRepository companyRepository,
-                                     final SimpMessagingTemplate messagingTemplate) {
-        return new OrderService(orderRepository, companyRepository, messagingTemplate);
+                                     final SimpMessagingTemplate messagingTemplate,
+                                     final OrderValidator orderValidator,
+                                     final ContextProvider contextProvider) {
+        return new OrderService(orderRepository,
+                companyRepository,
+                messagingTemplate,
+                contextProvider,
+                orderValidator);
     }
 
     @Bean
-    @Profile("ENABLE_SCHEDULER_WEBSOCKET_TEST")
-    public SchedulerForTestingService schedulerForTestingService(final OrderService orderService,
-                                                                 final OrderRepository orderRepository) {
-        return new SchedulerForTestingService(orderService, orderRepository);
+    public OrderValidator orderValidator() {
+        return new OrderValidator(timeToAcceptOrder);
     }
+
 }

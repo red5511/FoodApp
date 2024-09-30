@@ -1,5 +1,6 @@
 package com.foodapp.foodapp.order;
 
+import com.foodapp.foodapp.order.request.ApproveNewIncomingOrderRequest;
 import com.foodapp.foodapp.order.request.CreateOrderRequest;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,5 +23,11 @@ public class OrderController {
     public ResponseEntity<String> saveOrder(final @RequestBody CreateOrderRequest request) {
         orderService.saveOrder(request);
         return ResponseEntity.ok("Saved");
+    }
+
+    @PostMapping("/approve")
+    public ResponseEntity<String> approveNewIncomingOrder(final @RequestBody ApproveNewIncomingOrderRequest request) {
+        orderService.approveNewIncomingOrder(request);
+        return ResponseEntity.ok("Approved");
     }
 }
