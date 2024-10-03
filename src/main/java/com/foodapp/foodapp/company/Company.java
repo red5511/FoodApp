@@ -16,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"}, callSuper = true)
+@ToString
 public class Company extends BaseEntity {
     @Id
     @SequenceGenerator(name = "company_sequence", sequenceName = "company_sequence", allocationSize = 1)

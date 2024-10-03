@@ -22,4 +22,5 @@ public class OrderDto {
     private String customerName;
     private LocalDateTime deliveryTime;
     private Set<ProductDto> products;
+    private LocalDateTime approvalDeadline;
 }

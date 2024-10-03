@@ -17,13 +17,14 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
+      show-sql: true
       ddl-auto: update
 #      ddl-auto: create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-    show-sql: true
+    show-sql: false
   mail:
     host: smtp.gmail.com
     port: 587

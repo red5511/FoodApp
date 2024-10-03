@@ -55,6 +55,13 @@ public class ApplicationHttpAdvice {
         return handleException(businessException, businessException.getStatus());
     }
 
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity handleSecurityException(final Exception ex) {
+        var businessException = new BusinessException(ex.getMessage());
+        return handleException(businessException, businessException.getStatus());
+    }
+
+
 //    @ExceptionHandler(Exception.class)
 //    public ResponseEntity handleDefaultException(final Exception ex) {
 //        var businessException = new BusinessException(ex.getMessage(), null, HttpStatus.EXPECTATION_FAILED);

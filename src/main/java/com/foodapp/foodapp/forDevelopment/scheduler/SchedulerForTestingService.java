@@ -23,8 +23,9 @@ public class SchedulerForTestingService {
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
     private final ProductRepository productRepository;
+    private final Long timeToAcceptOrder;
 
-    @Scheduled(fixedRate = 15000)
+    @Scheduled(fixedRate = 10000)
     @TechnicalContextDev
     @Transactional
     public void sendTestOrderToWebsocket() {
@@ -54,6 +55,8 @@ public class SchedulerForTestingService {
                         .build())
                 .company(company)
                 .products(new HashSet<>(Arrays.asList(product)))
+                .approvalDeadline(LocalDateTime.now().plusSeconds(25))
+                //.approvalDeadline(LocalDateTime.now().plusMinutes(timeToAcceptOrder))
                 .build();
     }
 

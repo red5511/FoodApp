@@ -2,6 +2,7 @@ package com.foodapp.foodapp.order;
 
 import com.foodapp.foodapp.order.request.ApproveNewIncomingOrderRequest;
 import com.foodapp.foodapp.order.request.CreateOrderRequest;
+import com.foodapp.foodapp.order.request.RejectNewIncomingOrderRequest;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -20,14 +21,20 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/save")
-    public ResponseEntity<String> saveOrder(final @RequestBody CreateOrderRequest request) {
+    public ResponseEntity<Void> saveOrder(final @RequestBody CreateOrderRequest request) {
         orderService.saveOrder(request);
-        return ResponseEntity.ok("Saved");
+        return ResponseEntity.ok().build(); // Return 200 OK with no body
     }
 
     @PostMapping("/approve")
-    public ResponseEntity<String> approveNewIncomingOrder(final @RequestBody ApproveNewIncomingOrderRequest request) {
+    public ResponseEntity<Void> approveNewIncomingOrder(final @RequestBody ApproveNewIncomingOrderRequest request) {
         orderService.approveNewIncomingOrder(request);
-        return ResponseEntity.ok("Approved");
+        return ResponseEntity.ok().build(); // Return 200 OK with no body
+    }
+
+    @PostMapping("/reject")
+    public ResponseEntity<Void> rejectNewIncomingOrder(final @RequestBody RejectNewIncomingOrderRequest request) {
+        orderService.rejectNewIncomingOrder(request);
+        return ResponseEntity.ok().build(); // Return 200 OK with no body
     }
 }

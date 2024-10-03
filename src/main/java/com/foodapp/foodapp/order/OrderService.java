@@ -3,6 +3,7 @@ package com.foodapp.foodapp.order;
 import com.foodapp.foodapp.company.CompanyRepository;
 import com.foodapp.foodapp.order.request.ApproveNewIncomingOrderRequest;
 import com.foodapp.foodapp.order.request.CreateOrderRequest;
+import com.foodapp.foodapp.order.request.RejectNewIncomingOrderRequest;
 import com.foodapp.foodapp.security.ContextProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -27,8 +28,18 @@ public class OrderService {
     public void approveNewIncomingOrder(final ApproveNewIncomingOrderRequest request) {
         contextProvider.validateCompanyAccess(request.getCompanyId());
         var order = orderRepository.findById(request.getOrderId()).orElseThrow(() -> new SecurityException("Wrong action"));
-        orderValidator.validateApprovingOrder(order, request.getCompanyId());
+        orderValidator.validateIncomingOrder(order, request.getCompanyId());
         order.setStatus(OrderStatus.IN_EXECUTION);
+        orderRepository.save(order);
+        //todo pewnie trzeba strzelic czyms do glovo czy cos
+    }
+
+    @Transactional
+    public void rejectNewIncomingOrder(final RejectNewIncomingOrderRequest request) {
+        contextProvider.validateCompanyAccess(request.getCompanyId());
+        var order = orderRepository.findById(request.getOrderId()).orElseThrow(() -> new SecurityException("Wrong action"));
+        orderValidator.validateIncomingOrder(order, request.getCompanyId());
+        order.setStatus(OrderStatus.REJECTED);
         orderRepository.save(order);
         //todo pewnie trzeba strzelic czyms do glovo czy cos
     }

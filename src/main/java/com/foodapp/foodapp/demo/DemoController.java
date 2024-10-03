@@ -1,9 +1,6 @@
 package com.foodapp.foodapp.demo;
 
-import com.foodapp.foodapp.company.Company;
 import com.foodapp.foodapp.company.CompanyRepository;
-import com.foodapp.foodapp.company.Content;
-import com.foodapp.foodapp.company.OpenHours;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -13,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalTime;
 
 
 @RestController
@@ -33,10 +28,13 @@ public class DemoController {
         return ResponseEntity.ok("Hi man");
     }
 
-    @Operation(summary = "say Hello2")
-    @ApiResponse(responseCode = "200", description = "hello returned correctly")
-    @GetMapping("/api/v1/auth/test")
-    public ResponseEntity<String> sayHello2() {
-        return ResponseEntity.ok("Hi man");
-    }
+//    @Operation(summary = "say Hello2")
+//    @ApiResponse(responseCode = "200", description = "hello returned correctly")
+//    @GetMapping("/api/v1/auth/test")
+//    public ResponseEntity<MyResponse> sayHello2() {
+//        MyResponse response = new MyResponse();
+//        response.setApprovalDeadline(LocalDateTime.now());
+//        return ResponseEntity.ok(response);
+//    }
+
 }

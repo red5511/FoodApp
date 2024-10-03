@@ -10,7 +10,7 @@ public class OrderMapper {
     public static OrderDto mapToOrderDto(final Order order) {
         return OrderDto.builder()
                 .id(order.getId())
-                .name("Zamówienie" + order.getId())
+                .name("Zamówienie#" + order.getId())
                 .companyId(order.getCompany().getId())
                 .description(order.getDescription())
                 .price(order.getPrice())
@@ -20,6 +20,8 @@ public class OrderMapper {
                 .deliveryAddress(order.getDeliveryAddress())
                 .deliveryTime(order.getDeliveryTime())
                 .products(mapToProductsDto(order.getProducts()))
+                //.approvalDeadline(order.getId() % 2 == 0 ? order.getApprovalDeadline() : order.getApprovalDeadline().minusSeconds(20))
+                .approvalDeadline(order.getApprovalDeadline())
                 .build();
     }
 
