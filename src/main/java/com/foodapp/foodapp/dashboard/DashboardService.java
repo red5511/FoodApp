@@ -21,7 +21,7 @@ public class DashboardService {
 
     public DashboardGetOrdersResponse getActiveOrders(final Long companyId) {
         contextValidator.validateCompanyAccess(companyId);
-        var orders = orderService.getOrders(companyId, OrderStatus.WAITING_FOR_ACCEPTANCE);
+        var orders = orderService.getOrders(companyId, OrderStatus.IN_EXECUTION);
         return DashboardGetOrdersResponse.builder()
                 .orderList(orders)
                 .build();
