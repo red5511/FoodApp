@@ -32,7 +32,7 @@ public class SchedulerForTestingService {
         var order = createOrderForTest();
         order = orderRepository.save(order);
         log.info("Sending order to ts");
-        orderService.sendNewOrdersNotification("macmac", OrderMapper.mapToOrderDto(order));
+        orderService.sendNewOrdersNotification("1", OrderMapper.mapToOrderDto(order));
     }
 
     public Order createOrderForTest() {

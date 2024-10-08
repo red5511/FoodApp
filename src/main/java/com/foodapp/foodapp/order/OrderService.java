@@ -20,8 +20,8 @@ public class OrderService {
     private final ContextProvider contextProvider;
     private final OrderValidator orderValidator;
 
-    public void sendNewOrdersNotification(final String userEmail, final OrderDto orderDto) {
-        messagingTemplate.convertAndSendToUser(userEmail, "/order", orderDto);
+    public void sendNewOrdersNotification(final String topicName, final OrderDto orderDto) {
+        messagingTemplate.convertAndSendToUser(topicName, "/order", orderDto);
     }
 
     @Transactional
