@@ -1,4 +1,4 @@
-package com.foodapp.foodapp.company;
+package com.foodapp.foodapp.administration.company;
 
 import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.user.User;

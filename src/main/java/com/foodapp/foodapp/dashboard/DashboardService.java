@@ -1,7 +1,7 @@
 package com.foodapp.foodapp.dashboard;
 
-import com.foodapp.foodapp.company.CompanyDto;
-import com.foodapp.foodapp.company.CompanyService;
+import com.foodapp.foodapp.administration.company.CompanyDto;
+import com.foodapp.foodapp.administration.company.CompanyService;
 import com.foodapp.foodapp.dashboard.response.DashboardGetCompanyResponse;
 import com.foodapp.foodapp.dashboard.response.DashboardGetInitConfigResponse;
 import com.foodapp.foodapp.dashboard.response.DashboardGetOrdersResponse;

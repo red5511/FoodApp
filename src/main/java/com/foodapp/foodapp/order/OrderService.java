@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.order;
 
-import com.foodapp.foodapp.company.CompanyRepository;
+import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.order.request.ApproveNewIncomingOrderRequest;
 import com.foodapp.foodapp.order.request.CreateOrderRequest;
 import com.foodapp.foodapp.order.request.RejectNewIncomingOrderRequest;

@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.demo;
 
-import com.foodapp.foodapp.company.CompanyRepository;
+import com.foodapp.foodapp.administration.company.CompanyRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

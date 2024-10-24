@@ -1,9 +1,9 @@
 package com.foodapp.foodapp.forDevelopment;
 
-import com.foodapp.foodapp.company.Company;
-import com.foodapp.foodapp.company.CompanyRepository;
-import com.foodapp.foodapp.company.Content;
-import com.foodapp.foodapp.company.OpenHours;
+import com.foodapp.foodapp.administration.company.Company;
+import com.foodapp.foodapp.administration.company.CompanyRepository;
+import com.foodapp.foodapp.administration.company.Content;
+import com.foodapp.foodapp.administration.company.OpenHours;
 import com.foodapp.foodapp.order.Order;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.order.OrderStatus;
@@ -21,9 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
 
 @AllArgsConstructor
 public class DatabaseDataFaker {

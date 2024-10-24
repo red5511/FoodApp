@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.security;
 
-import com.foodapp.foodapp.company.Company;
+import com.foodapp.foodapp.administration.company.Company;
 import com.foodapp.foodapp.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;

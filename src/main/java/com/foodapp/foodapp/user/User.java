@@ -1,7 +1,7 @@
 package com.foodapp.foodapp.user;
 
 import com.foodapp.foodapp.common.BaseEntity;
-import com.foodapp.foodapp.company.Company;
+import com.foodapp.foodapp.administration.company.Company;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

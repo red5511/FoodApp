@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.dashboard.response;
 
-import com.foodapp.foodapp.company.CompanyDto;
+import com.foodapp.foodapp.administration.company.CompanyDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

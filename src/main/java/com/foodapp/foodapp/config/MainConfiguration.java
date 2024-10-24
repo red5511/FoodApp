@@ -1,26 +1,18 @@
 package com.foodapp.foodapp.config;
 
-import com.foodapp.foodapp.auth.AuthenticationService;
-import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationRepository;
-import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationService;
-import com.foodapp.foodapp.auth.jwtToken.JwtTokenRepository;
-import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenRepository;
-import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
-import com.foodapp.foodapp.company.CompanyRepository;
-import com.foodapp.foodapp.company.CompanyService;
-import com.foodapp.foodapp.dashboard.DashboardService;
-import com.foodapp.foodapp.order.OrderRepository;
-import com.foodapp.foodapp.order.OrderService;
-import com.foodapp.foodapp.order.OrderValidator;
-import com.foodapp.foodapp.product.ProductRepository;
-import com.foodapp.foodapp.product.ProductService;
-import com.foodapp.foodapp.security.ContextProvider;
-import com.foodapp.foodapp.security.JwtAuthenticationFilter;
-import com.foodapp.foodapp.security.JwtService;
-import com.foodapp.foodapp.user.UserDetailsServiceImpl;
-import com.foodapp.foodapp.user.UserRepository;
-import com.foodapp.foodapp.user.email.EmailSender;
-import com.foodapp.foodapp.user.email.EmailService;
+import static org.springframework.http.HttpHeaders.ACCEPT;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpHeaders.ORIGIN;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
+
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,12 +30,28 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import java.util.Arrays;
-import java.util.Collections;
-
-import static org.springframework.http.HttpHeaders.*;
-import static org.springframework.http.HttpMethod.*;
-import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
+import com.foodapp.foodapp.administration.AdministrationService;
+import com.foodapp.foodapp.auth.AuthenticationService;
+import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationRepository;
+import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationService;
+import com.foodapp.foodapp.auth.jwtToken.JwtTokenRepository;
+import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenRepository;
+import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
+import com.foodapp.foodapp.administration.company.CompanyRepository;
+import com.foodapp.foodapp.administration.company.CompanyService;
+import com.foodapp.foodapp.dashboard.DashboardService;
+import com.foodapp.foodapp.order.OrderRepository;
+import com.foodapp.foodapp.order.OrderService;
+import com.foodapp.foodapp.order.OrderValidator;
+import com.foodapp.foodapp.product.ProductRepository;
+import com.foodapp.foodapp.product.ProductService;
+import com.foodapp.foodapp.security.ContextProvider;
+import com.foodapp.foodapp.security.JwtAuthenticationFilter;
+import com.foodapp.foodapp.security.JwtService;
+import com.foodapp.foodapp.user.UserDetailsServiceImpl;
+import com.foodapp.foodapp.user.UserRepository;
+import com.foodapp.foodapp.user.email.EmailSender;
+import com.foodapp.foodapp.user.email.EmailService;
 
 @Configuration
 public class MainConfiguration {
@@ -57,17 +65,17 @@ public class MainConfiguration {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
         config.setAllowedHeaders(Arrays.asList(
-                ORIGIN,
-                CONTENT_TYPE,
-                ACCEPT,
-                AUTHORIZATION
+            ORIGIN,
+            CONTENT_TYPE,
+            ACCEPT,
+            AUTHORIZATION
         ));
         config.setAllowedMethods(Arrays.asList(
-                GET.name(),
-                POST.name(),
-                DELETE.name(),
-                PUT.name(),
-                PATCH.name()
+            GET.name(),
+            POST.name(),
+            DELETE.name(),
+            PUT.name(),
+            PATCH.name()
         ));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
@@ -116,13 +124,14 @@ public class MainConfiguration {
                                                        final PasswordResetTokenService passwordResetTokenService,
                                                        final JwtTokenRepository jwtTokenRepository) {
         return new AuthenticationService(userRepository,
-                passwordEncoder,
-                jwtService,
-                authenticationManager,
-                emailSender,
-                userDetailsService,
-                passwordResetTokenService,
-                jwtTokenRepository);
+                                         passwordEncoder,
+                                         jwtService,
+                                         authenticationManager,
+                                         emailSender,
+                                         userDetailsService,
+                                         passwordResetTokenService,
+                                         jwtTokenRepository
+        );
     }
 
     @Bean
@@ -137,7 +146,7 @@ public class MainConfiguration {
 
     @Bean
     public ActivationTokenConfirmationService tokenConfirmationService(
-            final ActivationTokenConfirmationRepository tokenConfirmationRepository) {
+        final ActivationTokenConfirmationRepository tokenConfirmationRepository) {
         return new ActivationTokenConfirmationService(tokenConfirmationRepository);
     }
 
@@ -184,15 +193,21 @@ public class MainConfiguration {
                                      final OrderValidator orderValidator,
                                      final ContextProvider contextProvider) {
         return new OrderService(orderRepository,
-                companyRepository,
-                messagingTemplate,
-                contextProvider,
-                orderValidator);
+                                companyRepository,
+                                messagingTemplate,
+                                contextProvider,
+                                orderValidator
+        );
     }
 
     @Bean
     public OrderValidator orderValidator() {
         return new OrderValidator(timeToAcceptOrder);
+    }
+
+    @Bean
+    public AdministrationService administrationService(final UserDetailsService userDetailsService) {
+        return new AdministrationService((UserDetailsServiceImpl) userDetailsService);
     }
 
 }
