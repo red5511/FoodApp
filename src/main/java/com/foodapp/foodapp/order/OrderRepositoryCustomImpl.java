@@ -10,9 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
+    private static final Map<String, String> FIELDS_TO_CONVERTED_SQL =
+            Map.of("name", " AND CAST(o.id AS string) LIKE :filter",
+                    "price", " AND CAST(o.price AS string) LIKE :filter");
 
     @Autowired
     private EntityManager entityManager;
@@ -29,12 +33,11 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         if (params.getFilters() != null && !params.getFilters().isEmpty()) {
             for (int i = 0; i < params.getFilters().size(); i++) {
                 var filter = params.getFilters().get(i);
-                if ("name".equals(filter.getFieldName())){
+                if (FIELDS_TO_CONVERTED_SQL.containsKey(filter.getFieldName())) {
                     filter.setValue(CommonUtils.extractNumbers(filter.getValue()));
-                    query.append(" AND CAST(o.id AS string) LIKE :filter").append(i + 1);
-                    countQuery.append(" AND CAST(o.id AS string) LIKE :filter").append(i + 1);
-                }
-                else{
+                    query.append(FIELDS_TO_CONVERTED_SQL.get(filter.getFieldName())).append(i + 1);
+                    countQuery.append(FIELDS_TO_CONVERTED_SQL.get(filter.getFieldName())).append(i + 1);
+                } else {
                     query.append(" AND o.").append(filter.getFieldName()).append(" ILIKE :filter").append(i + 1);
                     countQuery.append(" AND o.:fieldName ILIKE :filter").append(i + 1);
                 }

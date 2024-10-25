@@ -56,6 +56,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public List<UserDto> getDtoUsersNotBelongToCompany(final Long companyId) {
-        return UserMapper.toUsersDto(userRepository.findUsersNotBelongingToCompany());
+        return UserMapper.toUsersDto(userRepository.findUsersNotBelongingToCompany(companyId));
     }
 }
