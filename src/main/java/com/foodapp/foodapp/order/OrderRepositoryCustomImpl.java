@@ -33,13 +33,22 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         if (params.getFilters() != null && !params.getFilters().isEmpty()) {
             for (int i = 0; i < params.getFilters().size(); i++) {
                 var filter = params.getFilters().get(i);
-                if (FIELDS_TO_CONVERTED_SQL.containsKey(filter.getFieldName())) {
-                    filter.setValue(CommonUtils.extractNumbers(filter.getValue()));
-                    query.append(FIELDS_TO_CONVERTED_SQL.get(filter.getFieldName())).append(i + 1);
-                    countQuery.append(FIELDS_TO_CONVERTED_SQL.get(filter.getFieldName())).append(i + 1);
-                } else {
-                    query.append(" AND o.").append(filter.getFieldName()).append(" ILIKE :filter").append(i + 1);
-                    countQuery.append(" AND o.:fieldName ILIKE :filter").append(i + 1);
+                String fieldName = filter.getFieldName();
+
+                if (filter.getValues().size() == 1){
+                    if (FIELDS_TO_CONVERTED_SQL.containsKey(fieldName)) {
+                        filter.getValues().set(0, CommonUtils.extractNumbers(filter.getValues().get(0)));
+                        query.append(FIELDS_TO_CONVERTED_SQL.get(fieldName)).append(i + 1);
+                        countQuery.append(FIELDS_TO_CONVERTED_SQL.get(fieldName)).append(i + 1);
+                    } else {
+                        // Append the actual field name directly
+                        query.append(" AND o.").append(fieldName).append(" ILIKE :filter").append(i + 1);
+                        countQuery.append(" AND o.").append(fieldName).append(" ILIKE :filter").append(i + 1);
+                    }
+                }
+                else{
+                    query.append(" AND o.").append(fieldName).append(" IN (:filter").append(i + 1).append(")");
+                    countQuery.append(" AND o.").append(fieldName).append(" IN (:filter").append(i + 1).append(")");
                 }
             }
         }
@@ -50,7 +59,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             for (Sort sort : params.getSorts()) {
                 query.append("o.").append(sort.getField()).append(" ").append(sort.getDirection()).append(", ");
             }
-            query.setLength(query.length() - 2);
+            query.setLength(query.length() - 2); // Remove the last comma and space
         }
 
         // Create the query for fetching orders
@@ -67,9 +76,17 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         if (params.getFilters() != null && !params.getFilters().isEmpty()) {
             for (int i = 0; i < params.getFilters().size(); i++) {
                 var filter = params.getFilters().get(i);
-                String filterParam = "%" + filter.getValue() + "%";
-                orderQuery.setParameter("filter" + (i + 1), filterParam);
-                countQueryObject.setParameter("filter" + (i + 1), filterParam);
+                if (filter.getValues().size() == 1){
+                    String filterParam = "%" + filter.getValues().get(0) + "%";
+                    orderQuery.setParameter("filter" + (i + 1), filterParam);
+                    countQueryObject.setParameter("filter" + (i + 1), filterParam);
+                }
+                else{
+                    String result = String.join(",", filter.getValues());
+                    String filterParam = "%" + result + "%";
+                    orderQuery.setParameter("filter" + (i + 1), filterParam);
+                    countQueryObject.setParameter("filter" + (i + 1), filterParam);
+                }
             }
         }
 
