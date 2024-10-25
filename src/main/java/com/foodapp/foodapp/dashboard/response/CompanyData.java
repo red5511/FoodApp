@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.dashboard.response;
 
-import com.foodapp.foodapp.company.OpenHours;
+import com.foodapp.foodapp.administration.company.OpenHours;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

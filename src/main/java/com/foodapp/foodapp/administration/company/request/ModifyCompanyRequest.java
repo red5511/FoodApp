@@ -1,6 +1,6 @@
-package com.foodapp.foodapp.company.request;
+package com.foodapp.foodapp.administration.company.request;
 
-import com.foodapp.foodapp.company.CompanyDto;
+import com.foodapp.foodapp.administration.company.CompanyDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

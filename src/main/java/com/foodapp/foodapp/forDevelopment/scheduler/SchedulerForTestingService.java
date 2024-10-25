@@ -1,8 +1,8 @@
 package com.foodapp.foodapp.forDevelopment.scheduler;
 
 
-import com.foodapp.foodapp.company.Company;
-import com.foodapp.foodapp.company.CompanyRepository;
+import com.foodapp.foodapp.administration.company.Company;
+import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.forDevelopment.TechnicalContextDev;
 import com.foodapp.foodapp.order.*;
 import com.foodapp.foodapp.product.ProductRepository;

@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.forDevelopment;
 
-import com.foodapp.foodapp.company.CompanyRepository;
+import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.order.OrderService;

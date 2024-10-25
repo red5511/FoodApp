@@ -1,13 +1,16 @@
 package com.foodapp.foodapp.user;
 
-import com.foodapp.foodapp.advice.BusinessException;
-import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationService;
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
-import org.springframework.http.HttpStatus;
+import java.util.List;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import com.foodapp.foodapp.advice.BusinessException;
+import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationService;
+
+import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -17,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Bad credentials"));
+                             .orElseThrow(() -> new UsernameNotFoundException("Bad credentials"));
     }
 
     @SneakyThrows
@@ -28,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @SneakyThrows
     public String registerUser(final User user) {
         boolean userExists = userRepository.findByEmail(user.getUsername()).isPresent();
-        if (userExists) {
+        if(userExists) {
             throw new BusinessException("User already exists");
         }
         userRepository.save(user);
@@ -38,5 +41,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public void updatePassword(final User user, final String newPassword) {
         user.setPassword(newPassword);
         userRepository.save(user);
+    }
+
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
+
+    public List<UserDto> getDtoUsers() {
+        return UserMapper.toUsersDto(getUsers());
+    }
+
+    public List<UserDto> getDtoUsers(final Long companyId) {
+        return UserMapper.toUsersDto(userRepository.findByCompanyId(companyId));
+    }
+
+    public List<UserDto> getDtoUsersNotBelongToCompany(final Long companyId) {
+        return UserMapper.toUsersDto(userRepository.findUsersNotBelongingToCompany());
     }
 }
