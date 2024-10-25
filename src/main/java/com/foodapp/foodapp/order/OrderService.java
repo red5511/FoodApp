@@ -1,5 +1,7 @@
 package com.foodapp.foodapp.order;
 
+import com.foodapp.foodapp.common.OrdersPagedResult;
+import com.foodapp.foodapp.common.SearchParams;
 import com.foodapp.foodapp.company.CompanyRepository;
 import com.foodapp.foodapp.order.request.ApproveNewIncomingOrderRequest;
 import com.foodapp.foodapp.order.request.CreateOrderRequest;
@@ -64,5 +66,9 @@ public class OrderService {
         return orderRepository.findByCompanyIdAndStatus(companyId, orderStatus).stream()
                 .map(OrderMapper::mapToOrderDto)
                 .collect(Collectors.toList());
+    }
+
+    public OrdersPagedResult getOrders(final SearchParams searchParams) {
+        return orderRepository.searchOrders(searchParams);
     }
 }

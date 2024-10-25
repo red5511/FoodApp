@@ -41,6 +41,9 @@ public class SchedulerForTestingService {
         var product =
                 productRepository.findById(1L).orElseThrow(
                         () -> new IllegalStateException("Send new order - wrong product id"));
+        var product2 =
+                productRepository.findById(2L).orElseThrow(
+                        () -> new IllegalStateException("Send new order - wrong product id"));
         return Order.builder()
                 .deliveryTime(LocalDateTime.now())
                 .deliveryAddress("Sikorskiego 43")
@@ -54,7 +57,7 @@ public class SchedulerForTestingService {
                 .company(Company.builder()
                         .build())
                 .company(company)
-                .products(new HashSet<>(Arrays.asList(product)))
+                .products(new HashSet<>(Arrays.asList(product, product2, product2)))
                 .approvalDeadline(LocalDateTime.now().plusSeconds(25))
                 //.approvalDeadline(LocalDateTime.now().plusMinutes(timeToAcceptOrder))
                 .build();

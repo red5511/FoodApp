@@ -1,5 +1,6 @@
 package com.foodapp.foodapp.order;
 
+import com.foodapp.foodapp.common.CommonUtils;
 import com.foodapp.foodapp.common.OrdersPagedResult;
 import com.foodapp.foodapp.common.SearchParams;
 import com.foodapp.foodapp.common.Sort;
@@ -29,10 +30,14 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             for (int i = 0; i < params.getFilters().size(); i++) {
                 var filter = params.getFilters().get(i);
                 if ("name".equals(filter.getFieldName())){
-                    filter.setFieldName("id");
+                    filter.setValue(CommonUtils.extractNumbers(filter.getValue()));
+                    query.append(" AND CAST(o.id AS string) LIKE :filter").append(i + 1);
+                    countQuery.append(" AND CAST(o.id AS string) LIKE :filter").append(i + 1);
                 }
-                query.append(" AND o.").append(filter.getFieldName()).append(" ILIKE :filter").append(i + 1);
-                countQuery.append(" AND o.:fieldName ILIKE :filter").append(i + 1);
+                else{
+                    query.append(" AND o.").append(filter.getFieldName()).append(" ILIKE :filter").append(i + 1);
+                    countQuery.append(" AND o.:fieldName ILIKE :filter").append(i + 1);
+                }
             }
         }
 

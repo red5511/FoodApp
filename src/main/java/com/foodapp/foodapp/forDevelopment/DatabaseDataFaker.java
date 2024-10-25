@@ -46,6 +46,7 @@ public class DatabaseDataFaker {
         var company = createFakeCompany();
         var user = createFakeUser();
         var product = createFakeProduct();
+        var product2 = createFakeProduct2();
         var order = createFakeOrder();
 
         company = companyRepository.save(company);
@@ -55,11 +56,13 @@ public class DatabaseDataFaker {
         companyRepository.save(company);
 
         product.setCompany(company);
+        product2.setCompany(company);
         product = productRepository.save(product);
+        product2 = productRepository.save(product2);
         productRepository.save(product);
 
         order.setCompany(company);
-        order.setProducts(new HashSet<>(Arrays.asList(product)));
+        order.setProducts(new HashSet<>(Arrays.asList(product, product2)));
         order = orderRepository.save(order);
         orderRepository.save(order);
     }
@@ -82,6 +85,15 @@ public class DatabaseDataFaker {
                 .description("Pyszny kebab")
                 .name("Duży kebab")
                 .price(new BigDecimal("20.20"))
+                .build();
+    }
+
+    private Product createFakeProduct2() {
+        return Product.builder()
+                .imgUrl("https://previews.123rf.com/images/imaginiac/imaginiac2308/imaginiac230800139/210301341-realistyczne-zdj%C4%99cie-kebaba-doner-z-bliska-fotografia-kulinarna.jpg")
+                .description("Pyszny kebab")
+                .name("Mały kebab")
+                .price(new BigDecimal("15.20"))
                 .build();
     }
 

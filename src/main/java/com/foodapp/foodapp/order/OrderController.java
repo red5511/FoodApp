@@ -1,8 +1,11 @@
 package com.foodapp.foodapp.order;
 
+import com.foodapp.foodapp.common.SearchParams;
 import com.foodapp.foodapp.order.request.ApproveNewIncomingOrderRequest;
 import com.foodapp.foodapp.order.request.CreateOrderRequest;
+import com.foodapp.foodapp.order.request.GetOrdersForCompanyRequest;
 import com.foodapp.foodapp.order.request.RejectNewIncomingOrderRequest;
+import com.foodapp.foodapp.order.response.PagedOrdersResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -36,5 +39,21 @@ public class OrderController {
     public ResponseEntity<Void> rejectNewIncomingOrder(final @RequestBody RejectNewIncomingOrderRequest request) {
         orderService.rejectNewIncomingOrder(request);
         return ResponseEntity.ok().build(); // Return 200 OK with no body
+    }
+
+    @PostMapping("/orders")
+    public ResponseEntity<PagedOrdersResponse> getOrdersForCompany(final @RequestBody GetOrdersForCompanyRequest request) {
+        var searchParams = SearchParams.builder()
+                .page(request.getPage())
+                .size(request.getSize())
+                .companyId(request.getCompanyId())
+                .filters(request.getFilters())
+                .sorts(request.getSorts())
+                .build();
+        var pagedResult = orderService.getOrders(searchParams);
+        var result = PagedOrdersResponse.builder()
+                .pagedResult(pagedResult)
+                .build();
+        return ResponseEntity.ok(result);
     }
 }
