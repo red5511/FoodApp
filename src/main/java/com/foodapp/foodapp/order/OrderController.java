@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.order;
 
-import com.foodapp.foodapp.common.SearchParams;
+import com.foodapp.foodapp.common.CommonMapper;
 import com.foodapp.foodapp.order.request.ApproveNewIncomingOrderRequest;
 import com.foodapp.foodapp.order.request.CreateOrderRequest;
 import com.foodapp.foodapp.order.request.GetOrdersForCompanyRequest;
@@ -43,13 +43,8 @@ public class OrderController {
 
     @PostMapping("/orders")
     public ResponseEntity<PagedOrdersResponse> getOrdersForCompany(final @RequestBody GetOrdersForCompanyRequest request) {
-        var searchParams = SearchParams.builder()
-                .page(request.getPage())
-                .size(request.getSize())
-                .companyId(request.getCompanyId())
-                .filters(request.getFilters())
-                .sorts(request.getSorts())
-                .build();
+        var searchParams =
+                CommonMapper.mapToSearchParams(request.getFilters(), request.getSize(), request.getPage(), request.getCompanyId());
         var pagedResult = orderService.getOrders(searchParams);
         var result = PagedOrdersResponse.builder()
                 .pagedResult(pagedResult)

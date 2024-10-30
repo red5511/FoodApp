@@ -8,6 +8,9 @@ import com.foodapp.foodapp.order.request.CreateOrderRequest;
 import com.foodapp.foodapp.order.request.RejectNewIncomingOrderRequest;
 import com.foodapp.foodapp.security.ContextProvider;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
+@Slf4j
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
@@ -69,6 +73,9 @@ public class OrderService {
     }
 
     public OrdersPagedResult getOrders(final SearchParams searchParams) {
-        return orderRepository.searchOrders(searchParams);
+        Pageable pageable = PageRequest.of(searchParams.getPage(), searchParams.getSize());
+        log.info("Searching orders with companyId: {}, statuses: {}, price: {}, date: {}", searchParams.getCompanyId(), searchParams.getStatuses(), null, searchParams.getDateParam().getDate().toString());
+        var result =  orderRepository.searchOrders2(searchParams.getCompanyId(), searchParams.getDateParam().getDate());
+        return null;
     }
 }

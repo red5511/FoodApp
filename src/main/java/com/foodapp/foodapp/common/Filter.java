@@ -14,4 +14,5 @@ import java.util.List;
 public class Filter {
     private String fieldName;
     private List<String> values;
+    private String mode;
 }
