@@ -31,8 +31,8 @@ public interface OrderRepository extends JpaRepository<Order, Long>, OrderReposi
     @Query("""
             SELECT o FROM Order o
             WHERE o.company.id = :companyId
-            AND (COALESCE(:date, NULL) IS NULL OR DATE(o.deliveryTime) = COALESCE(:date, DATE(o.deliveryTime)))
-                            """)
+            AND (coalesce(:date, null) is null OR FUNCTION('DATE', o.deliveryTime) = :date)
+                                                                                                                                 """)
     List<Order> searchOrders2(
             @Param("companyId") Long companyId,
             @Param("date") LocalDate date);

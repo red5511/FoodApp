@@ -4,10 +4,7 @@ import com.foodapp.foodapp.administration.company.Company;
 import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.administration.company.Content;
 import com.foodapp.foodapp.administration.company.OpenHours;
-import com.foodapp.foodapp.order.Order;
-import com.foodapp.foodapp.order.OrderRepository;
-import com.foodapp.foodapp.order.OrderStatus;
-import com.foodapp.foodapp.order.OrderType;
+import com.foodapp.foodapp.order.*;
 import com.foodapp.foodapp.product.Product;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.user.Role;
@@ -21,6 +18,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 
 @AllArgsConstructor
@@ -60,7 +58,13 @@ public class DatabaseDataFaker {
         productRepository.save(product);
 
         order.setCompany(company);
-        order.setProducts(new HashSet<>(Arrays.asList(product, product2)));
+
+        HashMap<Long, Integer> quantityProductIdMap = new HashMap<>();
+        quantityProductIdMap.put(product.getId(), 2);
+        quantityProductIdMap.put(product2.getId(), 1);
+        order.setContent(OrderContent.builder()
+                .quantityProductIdMap(quantityProductIdMap)
+                .build());
         order = orderRepository.save(order);
         orderRepository.save(order);
     }

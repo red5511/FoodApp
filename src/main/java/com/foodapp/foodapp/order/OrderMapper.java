@@ -2,22 +2,28 @@ package com.foodapp.foodapp.order;
 
 import com.foodapp.foodapp.product.Product;
 import com.foodapp.foodapp.product.ProductDto;
+import com.foodapp.foodapp.product.ProductRepository;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 public class OrderMapper {
-    public static List<OrderDto> mapToOrderDtoList(final List<Order> orders) {
+    private final ProductRepository productRepository;
+
+    public List<OrderDto> mapToOrderDtoList(final List<Order> orders) {
         return orders.stream()
-                .map(OrderMapper::mapToOrderDto)
+                .map(this::mapToOrderDto)
                 .collect(Collectors.toList());
     }
 
-    public static OrderDto mapToOrderDto(final Order order) {
+    public OrderDto mapToOrderDto(final Order order) {
+        var quantityProductMap = order.getContent().getQuantityProductIdMap();
+        var products = productRepository.findAllById(quantityProductMap.keySet());
         return OrderDto.builder()
                 .id(order.getId())
-                .name("Zamówienie#" + order.getId())
                 .companyId(order.getCompany().getId())
                 .description(order.getDescription())
                 .price(order.getPrice())
@@ -26,19 +32,20 @@ public class OrderMapper {
                 .customerName(order.getCustomerName())
                 .deliveryAddress(order.getDeliveryAddress())
                 .deliveryTime(order.getDeliveryTime())
-                .products(mapToProductsDto(order.getProducts()))
+                .quantityProductsMap(quantityProductMap)
+                .products(mapToProductsDto(products))
                 //.approvalDeadline(order.getId() % 2 == 0 ? order.getApprovalDeadline() : order.getApprovalDeadline().minusSeconds(20))
                 .approvalDeadline(order.getApprovalDeadline())
                 .build();
     }
 
-    public static Set<ProductDto> mapToProductsDto(final Set<Product> products) {
+    public Set<ProductDto> mapToProductsDto(final List<Product> products) {
         return products.stream()
-                .map(OrderMapper::mapToProductDto)
+                .map(this::mapToProductDto)
                 .collect(Collectors.toSet());
     }
 
-    public static ProductDto mapToProductDto(final Product product) {
+    public ProductDto mapToProductDto(final Product product) {
         return ProductDto.builder()
                 .id(product.getId())
                 .name(product.getName())

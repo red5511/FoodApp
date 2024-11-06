@@ -12,11 +12,12 @@ import java.util.List;
 public class SearchParams {
     private List<OrderStatus> statuses;
     private String name;
-    private String price;
+    private BigDecimal price;
     private String description;
     private DateParam dateParam;
     private List<Sort> sorts;
     private int page;
     private int size;
     private Long companyId;
+    private String global;
 }

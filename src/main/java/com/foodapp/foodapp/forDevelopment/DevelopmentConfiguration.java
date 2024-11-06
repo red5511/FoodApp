@@ -2,6 +2,7 @@ package com.foodapp.foodapp.forDevelopment;
 
 import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
+import com.foodapp.foodapp.order.OrderMapper;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.order.OrderService;
 import com.foodapp.foodapp.product.ProductRepository;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class DevelopmentConfiguration {
     @Value("${app.time-to-accept-order}")
     private Long timeToAcceptOrder;
+
     @Bean
     public DatabaseDataFaker databaseDataFaker(final CompanyRepository companyRepository,
                                                final UserRepository userRepository,
@@ -37,8 +39,14 @@ public class DevelopmentConfiguration {
     public SchedulerForTestingService schedulerForTestingService(final OrderService orderService,
                                                                  final OrderRepository orderRepository,
                                                                  final CompanyRepository companyRepository,
-                                                                 final ProductRepository productRepository) {
-        return new SchedulerForTestingService(orderService, orderRepository, companyRepository, productRepository, timeToAcceptOrder);
+                                                                 final ProductRepository productRepository,
+                                                                 final OrderMapper orderMapper) {
+        return new SchedulerForTestingService(orderService,
+                orderRepository,
+                companyRepository,
+                productRepository,
+                timeToAcceptOrder,
+                orderMapper);
     }
 
     @Bean

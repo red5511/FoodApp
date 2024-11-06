@@ -44,11 +44,11 @@ public class OrderController {
     @PostMapping("/orders")
     public ResponseEntity<PagedOrdersResponse> getOrdersForCompany(final @RequestBody GetOrdersForCompanyRequest request) {
         var searchParams =
-                CommonMapper.mapToSearchParams(request.getFilters(), request.getSize(), request.getPage(), request.getCompanyId());
+                CommonMapper.mapToSearchParams(request.getFilters(), request.getSize(), request.getPage(), request.getCompanyId(), request.getSorts());
         var pagedResult = orderService.getOrders(searchParams);
-        var result = PagedOrdersResponse.builder()
+        var response = PagedOrdersResponse.builder()
                 .pagedResult(pagedResult)
                 .build();
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(response);
     }
 }

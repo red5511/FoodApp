@@ -9,8 +9,6 @@ import com.foodapp.foodapp.order.request.RejectNewIncomingOrderRequest;
 import com.foodapp.foodapp.security.ContextProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +23,7 @@ public class OrderService {
     private final SimpMessagingTemplate messagingTemplate;
     private final ContextProvider contextProvider;
     private final OrderValidator orderValidator;
+    private final OrderMapper orderMapper;
 
     public void sendNewOrdersNotification(final String topicName, final OrderDto orderDto) {
         messagingTemplate.convertAndSendToUser(topicName, "/order", orderDto);
@@ -68,14 +67,11 @@ public class OrderService {
 
     public List<OrderDto> getOrders(final Long companyId, final OrderStatus orderStatus) {
         return orderRepository.findByCompanyIdAndStatus(companyId, orderStatus).stream()
-                .map(OrderMapper::mapToOrderDto)
+                .map(orderMapper::mapToOrderDto)
                 .collect(Collectors.toList());
     }
 
     public OrdersPagedResult getOrders(final SearchParams searchParams) {
-        Pageable pageable = PageRequest.of(searchParams.getPage(), searchParams.getSize());
-        log.info("Searching orders with companyId: {}, statuses: {}, price: {}, date: {}", searchParams.getCompanyId(), searchParams.getStatuses(), null, searchParams.getDateParam().getDate().toString());
-        var result =  orderRepository.searchOrders2(searchParams.getCompanyId(), searchParams.getDateParam().getDate());
-        return null;
+        return orderRepository.searchOrders(searchParams);
     }
 }

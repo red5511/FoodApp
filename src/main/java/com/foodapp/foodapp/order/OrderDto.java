@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Set;
 
 @Builder
@@ -13,7 +14,6 @@ import java.util.Set;
 public class OrderDto {
     private Long id;
     private Long companyId;
-    private String name;
     private BigDecimal price;
     private String description;
     private OrderType orderType;
@@ -21,6 +21,7 @@ public class OrderDto {
     private String deliveryAddress;
     private String customerName;
     private LocalDateTime deliveryTime;
+    private Map<Long, Integer> quantityProductsMap;
     private Set<ProductDto> products;
     private LocalDateTime approvalDeadline;
 }

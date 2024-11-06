@@ -11,6 +11,7 @@ import com.foodapp.foodapp.auth.jwtToken.JwtTokenRepository;
 import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenRepository;
 import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
 import com.foodapp.foodapp.dashboard.DashboardService;
+import com.foodapp.foodapp.order.OrderMapper;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.order.OrderService;
 import com.foodapp.foodapp.order.OrderValidator;
@@ -185,12 +186,14 @@ public class MainConfiguration {
                                      final CompanyRepository companyRepository,
                                      final SimpMessagingTemplate messagingTemplate,
                                      final OrderValidator orderValidator,
-                                     final ContextProvider contextProvider) {
+                                     final ContextProvider contextProvider,
+                                     final OrderMapper orderMapper) {
         return new OrderService(orderRepository,
                 companyRepository,
                 messagingTemplate,
                 contextProvider,
-                orderValidator
+                orderValidator,
+                orderMapper
         );
     }
 
@@ -208,7 +211,12 @@ public class MainConfiguration {
     }
 
     @Bean
-    public UserAdministrationService userAdministrationService(final UserDetailsServiceImpl userDetailsService){
+    public UserAdministrationService userAdministrationService(final UserDetailsServiceImpl userDetailsService) {
         return new UserAdministrationService(userDetailsService);
+    }
+
+    @Bean
+    public OrderMapper orderMapper(final ProductRepository productRepository) {
+        return new OrderMapper(productRepository);
     }
 }

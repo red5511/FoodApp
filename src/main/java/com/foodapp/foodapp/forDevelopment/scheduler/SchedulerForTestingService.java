@@ -13,8 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.HashMap;
 
 @AllArgsConstructor
 @Slf4j
@@ -24,6 +23,8 @@ public class SchedulerForTestingService {
     private final CompanyRepository companyRepository;
     private final ProductRepository productRepository;
     private final Long timeToAcceptOrder;
+    private final OrderMapper orderMapper;
+
 
     @Scheduled(fixedRate = 10000)
     @TechnicalContextDev
@@ -32,18 +33,15 @@ public class SchedulerForTestingService {
         var order = createOrderForTest();
         order = orderRepository.save(order);
         log.info("Sending order to ts");
-        orderService.sendNewOrdersNotification("1", OrderMapper.mapToOrderDto(order));
+        orderService.sendNewOrdersNotification("1", orderMapper.mapToOrderDto(order));
     }
 
     public Order createOrderForTest() {
         var company = companyRepository.findById(1L).orElseThrow(
                 () -> new IllegalStateException("Send new order - wrong company id"));
-        var product =
-                productRepository.findById(1L).orElseThrow(
-                        () -> new IllegalStateException("Send new order - wrong product id"));
-        var product2 =
-                productRepository.findById(2L).orElseThrow(
-                        () -> new IllegalStateException("Send new order - wrong product id"));
+        HashMap<Long, Integer> quantityProductIdMap = new HashMap<>();
+        quantityProductIdMap.put(1L, 2);
+        quantityProductIdMap.put(2L, 1);
         return Order.builder()
                 .deliveryTime(LocalDateTime.now())
                 .deliveryAddress("Sikorskiego 43")
@@ -57,7 +55,9 @@ public class SchedulerForTestingService {
                 .company(Company.builder()
                         .build())
                 .company(company)
-                .products(new HashSet<>(Arrays.asList(product, product2, product2)))
+                .content(OrderContent.builder()
+                        .quantityProductIdMap(quantityProductIdMap)
+                        .build())
                 .approvalDeadline(LocalDateTime.now().plusSeconds(25))
                 //.approvalDeadline(LocalDateTime.now().plusMinutes(timeToAcceptOrder))
                 .build();
