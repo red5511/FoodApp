@@ -20,6 +20,7 @@ import com.foodapp.foodapp.product.ProductService;
 import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
 import com.foodapp.foodapp.security.JwtService;
+import com.foodapp.foodapp.statistic.StatisticsService;
 import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
 import com.foodapp.foodapp.user.email.EmailSender;
@@ -218,5 +219,10 @@ public class MainConfiguration {
     @Bean
     public OrderMapper orderMapper(final ProductRepository productRepository) {
         return new OrderMapper(productRepository);
+    }
+
+    @Bean
+    public StatisticsService statisticsService(final ProductRepository productRepository) {
+        return new StatisticsService(productRepository);
     }
 }

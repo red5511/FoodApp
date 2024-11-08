@@ -2,6 +2,7 @@ package com.foodapp.foodapp.order;
 
 import com.foodapp.foodapp.product.Product;
 import com.foodapp.foodapp.product.ProductDto;
+import com.foodapp.foodapp.product.ProductMapper;
 import com.foodapp.foodapp.product.ProductRepository;
 import lombok.AllArgsConstructor;
 
@@ -41,19 +42,7 @@ public class OrderMapper {
 
     public Set<ProductDto> mapToProductsDto(final List<Product> products) {
         return products.stream()
-                .map(this::mapToProductDto)
+                .map(ProductMapper::mapToProductDto)
                 .collect(Collectors.toSet());
-    }
-
-    public ProductDto mapToProductDto(final Product product) {
-        return ProductDto.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .description(product.getDescription())
-                .imgUrl(product.getImgUrl())
-                .soldOut(product.isSoldOut())
-                .price(product.getPrice())
-                .companyId(product.getCompany().getId())
-                .build();
     }
 }
