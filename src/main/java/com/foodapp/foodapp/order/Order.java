@@ -1,11 +1,8 @@
 package com.foodapp.foodapp.order;
 
-import com.foodapp.foodapp.administration.company.Content;
-import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.administration.company.Company;
-import com.foodapp.foodapp.product.Product;
+import com.foodapp.foodapp.common.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,9 +13,6 @@ import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @SuperBuilder

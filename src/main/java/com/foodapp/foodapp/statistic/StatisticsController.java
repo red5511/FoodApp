@@ -1,9 +1,9 @@
 package com.foodapp.foodapp.statistic;
 
+import com.foodapp.foodapp.statistic.request.GetStatisticsChartRequest;
 import com.foodapp.foodapp.statistic.request.GetStatisticsConfigRequest;
-import com.foodapp.foodapp.statistic.request.GetStatisticsOrderCountRequest;
+import com.foodapp.foodapp.statistic.response.GetStatisticsChartResponse;
 import com.foodapp.foodapp.statistic.response.GetStatisticsConfigResponse;
-import com.foodapp.foodapp.statistic.response.GetStatisticsOrderCountResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -27,9 +27,9 @@ public class StatisticsController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/order-count")
-    public ResponseEntity<GetStatisticsOrderCountResponse> getStatisticsOrderCount(@RequestBody final GetStatisticsOrderCountRequest request) {
-        var result = statisticsService.getStatisticsOrderCount();
-        return ResponseEntity.ok(new GetStatisticsOrderCountResponse());
+    @PostMapping("/chart")
+    public ResponseEntity<GetStatisticsChartResponse> getStatisticsChart(@RequestBody final GetStatisticsChartRequest request) {
+        var result = statisticsService.getStatisticsChart(request);
+        return ResponseEntity.ok(result);
     }
 }
