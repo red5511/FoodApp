@@ -1,19 +1,28 @@
 package com.foodapp.foodapp.forDevelopment.scheduler;
 
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.scheduling.annotation.Scheduled;
+
 import com.foodapp.foodapp.administration.company.Company;
 import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.forDevelopment.TechnicalContextDev;
-import com.foodapp.foodapp.order.*;
+import com.foodapp.foodapp.order.Order;
+import com.foodapp.foodapp.order.OrderMapper;
+import com.foodapp.foodapp.order.OrderRepository;
+import com.foodapp.foodapp.order.OrderService;
+import com.foodapp.foodapp.order.OrderStatus;
+import com.foodapp.foodapp.order.OrderType;
+import com.foodapp.foodapp.orderProduct.OrderProduct;
 import com.foodapp.foodapp.product.ProductRepository;
+
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 
 @AllArgsConstructor
 @Slf4j
@@ -30,37 +39,52 @@ public class SchedulerForTestingService {
     @TechnicalContextDev
     @Transactional
     public void sendTestOrderToWebsocket() {
-        var order = createOrderForTest();
+        var orderProducts = createOrderProductForTest();
+        var order = createOrderForTest(orderProducts);
+        final Order finalOrder = order;
+        orderProducts.forEach(el -> el.setOrder(finalOrder));
         order = orderRepository.save(order);
         log.info("Sending order to ts");
         orderService.sendNewOrdersNotification("1", orderMapper.mapToOrderDto(order));
     }
 
-    public Order createOrderForTest() {
+    private List<OrderProduct> createOrderProductForTest() {
+        var products = productRepository.findAllById(List.of(1L, 2L));
+        if(products.size() == 0) {
+            throw new IllegalStateException("Send new order - wrong product ids");
+        }
+        List<OrderProduct> orderProducts = new ArrayList<>();
+        var multiplies = List.of(2, 3);
+        for(int i = 0; i < products.size(); i++) {
+            orderProducts.add(OrderProduct.builder()
+                                          .quantity(multiplies.get(i))
+                                          .price(products.get(i).getPrice().multiply(BigDecimal.valueOf(multiplies.get(i))))
+                                          .product(products.get(i))
+                                          .build());
+        }
+        return orderProducts;
+    }
+
+    public Order createOrderForTest(final List<OrderProduct> orderProducts) {
         var company = companyRepository.findById(1L).orElseThrow(
-                () -> new IllegalStateException("Send new order - wrong company id"));
-        HashMap<Long, Integer> quantityProductIdMap = new HashMap<>();
-        quantityProductIdMap.put(1L, 2);
-        quantityProductIdMap.put(2L, 1);
+            () -> new IllegalStateException("Send new order - wrong company id"));
         return Order.builder()
-                .deliveryTime(LocalDateTime.now())
-                .deliveryAddress("Sikorskiego 43")
-                .orderType(OrderType.GLOVO)
-                .customerName("Maciek Franczak")
-                .description(
+                    .deliveryTime(LocalDateTime.now())
+                    .deliveryAddress("Sikorskiego 43")
+                    .orderType(OrderType.GLOVO)
+                    .customerName("Maciek Franczak")
+                    .description(
                         "Poprosze osobno frytki i cole bez lodu. W razie problemow ze znalezeniem numry zostawic na portierni"
-                )
-                .status(OrderStatus.WAITING_FOR_ACCEPTANCE)
-                .price(BigDecimal.TEN)
-                .company(Company.builder()
-                        .build())
-                .company(company)
-                .content(OrderContent.builder()
-                        .quantityProductIdMap(quantityProductIdMap)
-                        .build())
-                .approvalDeadline(LocalDateTime.now().plusSeconds(25))
-                //.approvalDeadline(LocalDateTime.now().plusMinutes(timeToAcceptOrder))
-                .build();
+                    )
+                    .status(OrderStatus.WAITING_FOR_ACCEPTANCE)
+                    .price(BigDecimal.TEN)
+                    .company(Company.builder()
+                                    .build())
+                    .company(company)
+                    .approvalDeadline(LocalDateTime.now().plusSeconds(25))
+                    .orderProducts(orderProducts)
+                    //.approvalDeadline(LocalDateTime.now().plusMinutes(timeToAcceptOrder))
+                    .build();
     }
 
 }

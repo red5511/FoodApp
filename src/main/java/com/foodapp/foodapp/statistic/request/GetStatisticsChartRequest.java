@@ -22,5 +22,5 @@ public class GetStatisticsChartRequest {
     @JsonFormat(pattern = "d.MM.yyyy")
     LocalDate dateTo;
     DatePeriod datePeriod;
-    String productId;
+    Long productId;
 }

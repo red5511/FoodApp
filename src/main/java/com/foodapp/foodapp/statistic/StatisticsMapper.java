@@ -52,6 +52,10 @@ public class StatisticsMapper {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.dd");
             return date.format(formatter);
         }
+        else if(MONTH.equals(datePeriod)){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM");
+            return date.format(formatter);
+        }
         return date.toString();
     }
 }

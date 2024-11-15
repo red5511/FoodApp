@@ -1,14 +1,13 @@
 package com.foodapp.foodapp.order;
 
-import com.foodapp.foodapp.product.Product;
-import com.foodapp.foodapp.product.ProductDto;
-import com.foodapp.foodapp.product.ProductMapper;
-import com.foodapp.foodapp.product.ProductRepository;
-import lombok.AllArgsConstructor;
-
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.foodapp.foodapp.order.dto.OrderDto;
+import com.foodapp.foodapp.orderProduct.OrderProductMapper;
+import com.foodapp.foodapp.product.ProductRepository;
+
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class OrderMapper {
@@ -16,33 +15,30 @@ public class OrderMapper {
 
     public List<OrderDto> mapToOrderDtoList(final List<Order> orders) {
         return orders.stream()
-                .map(this::mapToOrderDto)
-                .collect(Collectors.toList());
+                     .map(this::mapToOrderDto)
+                     .collect(Collectors.toList());
     }
 
     public OrderDto mapToOrderDto(final Order order) {
-        var quantityProductMap = order.getContent().getQuantityProductIdMap();
-        var products = productRepository.findAllById(quantityProductMap.keySet());
-        return OrderDto.builder()
-                .id(order.getId())
-                .companyId(order.getCompany().getId())
-                .description(order.getDescription())
-                .price(order.getPrice())
-                .orderType(order.getOrderType())
-                .status(order.getStatus())
-                .customerName(order.getCustomerName())
-                .deliveryAddress(order.getDeliveryAddress())
-                .deliveryTime(order.getDeliveryTime())
-                .quantityProductsMap(quantityProductMap)
-                .products(mapToProductsDto(products))
-                //.approvalDeadline(order.getId() % 2 == 0 ? order.getApprovalDeadline() : order.getApprovalDeadline().minusSeconds(20))
-                .approvalDeadline(order.getApprovalDeadline())
-                .build();
+        var orderProducts = order.getOrderProducts();
+
+        var orderDto = OrderDto.builder()
+                               .id(order.getId())
+                               .companyId(order.getCompany().getId())
+                               .description(order.getDescription())
+                               .price(order.getPrice())
+                               .orderType(order.getOrderType())
+                               .status(order.getStatus())
+                               .customerName(order.getCustomerName())
+                               .deliveryAddress(order.getDeliveryAddress())
+                               .deliveryTime(order.getDeliveryTime())
+                               //.approvalDeadline(order.getId() % 2 == 0 ? order.getApprovalDeadline() : order.getApprovalDeadline().minusSeconds(20))
+                               .approvalDeadline(order.getApprovalDeadline())
+                               .build();
+        orderDto = orderDto.toBuilder()
+                           .orderProducts(OrderProductMapper.toOrderProductsDto(orderProducts, orderDto))
+                           .build();
+        return orderDto;
     }
 
-    public Set<ProductDto> mapToProductsDto(final List<Product> products) {
-        return products.stream()
-                .map(ProductMapper::mapToProductDto)
-                .collect(Collectors.toSet());
-    }
 }

@@ -1,10 +1,11 @@
 package com.foodapp.foodapp.common;
 
-import com.foodapp.foodapp.order.OrderDto;
+import java.util.List;
+
+import com.foodapp.foodapp.order.dto.OrderDto;
+
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 @Builder
 @Getter

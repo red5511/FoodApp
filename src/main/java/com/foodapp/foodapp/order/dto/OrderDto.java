@@ -1,16 +1,18 @@
-package com.foodapp.foodapp.order;
-
-import com.foodapp.foodapp.product.ProductDto;
-import lombok.Builder;
-import lombok.Getter;
+package com.foodapp.foodapp.order.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Set;
 
-@Builder
+import com.foodapp.foodapp.order.OrderStatus;
+import com.foodapp.foodapp.order.OrderType;
+import com.foodapp.foodapp.orderProduct.OrderProductDto;
+
+import lombok.Builder;
+import lombok.Getter;
+
 @Getter
+@Builder(toBuilder = true)
 public class OrderDto {
     private Long id;
     private Long companyId;
@@ -21,7 +23,6 @@ public class OrderDto {
     private String deliveryAddress;
     private String customerName;
     private LocalDateTime deliveryTime;
-    private Map<Long, Integer> quantityProductsMap;
-    private Set<ProductDto> products;
+    private Set<OrderProductDto> orderProducts;
     private LocalDateTime approvalDeadline;
 }

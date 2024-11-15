@@ -1,18 +1,34 @@
 package com.foodapp.foodapp.order;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import com.foodapp.foodapp.administration.company.Company;
 import com.foodapp.foodapp.common.BaseEntity;
-import jakarta.persistence.*;
+import com.foodapp.foodapp.orderProduct.OrderProduct;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @SuperBuilder
@@ -39,6 +55,8 @@ public class Order extends BaseEntity {
     private String customerName;
     private LocalDateTime deliveryTime;
     private LocalDateTime approvalDeadline;
-    @JdbcTypeCode(SqlTypes.JSON)
-    private OrderContent content;
+//    @JdbcTypeCode(SqlTypes.JSON)
+//    private OrderContent content;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderProduct> orderProducts;
 }

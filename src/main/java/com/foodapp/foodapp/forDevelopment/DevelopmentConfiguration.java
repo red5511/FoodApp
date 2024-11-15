@@ -1,18 +1,20 @@
 package com.foodapp.foodapp.forDevelopment;
 
-import com.foodapp.foodapp.administration.company.CompanyRepository;
-import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
-import com.foodapp.foodapp.order.OrderMapper;
-import com.foodapp.foodapp.order.OrderRepository;
-import com.foodapp.foodapp.order.OrderService;
-import com.foodapp.foodapp.product.ProductRepository;
-import com.foodapp.foodapp.user.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.foodapp.foodapp.administration.company.CompanyRepository;
+import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
+import com.foodapp.foodapp.order.OrderMapper;
+import com.foodapp.foodapp.order.OrderRepository;
+import com.foodapp.foodapp.order.OrderService;
+import com.foodapp.foodapp.orderProduct.OrderProductRepository;
+import com.foodapp.foodapp.product.ProductRepository;
+import com.foodapp.foodapp.user.UserRepository;
 
 @Configuration
 @Profile("TEST")
@@ -26,12 +28,15 @@ public class DevelopmentConfiguration {
                                                final UserRepository userRepository,
                                                final ProductRepository productRepository,
                                                final OrderRepository orderRepository,
+                                               final OrderProductRepository orderProductRepository,
                                                final PasswordEncoder passwordEncoder) {
         return new DatabaseDataFaker(companyRepository,
-                userRepository,
-                productRepository,
-                orderRepository,
-                passwordEncoder);
+                                     userRepository,
+                                     productRepository,
+                                     orderRepository,
+                                     orderProductRepository,
+                                     passwordEncoder
+        );
     }
 
     @Bean
@@ -42,11 +47,12 @@ public class DevelopmentConfiguration {
                                                                  final ProductRepository productRepository,
                                                                  final OrderMapper orderMapper) {
         return new SchedulerForTestingService(orderService,
-                orderRepository,
-                companyRepository,
-                productRepository,
-                timeToAcceptOrder,
-                orderMapper);
+                                              orderRepository,
+                                              companyRepository,
+                                              productRepository,
+                                              timeToAcceptOrder,
+                                              orderMapper
+        );
     }
 
     @Bean

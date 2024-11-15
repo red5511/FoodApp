@@ -1,6 +1,7 @@
 package com.foodapp.foodapp.order.request;
 
-import com.foodapp.foodapp.order.OrderDto;
+import com.foodapp.foodapp.order.dto.OrderDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
