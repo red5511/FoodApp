@@ -66,6 +66,9 @@ public class SchedulerForTestingService {
     }
 
     public Order createOrderForTest(final List<OrderProduct> orderProducts) {
+        var price = orderProducts.stream()
+                .map(OrderProduct::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         var company = companyRepository.findById(1L).orElseThrow(
             () -> new IllegalStateException("Send new order - wrong company id"));
         return Order.builder()
@@ -77,7 +80,7 @@ public class SchedulerForTestingService {
                         "Poprosze osobno frytki i cole bez lodu. W razie problemow ze znalezeniem numry zostawic na portierni"
                     )
                     .status(OrderStatus.WAITING_FOR_ACCEPTANCE)
-                    .price(BigDecimal.TEN)
+                    .price(price)
                     .company(Company.builder()
                                     .build())
                     .company(company)

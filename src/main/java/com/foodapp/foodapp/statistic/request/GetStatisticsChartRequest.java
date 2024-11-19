@@ -23,4 +23,5 @@ public class GetStatisticsChartRequest {
     LocalDate dateTo;
     DatePeriod datePeriod;
     Long productId;
+    boolean showEarnings;
 }
