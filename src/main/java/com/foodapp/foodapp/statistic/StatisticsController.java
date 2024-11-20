@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "Statistics")
+@PreAuthorize("hasAuthority('VIEW_STATISTICS')")
 public class StatisticsController {
     private final StatisticsService statisticsService;
 

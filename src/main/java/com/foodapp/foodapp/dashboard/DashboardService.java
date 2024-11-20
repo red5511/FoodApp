@@ -8,19 +8,22 @@ import com.foodapp.foodapp.dashboard.response.DashboardGetOrdersResponse;
 import com.foodapp.foodapp.order.OrderService;
 import com.foodapp.foodapp.order.OrderStatus;
 import com.foodapp.foodapp.security.ContextProvider;
+import com.foodapp.foodapp.user.permission.PermissionUtils;
+import com.foodapp.foodapp.user.permission.PermittedModules;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 public class DashboardService {
     private final CompanyService companyService;
-    private final ContextProvider contextValidator;
+    private final ContextProvider contextProvider;
     private final OrderService orderService;
 
     public DashboardGetOrdersResponse getActiveOrders(final Long companyId) {
-        contextValidator.validateCompanyAccess(companyId);
+        contextProvider.validateCompanyAccess(companyId);
         var orders = orderService.getOrders(companyId, OrderStatus.IN_EXECUTION);
         return DashboardGetOrdersResponse.builder()
                 .orderList(orders)
@@ -28,7 +31,7 @@ public class DashboardService {
     }
 
     public DashboardGetCompanyResponse getCompany(final Long companyId) {
-        contextValidator.validateCompanyAccess(companyId);
+        contextProvider.validateCompanyAccess(companyId);
         var companyOptional = companyService.getCompanyById(companyId);
         if (companyOptional.isPresent()) {
             var company = companyOptional.get();
@@ -42,7 +45,7 @@ public class DashboardService {
     }
 
     public DashboardGetInitConfigResponse getInitConfig() {
-        var companyDataList = contextValidator.getCompanyList().stream()
+        var companyDataList = contextProvider.getCompanyList().stream()
                 .map(company -> CompanyDto.builder()
                         .id(company.getId())
                         .name(company.getName())
@@ -51,7 +54,7 @@ public class DashboardService {
                         .isReceivingOrdersActive(company.isReceivingOrdersActive())
                         .build())
                 .toList();
-        var companyDataList2 = contextValidator.getCompanyList().stream()
+        var companyDataList2 = contextProvider.getCompanyList().stream()
                 .map(company -> CompanyDto.builder()
                         .id(company.getId())
                         .name(company.getName())
@@ -60,7 +63,7 @@ public class DashboardService {
                         .isReceivingOrdersActive(company.isReceivingOrdersActive())
                         .build())
                 .toList();
-        var companyDataList3 = contextValidator.getCompanyList().stream()
+        var companyDataList3 = contextProvider.getCompanyList().stream()
                 .map(company -> CompanyDto.builder()
                         .id(company.getId())
                         .name(company.getName())
@@ -74,7 +77,13 @@ public class DashboardService {
         xd.addAll(companyDataList2);
         return DashboardGetInitConfigResponse.builder()
                 .companyDataList(xd)
+                .permittedModules(getPermittedModules())
                 .build();
+    }
+
+    private Set<PermittedModules> getPermittedModules() {
+        var user = contextProvider.getUser().orElseThrow(() -> new SecurityException("User is not present in the context"));
+        return PermissionUtils.getPermittedModules(user.getPermissions());
     }
 }
 //kwtnmdal-95

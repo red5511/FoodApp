@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,6 +29,7 @@ public class DashboardController {
     }
 
     @GetMapping("/orders/{companyId}")
+    @PreAuthorize("hasAuthority('VIEW_LIVE_PANEL')")
     public ResponseEntity<DashboardGetOrdersResponse> getActiveOrders(final @PathVariable Long companyId) {
         return ResponseEntity.ok(dashboardService.getActiveOrders(companyId));
     }

@@ -2,6 +2,7 @@ package com.foodapp.foodapp.user;
 
 import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.administration.company.Company;
+import com.foodapp.foodapp.user.permission.Permission;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -10,7 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -40,11 +41,18 @@ public class User extends BaseEntity implements UserDetails {
     private Boolean enabled = false;
     @ManyToMany(mappedBy = "companyUsers", fetch = FetchType.EAGER)
     private Set<Company> companies;
-
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private Set<Permission> permissions;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority(role.name()));
+        // Add permissions to authorities
+        for (Permission permission : permissions) {
+            authorities.add(new SimpleGrantedAuthority(permission.name()));
+        }
+        return authorities;    }
 
     @Override
     public String getUsername() {

@@ -10,6 +10,14 @@ import java.util.Set;
 
 @AllArgsConstructor
 public class ContextProvider {
+    public Optional<User> getUser() {
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User user) {
+            return Optional.of(user);
+        }
+        return Optional.empty();
+    }
+
     public Optional<Long> getUserId() {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof User user) {

@@ -1,0 +1,1 @@
+SELECT o FROM Order o WHERE o.company.id = :companyId AND (:statuses IS NULL OR o.status IN :statuses) AND (:name IS NULL OR CAST(o.id AS string) LIKE LOWER(CONCAT('%', :name, '%'))) AND (:price IS NULL OR o.price = :price) AND (:description IS NULL OR LOWER(o.description) LIKE LOWER(CONCAT('%', :description, '%'))) AND (:date IS NULL OR FUNCTION('DATE', o.deliveryTime) = :date)
