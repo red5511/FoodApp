@@ -1,5 +1,8 @@
 package com.foodapp.foodapp.dashboard;
 
+import java.util.Comparator;
+import java.util.Set;
+
 import com.foodapp.foodapp.administration.company.CompanyDto;
 import com.foodapp.foodapp.administration.company.CompanyService;
 import com.foodapp.foodapp.dashboard.response.DashboardGetCompanyResponse;
@@ -10,11 +13,8 @@ import com.foodapp.foodapp.order.OrderStatus;
 import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.user.permission.PermissionUtils;
 import com.foodapp.foodapp.user.permission.PermittedModules;
-import lombok.AllArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class DashboardService {
@@ -26,59 +26,39 @@ public class DashboardService {
         contextProvider.validateCompanyAccess(companyId);
         var orders = orderService.getOrders(companyId, OrderStatus.IN_EXECUTION);
         return DashboardGetOrdersResponse.builder()
-                .orderList(orders)
-                .build();
+                                         .orderList(orders)
+                                         .build();
     }
 
     public DashboardGetCompanyResponse getCompany(final Long companyId) {
         contextProvider.validateCompanyAccess(companyId);
         var companyOptional = companyService.getCompanyById(companyId);
-        if (companyOptional.isPresent()) {
+        if(companyOptional.isPresent()) {
             var company = companyOptional.get();
             return DashboardGetCompanyResponse.builder()
-                    .companyName(company.getName())
-                    .companyAddress(company.getAddress())
-                    .openHours(company.getContent().getOpenHours())
-                    .build();
+                                              .companyName(company.getName())
+                                              .companyAddress(company.getAddress())
+                                              .openHours(company.getContent().getOpenHours())
+                                              .build();
         }
         return null;
     }
 
     public DashboardGetInitConfigResponse getInitConfig() {
         var companyDataList = contextProvider.getCompanyList().stream()
-                .map(company -> CompanyDto.builder()
-                        .id(company.getId())
-                        .name(company.getName())
-                        .address(company.getAddress())
-                        .openHours(company.getContent().getOpenHours())
-                        .isReceivingOrdersActive(company.isReceivingOrdersActive())
-                        .build())
-                .toList();
-        var companyDataList2 = contextProvider.getCompanyList().stream()
-                .map(company -> CompanyDto.builder()
-                        .id(company.getId())
-                        .name(company.getName())
-                        .address(company.getAddress())
-                        .openHours(company.getContent().getOpenHours())
-                        .isReceivingOrdersActive(company.isReceivingOrdersActive())
-                        .build())
-                .toList();
-        var companyDataList3 = contextProvider.getCompanyList().stream()
-                .map(company -> CompanyDto.builder()
-                        .id(company.getId())
-                        .name(company.getName())
-                        .address(company.getAddress())
-                        .openHours(company.getContent().getOpenHours())
-                        .isReceivingOrdersActive(company.isReceivingOrdersActive())
-                        .build())
-                .toList();
-        List<CompanyDto> xd = new ArrayList<>();
-        xd.addAll(companyDataList);
-        xd.addAll(companyDataList2);
+                                             .map(company -> CompanyDto.builder()
+                                                                       .id(company.getId())
+                                                                       .name(company.getName())
+                                                                       .address(company.getAddress())
+                                                                       .openHours(company.getContent().getOpenHours())
+                                                                       .isReceivingOrdersActive(company.isReceivingOrdersActive())
+                                                                       .build())
+                                             .sorted(Comparator.comparing(CompanyDto::getName))
+                                             .toList();
         return DashboardGetInitConfigResponse.builder()
-                .companyDataList(xd)
-                .permittedModules(getPermittedModules())
-                .build();
+                                             .companyDataList(companyDataList)
+                                             .permittedModules(getPermittedModules())
+                                             .build();
     }
 
     private Set<PermittedModules> getPermittedModules() {
@@ -86,5 +66,3 @@ public class DashboardService {
         return PermissionUtils.getPermittedModules(user.getPermissions());
     }
 }
-//kwtnmdal-95
-//kwtnmdal-96

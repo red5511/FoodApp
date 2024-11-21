@@ -1,5 +1,17 @@
 package com.foodapp.foodapp.forDevelopment;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.foodapp.foodapp.administration.company.Company;
 import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.administration.company.Content;
@@ -12,18 +24,12 @@ import com.foodapp.foodapp.orderProduct.OrderProduct;
 import com.foodapp.foodapp.orderProduct.OrderProductRepository;
 import com.foodapp.foodapp.product.Product;
 import com.foodapp.foodapp.product.ProductRepository;
-import com.foodapp.foodapp.user.permission.Permission;
 import com.foodapp.foodapp.user.Role;
 import com.foodapp.foodapp.user.User;
 import com.foodapp.foodapp.user.UserRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
+import com.foodapp.foodapp.user.permission.Permission;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class DatabaseDataFaker {
@@ -41,126 +47,152 @@ public class DatabaseDataFaker {
         var userOptional = userRepository.findById(1L);
         var productOptional = productRepository.findById(1L);
         var orderOptional = orderRepository.findById(1L);
-        if (companyOptional.isPresent() && userOptional.isPresent() && productOptional.isPresent() && orderOptional.isPresent()) {
+        if(companyOptional.isPresent() && userOptional.isPresent() && productOptional.isPresent() && orderOptional.isPresent()) {
             return;
         }
-        var company = createFakeCompany();
+        var company = createFakeCompany("");
+        var company2 = createFakeCompany("#2");
+        var company3 = createFakeCompany("#3");
         var user = createFakeUser();
-        var product = createFakeProduct();
-        var product2 = createFakeProduct2();
+        var product = createFakeProduct(null);
+        var product2 = createFakeProduct2(null);
+
+        var productForCompany2 = createFakeProduct("Duża pita");
+        var product2ForCompany2 = createFakeProduct("Pizza");
+        var productForCompany3 = createFakeProduct2("Mała pita");
+
         var orderProducts = createFakeOrderProduct(List.of(product, product2));
+        var orderProductsForCompany2 = createFakeOrderProduct(List.of(productForCompany2, product2ForCompany2));
+        var orderProductsForCompany3 = createFakeOrderProduct(List.of(productForCompany3));
         final var order = createFakeOrder(orderProducts);
+        final var orderForCompany2 = createFakeOrder(orderProductsForCompany2);
+        final var orderForCompany3 = createFakeOrder(orderProductsForCompany3);
         orderProducts.forEach(el -> el.setOrder(order));
+        orderProductsForCompany2.forEach(el -> el.setOrder(orderForCompany2));
+        orderProductsForCompany3.forEach(el -> el.setOrder(orderForCompany3));
 
         company = companyRepository.save(company);
-        user.setCompanies(new HashSet<>(Arrays.asList(company)));
+        company2 = companyRepository.save(company2);
+        company3 = companyRepository.save(company3);
+        user.setCompanies(new HashSet<>(Arrays.asList(company, company2, company3)));
         user = userRepository.save(user);
         company.setCompanyUsers(new HashSet<>(Arrays.asList(user)));
-        companyRepository.save(company);
+        company2.setCompanyUsers(new HashSet<>(Arrays.asList(user)));
+        company3.setCompanyUsers(new HashSet<>(Arrays.asList(user)));
+        companyRepository.saveAll(List.of(company, company2, company3));
 
         product.setCompany(company);
         product2.setCompany(company);
-        productRepository.save(product);
-        productRepository.save(product2);
+        productForCompany2.setCompany(company2);
+        product2ForCompany2.setCompany(company2);
+        productForCompany3.setCompany(company3);
+        productRepository.saveAll(List.of(product, product2, productForCompany2, product2ForCompany2, productForCompany3));
 
         order.setCompany(company);
+        orderForCompany2.setCompany(company2);
+        orderForCompany3.setCompany(company3);
 
         orderRepository.save(order);
+        orderRepository.save(orderForCompany2);
+        orderRepository.save(orderForCompany3);
 
         orderProductRepository.saveAll(orderProducts);
+        orderProductRepository.saveAll(orderProductsForCompany2);
+        orderProductRepository.saveAll(orderProductsForCompany3);
     }
 
     private List<OrderProduct> createFakeOrderProduct(final List<Product> products) {
         List<OrderProduct> orderProducts = new ArrayList<>();
-        for (int i = 0; i < products.size(); i++) {
+        for(int i = 0; i < products.size(); i++) {
             orderProducts.add(OrderProduct.builder()
-                    .quantity(i + 1)
-                    .price(products.get(i).getPrice().multiply(BigDecimal.valueOf(i + 1)))
-                    .product(products.get(i))
-                    .build());
+                                          .quantity(i + 1)
+                                          .price(products.get(i).getPrice().multiply(BigDecimal.valueOf(i + 1)))
+                                          .product(products.get(i))
+                                          .build());
         }
         return orderProducts;
     }
 
     private Order createFakeOrder(final List<OrderProduct> orderProducts) {
         var price = orderProducts.stream()
-                .map(OrderProduct::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                                 .map(OrderProduct::getPrice)
+                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return Order.builder()
-                .customerName("Iwona Kowalska")
-                .orderType(OrderType.PYSZNE_PL)
-                .price(price)
-                .deliveryAddress("Piłsudskiego 44")
-                .description("Poprosze osobno frytki i cole bez lodu. W razie problemow ze znalezeniem numry zostawic na portierni")
-                .status(OrderStatus.EXECUTED)
-                .deliveryTime(LocalDateTime.now())
-                .orderProducts(orderProducts)
-                .build();
+                    .customerName("Iwona Kowalska")
+                    .orderType(OrderType.PYSZNE_PL)
+                    .price(price)
+                    .deliveryAddress("Piłsudskiego 44")
+                    .description("Poprosze osobno frytki i cole bez lodu. W razie problemow ze znalezeniem numry zostawic na portierni")
+                    .status(OrderStatus.EXECUTED)
+                    .deliveryTime(LocalDateTime.now())
+                    .orderProducts(orderProducts)
+                    .build();
     }
 
-    private Product createFakeProduct() {
+    private Product createFakeProduct(final String name) {
         return Product.builder()
-                .imgUrl("https://afterfit-catering.pl/wp-content/uploads/2024/01/kebab-glowne.jpg")
-                .description("Pyszny kebab")
-                .name("Duży kebab")
-                .price(new BigDecimal("20.20"))
-                .build();
+                      .imgUrl("https://afterfit-catering.pl/wp-content/uploads/2024/01/kebab-glowne.jpg")
+                      .description("Pyszny kebab")
+                      .name(name != null ? "Duży kebab" : name)
+                      .price(new BigDecimal("20.20"))
+                      .build();
     }
 
-    private Product createFakeProduct2() {
+    private Product createFakeProduct2(final String name) {
         return Product.builder()
-                .imgUrl(
-                        "https://previews.123rf.com/images/imaginiac/imaginiac2308/imaginiac230800139/210301341-realistyczne-zdj%C4%99cie-kebaba-doner-z"
-                                + "-bliska-fotografia-kulinarna.jpg")
-                .description("Pyszny kebab")
-                .name("Mały kebab")
-                .price(new BigDecimal("10.20"))
-                .build();
+                      .imgUrl(
+                          "https://previews.123rf.com/images/imaginiac/imaginiac2308/imaginiac230800139/210301341-realistyczne-zdj%C4%99cie-kebaba-doner-z"
+                          + "-bliska-fotografia-kulinarna.jpg")
+                      .description("Pyszny kebab")
+                      .name(name != null ? "Mały kebab" : name)
+                      .price(new BigDecimal("10.20"))
+                      .build();
     }
 
     private User createFakeUser() {
         Set<Permission> permissions = new HashSet<>();
         permissions.add(Permission.VIEW_LIVE_PANEL);
         permissions.add(Permission.VIEW_ORDERS);
+        permissions.add(Permission.VIEW_STATISTICS);
 
         return User.builder()
-                .email("macmac")
-                .firstName("Eustachy")
-                .lastName("Motyka")
-                .password(passwordEncoder.encode("password123"))
-                .role(Role.USER)
-                .enabled(true)
-                .permissions(permissions)
-                .build();
+                   .email("macmac")
+                   .firstName("Eustachy")
+                   .lastName("Motyka")
+                   .password(passwordEncoder.encode("password123"))
+                   .role(Role.USER)
+                   .enabled(true)
+                   .permissions(permissions)
+                   .build();
     }
 
-    private Company createFakeCompany() {
+    private Company createFakeCompany(final String postfix) {
         return Company.builder()
-                .name("Firma Testowa")
-                .address("Powstańców 34a, Warszawa 33-999")
-                .content(createContent())
-                .build();
+                      .name("Firma Testowa" + postfix)
+                      .address("Powstańców 34a, Warszawa 33-999")
+                      .content(createContent())
+                      .build();
     }
 
     private Content createContent() {
         return Content.builder()
-                .openHours(OpenHours.builder()
-                        .mondayStart(LocalTime.of(9, 0))
-                        .mondayEnd(LocalTime.of(17, 0))
-                        .tuesdayStart(LocalTime.of(9, 0))
-                        .tuesdayEnd(LocalTime.of(17, 0))
-                        .wednesdayStart(LocalTime.of(9, 0))
-                        .wednesdayEnd(LocalTime.of(17, 0))
-                        .thursdayStart(LocalTime.of(9, 0))
-                        .thursdayEnd(LocalTime.of(17, 0))
-                        .fridayStart(LocalTime.of(9, 0))
-                        .fridayEnd(LocalTime.of(17, 0))
-                        .saturdayStart(LocalTime.of(10, 0))
-                        .saturdayEnd(LocalTime.of(14, 0))
-                        .sundayStart(LocalTime.of(0, 0))  // Zamknięte w niedzielę
-                        .sundayEnd(LocalTime.of(0, 0))    // Zamknięte w niedzielę
-                        .build())
-                .build();
+                      .openHours(OpenHours.builder()
+                                          .mondayStart(LocalTime.of(9, 0))
+                                          .mondayEnd(LocalTime.of(17, 0))
+                                          .tuesdayStart(LocalTime.of(9, 0))
+                                          .tuesdayEnd(LocalTime.of(17, 0))
+                                          .wednesdayStart(LocalTime.of(9, 0))
+                                          .wednesdayEnd(LocalTime.of(17, 0))
+                                          .thursdayStart(LocalTime.of(9, 0))
+                                          .thursdayEnd(LocalTime.of(17, 0))
+                                          .fridayStart(LocalTime.of(9, 0))
+                                          .fridayEnd(LocalTime.of(17, 0))
+                                          .saturdayStart(LocalTime.of(10, 0))
+                                          .saturdayEnd(LocalTime.of(14, 0))
+                                          .sundayStart(LocalTime.of(0, 0))  // Zamknięte w niedzielę
+                                          .sundayEnd(LocalTime.of(0, 0))    // Zamknięte w niedzielę
+                                          .build())
+                      .build();
     }
 }
