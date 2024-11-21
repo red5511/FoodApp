@@ -54,8 +54,8 @@ public class DatabaseDataFaker {
         var company2 = createFakeCompany("#2");
         var company3 = createFakeCompany("#3");
         var user = createFakeUser();
-        var product = createFakeProduct(null);
-        var product2 = createFakeProduct2(null);
+        var product = createFakeProduct("Duży kebab");
+        var product2 = createFakeProduct2("Mały kebab");
 
         var productForCompany2 = createFakeProduct("Duża pita");
         var product2ForCompany2 = createFakeProduct("Pizza");
@@ -134,7 +134,7 @@ public class DatabaseDataFaker {
         return Product.builder()
                       .imgUrl("https://afterfit-catering.pl/wp-content/uploads/2024/01/kebab-glowne.jpg")
                       .description("Pyszny kebab")
-                      .name(name != null ? "Duży kebab" : name)
+                      .name(name)
                       .price(new BigDecimal("20.20"))
                       .build();
     }
@@ -145,7 +145,7 @@ public class DatabaseDataFaker {
                           "https://previews.123rf.com/images/imaginiac/imaginiac2308/imaginiac230800139/210301341-realistyczne-zdj%C4%99cie-kebaba-doner-z"
                           + "-bliska-fotografia-kulinarna.jpg")
                       .description("Pyszny kebab")
-                      .name(name != null ? "Mały kebab" : name)
+                      .name(name)
                       .price(new BigDecimal("10.20"))
                       .build();
     }

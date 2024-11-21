@@ -7,22 +7,20 @@ sie kurla resizuja po dodaniu elelmtow i przeez to szerokosc kolumny sie zwieskz
 
 
 
-
-![img.png](img.png)
-ehh cos usluga /config leci za szybko bo chyba pierwsze powinoo lecicec /authenticate
-
 ###########
 
 ta rura robi resiza jak sie wyswielta caly opis xd
 ![img_1.png](img_1.png)
 
 
+########
 
 
+double request po przejsciu i wroceniu na zakladke live panel
+![img_2.png](img_2.png)
 
-
-
-
+###
+upewnic sie ze wszystkie observable sa niszczone na ngOnDestroy (z socketem jest okej?)
 
 
 
