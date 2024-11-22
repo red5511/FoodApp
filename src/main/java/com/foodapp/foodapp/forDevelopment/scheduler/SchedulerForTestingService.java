@@ -32,8 +32,6 @@ public class SchedulerForTestingService {
     private final CompanyRepository companyRepository;
     private final ProductRepository productRepository;
     private final Long timeToAcceptOrder;
-    private final OrderMapper orderMapper;
-
 
     @Scheduled(fixedRate = 10000)
     @TechnicalContextDev
@@ -45,7 +43,7 @@ public class SchedulerForTestingService {
         orderProducts.forEach(el -> el.setOrder(finalOrder));
         order = orderRepository.save(order);
         log.info("Sending order to ts");
-        orderService.sendNewOrdersNotification("1", orderMapper.mapToOrderDto(order));
+        orderService.sendNewOrdersNotification("1", OrderMapper.mapToOrderDto(order));
     }
 
     private List<OrderProduct> createOrderProductForTest() {
@@ -67,8 +65,8 @@ public class SchedulerForTestingService {
 
     public Order createOrderForTest(final List<OrderProduct> orderProducts) {
         var price = orderProducts.stream()
-                .map(OrderProduct::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                                 .map(OrderProduct::getPrice)
+                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         var company = companyRepository.findById(1L).orElseThrow(
             () -> new IllegalStateException("Send new order - wrong company id"));
         return Order.builder()

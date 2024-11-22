@@ -13,7 +13,6 @@ import com.foodapp.foodapp.order.dto.OrderDto;
 import com.foodapp.foodapp.order.request.ApproveNewIncomingOrderRequest;
 import com.foodapp.foodapp.order.request.CreateOrderRequest;
 import com.foodapp.foodapp.order.request.RejectNewIncomingOrderRequest;
-import com.foodapp.foodapp.orderProduct.OrderProductDto;
 import com.foodapp.foodapp.security.ContextProvider;
 
 import lombok.AllArgsConstructor;
@@ -27,7 +26,6 @@ public class OrderService {
     private final SimpMessagingTemplate messagingTemplate;
     private final ContextProvider contextProvider;
     private final OrderValidator orderValidator;
-    private final OrderMapper orderMapper;
 
     public void sendNewOrdersNotification(final String topicName, final OrderDto orderDto) {
         messagingTemplate.convertAndSendToUser(topicName, "/order", orderDto);
@@ -71,7 +69,7 @@ public class OrderService {
 
     public List<OrderDto> getOrders(final Long companyId, final OrderStatus orderStatus) {
         return orderRepository.findByCompanyIdAndStatus(companyId, orderStatus).stream()
-                              .map(orderMapper::mapToOrderDto)
+                              .map(OrderMapper::mapToOrderDto)
                               .collect(Collectors.toList());
     }
 

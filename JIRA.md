@@ -22,7 +22,9 @@ double request po przejsciu i wroceniu na zakladke live panel
 ###
 upewnic sie ze wszystkie observable sa niszczone na ngOnDestroy (z socketem jest okej?)
 
-
+####
+Nie ma 400 500 jak nulle leca znowu jakies gowno w tym catchu
+![img.png](img.png)
 
 PERMISSIONS
 

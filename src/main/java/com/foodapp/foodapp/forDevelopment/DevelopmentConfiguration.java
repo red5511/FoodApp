@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
-import com.foodapp.foodapp.order.OrderMapper;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.order.OrderService;
 import com.foodapp.foodapp.orderProduct.OrderProductRepository;
@@ -44,14 +43,12 @@ public class DevelopmentConfiguration {
     public SchedulerForTestingService schedulerForTestingService(final OrderService orderService,
                                                                  final OrderRepository orderRepository,
                                                                  final CompanyRepository companyRepository,
-                                                                 final ProductRepository productRepository,
-                                                                 final OrderMapper orderMapper) {
+                                                                 final ProductRepository productRepository) {
         return new SchedulerForTestingService(orderService,
                                               orderRepository,
                                               companyRepository,
                                               productRepository,
-                                              timeToAcceptOrder,
-                                              orderMapper
+                                              timeToAcceptOrder
         );
     }
 
