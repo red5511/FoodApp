@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.Set;
 
 import com.foodapp.foodapp.administration.company.CompanyDto;
+import com.foodapp.foodapp.administration.company.CompanyMapper;
 import com.foodapp.foodapp.administration.company.CompanyService;
 import com.foodapp.foodapp.dashboard.response.DashboardGetCompanyResponse;
 import com.foodapp.foodapp.dashboard.response.DashboardGetInitConfigResponse;
@@ -46,13 +47,7 @@ public class DashboardService {
 
     public DashboardGetInitConfigResponse getInitConfig() {
         var companyDataList = contextProvider.getCompanyList().stream()
-                                             .map(company -> CompanyDto.builder()
-                                                                       .id(company.getId())
-                                                                       .name(company.getName())
-                                                                       .address(company.getAddress())
-                                                                       .openHours(company.getContent().getOpenHours())
-                                                                       .isReceivingOrdersActive(company.isReceivingOrdersActive())
-                                                                       .build())
+                                             .map(CompanyMapper::toCompanyDto)
                                              .sorted(Comparator.comparing(CompanyDto::getName))
                                              .toList();
         return DashboardGetInitConfigResponse.builder()

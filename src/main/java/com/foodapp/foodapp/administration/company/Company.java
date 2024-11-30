@@ -39,5 +39,6 @@ public class Company extends BaseEntity {
     @Setter
     @Column(columnDefinition = "boolean default false")
     private boolean isReceivingOrdersActive;
+    private String webSocketTopicName;
 
 }

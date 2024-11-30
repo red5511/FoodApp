@@ -12,4 +12,5 @@ public class CompanyDto {
     private OpenHours openHours;
     private CompanyType companyType;
     private boolean isReceivingOrdersActive;
+    private String webSocketTopicName;
 }

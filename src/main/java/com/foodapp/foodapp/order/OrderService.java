@@ -23,13 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
-    private final SimpMessagingTemplate messagingTemplate;
     private final ContextProvider contextProvider;
     private final OrderValidator orderValidator;
-
-    public void sendNewOrdersNotification(final String topicName, final OrderDto orderDto) {
-        messagingTemplate.convertAndSendToUser(topicName, "/order", orderDto);
-    }
 
     @Transactional
     public void approveNewIncomingOrder(final ApproveNewIncomingOrderRequest request) {

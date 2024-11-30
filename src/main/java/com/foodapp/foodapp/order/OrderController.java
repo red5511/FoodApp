@@ -35,14 +35,14 @@ public class OrderController {
     }
 
     @PostMapping("/approve")
-    @PreAuthorize("hasAuthority('VIEW_PANEL_LIVE')")
+    @PreAuthorize("hasAuthority('VIEW_LIVE_PANEL')")
     public ResponseEntity<Void> approveNewIncomingOrder(final @RequestBody ApproveNewIncomingOrderRequest request) {
         orderService.approveNewIncomingOrder(request);
         return ResponseEntity.ok().build(); // Return 200 OK with no body
     }
 
     @PostMapping("/reject")
-    @PreAuthorize("hasAuthority('VIEW_PANEL_LIVE')")
+    @PreAuthorize("hasAuthority('VIEW_LIVE_PANEL')")
     public ResponseEntity<Void> rejectNewIncomingOrder(final @RequestBody RejectNewIncomingOrderRequest request) {
         orderService.rejectNewIncomingOrder(request);
         return ResponseEntity.ok().build(); // Return 200 OK with no body
@@ -61,7 +61,7 @@ public class OrderController {
     }
 
     @PostMapping("/config")
-    @PreAuthorize("hasAuthority('VIEW_PANEL_LIVE') or hasAuthority('VIEW_ORDERS')")
+    @PreAuthorize("hasAuthority('VIEW_LIVE_PANEL') or hasAuthority('VIEW_ORDERS')")
     public ResponseEntity<GetOrdersConfigResponse> getOrdersConfig(@RequestBody final GetOrdersConfigRequest request) {
         return ResponseEntity.ok(GetOrdersConfigResponse.builder()
                                                         .orderStatusModels(OrderMapper.getStatusModels())

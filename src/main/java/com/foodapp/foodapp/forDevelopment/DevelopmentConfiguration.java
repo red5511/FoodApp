@@ -1,19 +1,17 @@
 package com.foodapp.foodapp.forDevelopment;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Profile;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
 import com.foodapp.foodapp.order.OrderRepository;
-import com.foodapp.foodapp.order.OrderService;
 import com.foodapp.foodapp.orderProduct.OrderProductRepository;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.user.UserRepository;
+import com.foodapp.foodapp.websocket.WebSocketService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.HashSet;
 
 @Configuration
 @Profile("TEST")
@@ -30,25 +28,26 @@ public class DevelopmentConfiguration {
                                                final OrderProductRepository orderProductRepository,
                                                final PasswordEncoder passwordEncoder) {
         return new DatabaseDataFaker(companyRepository,
-                                     userRepository,
-                                     productRepository,
-                                     orderRepository,
-                                     orderProductRepository,
-                                     passwordEncoder
+                userRepository,
+                productRepository,
+                orderRepository,
+                orderProductRepository,
+                passwordEncoder
         );
     }
 
     @Bean
-    @Profile("ENABLE_SCHEDULER_WEBSOCKET_TEST")
-    public SchedulerForTestingService schedulerForTestingService(final OrderService orderService,
+    //@Profile("ENABLE_SCHEDULER_WEBSOCKET_TEST")
+    public SchedulerForTestingService schedulerForTestingService(@Lazy final WebSocketService webSocketService,
                                                                  final OrderRepository orderRepository,
                                                                  final CompanyRepository companyRepository,
                                                                  final ProductRepository productRepository) {
-        return new SchedulerForTestingService(orderService,
-                                              orderRepository,
-                                              companyRepository,
-                                              productRepository,
-                                              timeToAcceptOrder
+        return new SchedulerForTestingService(webSocketService,
+                orderRepository,
+                companyRepository,
+                productRepository,
+                timeToAcceptOrder,
+                new HashSet<>()
         );
     }
 
