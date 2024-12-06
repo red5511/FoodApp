@@ -1,5 +1,6 @@
 package com.foodapp.foodapp.order.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RejectNewIncomingOrderRequest {
+    @Schema(required = true)
     private Long companyId;
+    @Schema(required = true)
     private Long orderId;
+    @Schema(required = true)
+    private String orderReceivingTopicName;
 }

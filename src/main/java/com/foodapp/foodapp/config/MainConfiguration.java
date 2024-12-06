@@ -1,7 +1,9 @@
 package com.foodapp.foodapp.config;
 
 import com.foodapp.foodapp.administration.AdministrationService;
-import com.foodapp.foodapp.administration.cache.UsersConnectedToWebCacheWrapper;
+import com.foodapp.foodapp.administration.cache.CacheService;
+import com.foodapp.foodapp.administration.cache.CompanyWithActiveReceivingCacheWrapper;
+import com.foodapp.foodapp.administration.cache.UsersConnectedToWebSocketCacheWrapper;
 import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.administration.company.CompanyService;
 import com.foodapp.foodapp.administration.userAdministration.UserAdministrationService;
@@ -26,6 +28,8 @@ import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
 import com.foodapp.foodapp.user.email.EmailSender;
 import com.foodapp.foodapp.user.email.EmailService;
+import com.foodapp.foodapp.websocket.WebSocketEventHandler;
+import com.foodapp.foodapp.websocket.WebSocketEventSender;
 import com.foodapp.foodapp.websocket.WebSocketService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -188,11 +192,13 @@ public class MainConfiguration {
     public OrderService orderService(final OrderRepository orderRepository,
                                      final CompanyRepository companyRepository,
                                      final OrderValidator orderValidator,
-                                     final ContextProvider contextProvider) {
+                                     final ContextProvider contextProvider,
+                                     final WebSocketEventSender webSocketEventSender) {
         return new OrderService(orderRepository,
                 companyRepository,
                 contextProvider,
-                orderValidator
+                orderValidator,
+                webSocketEventSender
         );
     }
 
@@ -221,13 +227,32 @@ public class MainConfiguration {
     }
 
     @Bean
-    public WebSocketService webSocketService(final SimpMessagingTemplate messagingTemplate,
-                                             final UsersConnectedToWebCacheWrapper cacheWrapper,
-                                             final ContextProvider contextProvider,
-                                             final SchedulerForTestingService schedulerForTestingService) {
-        return new WebSocketService(messagingTemplate,
-                cacheWrapper,
+    public WebSocketService webSocketService(final ContextProvider contextProvider,
+                                             final SchedulerForTestingService schedulerForTestingService,
+                                             final CacheService cacheService,
+                                             final WebSocketEventSender webSocketEventSender) {
+        return new WebSocketService(
                 contextProvider,
-                schedulerForTestingService);
+                schedulerForTestingService,
+                cacheService,
+                webSocketEventSender);
+    }
+
+    @Bean
+    public WebSocketEventHandler webSocketEventHandler(final CacheService cacheService,
+                                                       final WebSocketEventSender webSocketEventSender) {
+        return new WebSocketEventHandler(cacheService, webSocketEventSender);
+    }
+
+    @Bean
+    public CacheService cacheService(final UsersConnectedToWebSocketCacheWrapper usersConnectedToWebSocketCacheWrapper,
+                                     final CompanyWithActiveReceivingCacheWrapper companyWithActiveReceivingCacheWrapper) {
+        return new CacheService(companyWithActiveReceivingCacheWrapper,
+                usersConnectedToWebSocketCacheWrapper);
+    }
+
+    @Bean
+    public WebSocketEventSender webSocketEventSender(final SimpMessagingTemplate messagingTemplate) {
+        return new WebSocketEventSender(messagingTemplate);
     }
 }

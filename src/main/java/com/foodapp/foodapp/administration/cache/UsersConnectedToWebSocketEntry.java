@@ -1,6 +1,5 @@
 package com.foodapp.foodapp.administration.cache;
 
-import com.foodapp.foodapp.user.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +8,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class UsersConnectedToWebSocketEntry {
-    public UserDto user;
+    public Long userId;
     public Long companyId;
 }

@@ -7,14 +7,13 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @Getter
-@Schema(description = "Base class for WebSocket events")
 @SuperBuilder
-public class WebSocketEvent {
-    @Schema(description = "event type", required = true)
-    private EventType eventType;
+public class ApprovedOrderWebSocketEvent extends WebSocketEvent {
+    @Schema(required = true)
+    public Long orderId;
 
     @JsonCreator
-    public WebSocketEvent(@JsonProperty("eventType") final EventType eventType) {
-        this.eventType = eventType;
+    public ApprovedOrderWebSocketEvent(@JsonProperty("eventType") final EventType eventType) {
+        super(eventType);
     }
 }

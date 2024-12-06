@@ -3,9 +3,11 @@ package com.foodapp.foodapp.websocket.event;
 import com.foodapp.foodapp.order.dto.OrderDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Schema(description = "Event for a new order created via WebSocket")
+@SuperBuilder
 public class NewOrderWebSocketEvent extends WebSocketEvent {
     @Schema(description = "order", required = true)
     private final OrderDto order;

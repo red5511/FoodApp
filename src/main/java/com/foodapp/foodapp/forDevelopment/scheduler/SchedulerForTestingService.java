@@ -39,12 +39,15 @@ public class SchedulerForTestingService {
 
     public void handleSending(final String topicName) {
         var orderProducts = createOrderProductForTest();
-        var order = createOrderForTest(orderProducts);
+        var company = companyRepository.findById(1L).orElseThrow(
+                () -> new IllegalStateException("Send new order - wrong company id"));
+        var order = createOrderForTest(orderProducts, company);
+        //todo no tutaj bedzie pytanie skad glovo ma wiedziec jakie id ma moja firma xd
         final Order finalOrder = order;
         orderProducts.forEach(el -> el.setOrder(finalOrder));
         order = orderRepository.save(order);
         log.info("Sending order to ts");
-        webSocketService.sendNewOrderToTopic(topicName, OrderMapper.mapToOrderDto(order));
+        webSocketService.sendNewOrderToTopic(topicName, OrderMapper.mapToOrderDto(order), company.getId());
     }
 
     private List<OrderProduct> createOrderProductForTest() {
@@ -64,12 +67,10 @@ public class SchedulerForTestingService {
         return orderProducts;
     }
 
-    public Order createOrderForTest(final List<OrderProduct> orderProducts) {
+    public Order createOrderForTest(final List<OrderProduct> orderProducts, final Company company) {
         var price = orderProducts.stream()
                 .map(OrderProduct::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        var company = companyRepository.findById(1L).orElseThrow(
-                () -> new IllegalStateException("Send new order - wrong company id"));
         return Order.builder()
                 .deliveryTime(LocalDateTime.now())
                 .deliveryAddress("Sikorskiego 43")
@@ -91,5 +92,9 @@ public class SchedulerForTestingService {
 
     public void addNewTopicToSend(final String webSocketTopicName) {
         companyTopics.add(webSocketTopicName);
+    }
+
+    public void removeTopicFromSending(final String webSocketTopicName) {
+        companyTopics.remove(webSocketTopicName);
     }
 }

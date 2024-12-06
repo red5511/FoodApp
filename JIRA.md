@@ -39,7 +39,21 @@ Nie ma 400 500 jak nulle leca znowu jakies gowno w tym catchu
 
 czy w paylodzie powinno leciec widoczne haslo przy rejsetaracji i chyba logowaniu?
 
+####
 
+![img_3.png](img_3.png)
+
+cos z tym soundListenerem
+
+
+####
+
+no trzeba by pomyslec jak to zrobic na front endzie jesli websocket z backendu sie wyjebal ;/
+
+
+###
+
+trzeba by potestowac tego socketa na 2 uzytkowniach jdnoczesnie, jeden uzytkownik na dowch okienkach wyglda ze dziala wiec not bad
 
 PERMISSIONS
 

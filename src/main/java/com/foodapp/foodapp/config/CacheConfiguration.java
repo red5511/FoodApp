@@ -1,7 +1,8 @@
 package com.foodapp.foodapp.config;
 
 
-import com.foodapp.foodapp.administration.cache.UsersConnectedToWebCacheWrapper;
+import com.foodapp.foodapp.administration.cache.CompanyWithActiveReceivingCacheWrapper;
+import com.foodapp.foodapp.administration.cache.UsersConnectedToWebSocketCacheWrapper;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -15,8 +16,13 @@ import java.util.concurrent.TimeUnit;
 @EnableCaching
 public class CacheConfiguration {
     @Bean
-    public UsersConnectedToWebCacheWrapper usersConnectedToWebCacheWrapper(final CacheManager cacheManager) {
-        return new UsersConnectedToWebCacheWrapper(cacheManager);
+    public UsersConnectedToWebSocketCacheWrapper usersConnectedToWebCacheWrapper(final CacheManager cacheManager) {
+        return new UsersConnectedToWebSocketCacheWrapper(cacheManager);
+    }
+
+    @Bean
+    public CompanyWithActiveReceivingCacheWrapper company(final CacheManager cacheManager) {
+        return new CompanyWithActiveReceivingCacheWrapper(cacheManager);
     }
 
     @Bean

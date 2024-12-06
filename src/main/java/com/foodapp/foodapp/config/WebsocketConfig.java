@@ -30,7 +30,7 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
     private JwtSocketChannelInterceptor jwtSocketChannelInterceptor;
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
+    public void configureMessageBroker(final MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/user");
         registry.setApplicationDestinationPrefixes("/app");
         registry.setUserDestinationPrefix("/user");
@@ -42,19 +42,19 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 //    }
 
     @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
+    public void configureClientInboundChannel(final ChannelRegistration registration) {
         registration.interceptors(jwtSocketChannelInterceptor);
     }
 
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
+    public void registerStompEndpoints(final StompEndpointRegistry registry) {
         registry.addEndpoint("/api/v1/ws")
                 .setAllowedOriginPatterns("http://localhost:4200")
                 .withSockJS();
     }
 
     @Override
-    public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
+    public boolean configureMessageConverters(final List<MessageConverter> messageConverters) {
         DefaultContentTypeResolver resolver = new DefaultContentTypeResolver();
         resolver.setDefaultMimeType(APPLICATION_JSON);
         ObjectMapper objectMapper = new ObjectMapper();

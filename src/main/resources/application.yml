@@ -36,6 +36,6 @@ spring:
           auth: true
           starttls.enable: true
   cache:
-    cache-names: usersConnectedToWebSocket
+    cache-names: usersConnectedToWebSocket,companyWithActiveReceiving
 app:
   time-to-accept-order: 2
