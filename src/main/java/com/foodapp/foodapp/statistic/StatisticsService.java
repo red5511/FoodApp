@@ -1,10 +1,12 @@
 package com.foodapp.foodapp.statistic;
 
+import com.foodapp.foodapp.common.CommonMapper;
 import com.foodapp.foodapp.common.DatePeriod;
 import com.foodapp.foodapp.common.DateRange;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.product.ProductMapper;
 import com.foodapp.foodapp.product.ProductRepository;
+import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.statistic.request.GetStatisticsChartRequest;
 import com.foodapp.foodapp.statistic.response.GetStatisticsChartResponse;
 import com.foodapp.foodapp.statistic.response.GetStatisticsConfigResponse;
@@ -25,10 +27,13 @@ import java.util.stream.Collectors;
 public class StatisticsService {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
+    private final ContextProvider contextProvider;
 
     public GetStatisticsChartResponse getStatisticsChart(final GetStatisticsChartRequest request) {
-        var dateFrom = getDateFrom(request.getDateRange(), request.getDateFrom());
-        var dateTo = getDateTo(request.getDateRange(), request.getDateTo());
+        request.setCompanyIds(contextProvider.getCompanyIdsWithHolding(request.getCompanyIds()));
+
+        var dateFrom = CommonMapper.getDateFrom(request.getDateRange(), request.getDateFrom());
+        var dateTo = CommonMapper.getDateTo(request.getDateRange(), request.getDateTo());
 
         List<Long> ordersCount = new ArrayList<>();
         List<String> labels = new ArrayList<>();
@@ -84,13 +89,13 @@ public class StatisticsService {
                                                                              final LocalDate dateTo,
                                                                              final GetStatisticsChartRequest request) {
         if (request.getProductId() == null) {
-            return orderRepository.getOrderStatisticsChartWithEarnings(request.getCompanyId(),
+            return orderRepository.getOrderStatisticsChartWithEarnings(request.getCompanyIds(),
                     request.getDatePeriod().name().toLowerCase(),
                     dateFrom.atStartOfDay(),
                     dateTo.atTime(23, 59)
             );
         }
-        return orderRepository.getOrderStatisticsChartByProductIdWithEarnings(request.getCompanyId(),
+        return orderRepository.getOrderStatisticsChartByProductIdWithEarnings(request.getCompanyIds(),
                 request.getDatePeriod().name().toLowerCase(),
                 dateFrom.atStartOfDay(),
                 dateTo.atTime(23, 59),
@@ -122,13 +127,13 @@ public class StatisticsService {
     private List<Object[]> getOrderStatisticsChartFromRepository(final LocalDate dateFrom, final LocalDate dateTo,
                                                                  final GetStatisticsChartRequest request) {
         if (request.getProductId() == null) {
-            return orderRepository.getOrderStatisticsChart(request.getCompanyId(),
+            return orderRepository.getOrderStatisticsChart(request.getCompanyIds(),
                     request.getDatePeriod().name().toLowerCase(),
                     dateFrom.atStartOfDay(),
                     dateTo.atTime(23, 59)
             );
         }
-        return orderRepository.getOrderStatisticsChartByProductId(request.getCompanyId(),
+        return orderRepository.getOrderStatisticsChartByProductId(request.getCompanyIds(),
                 request.getDatePeriod().name().toLowerCase(),
                 dateFrom.atStartOfDay(),
                 dateTo.atTime(23, 59),
@@ -159,30 +164,13 @@ public class StatisticsService {
         return List.of();
     }
 
-    public GetStatisticsConfigResponse getStatisticsConfig(final List<Long> companyIds) {
+    public GetStatisticsConfigResponse getStatisticsConfig(final Long companyId) {
+        var companyIds = contextProvider.getCompanyIdsWithHolding(List.of(companyId));
         var products = productRepository.findAllByCompanyIdIn(companyIds);
         return GetStatisticsConfigResponse.builder()
                 .datePeriodModels(StatisticsMapper.getDataPeriodModels())
                 .dataRangeModels(StatisticsMapper.getDataRangeModels())
                 .products(ProductMapper.mapToProductsDto(products))
                 .build();
-    }
-
-    private LocalDate getDateFrom(final DateRange dateRange, LocalDate dateFrom) {
-        if (DateRange.LAST_30_DAYS.equals(dateRange)) {
-            dateFrom = LocalDate.now().minusDays(30);
-        } else if (DateRange.LAST_15_DAYS.equals(dateRange)) {
-            dateFrom = LocalDate.now().minusDays(15);
-        } else if (DateRange.LAST_7_DAYS.equals(dateRange)) {
-            dateFrom = LocalDate.now().minusDays(7);
-        }
-        return dateFrom;
-    }
-
-    private LocalDate getDateTo(final DateRange dateRange, LocalDate dateTo) {
-        if (!DateRange.CUSTOM_DATE_RANGE.equals(dateRange)) {
-            return LocalDate.now().plusDays(1);
-        }
-        return dateTo != null ? dateTo.plusDays(1) : LocalDate.now().plusDays(1);
     }
 }

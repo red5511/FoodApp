@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.HashSet;
-
 @Configuration
 @Profile("TEST")
 @EnableAspectJAutoProxy
@@ -46,8 +44,7 @@ public class DevelopmentConfiguration {
                 orderRepository,
                 companyRepository,
                 productRepository,
-                timeToAcceptOrder,
-                new HashSet<>()
+                timeToAcceptOrder
         );
     }
 

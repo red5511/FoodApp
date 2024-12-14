@@ -1,7 +1,5 @@
 1. Poprawic sidebar grubosci moze byc grubsze na plenym i cienszy na zwinietym
 2 chyba na mniejszym rozmiarze jest sidbar z automatu otwarty a nie powinein byc
-3. JEABEN ALL-ORDERS I TE PIERDOLONE FILTRY raczje nie powinny byc w headerach tylko odzielnie wiece trzbe duzo przubudowac bo
-sie kurla resizuja po dodaniu elelmtow i przeez to szerokosc kolumny sie zwieskzza np na statusie xd
 
 4.cos jest nie tak z handloawnie errorow bo np w statytyskach na charcie miaelm npe a return jest it tak 200 xd
 
@@ -54,6 +52,22 @@ no trzeba by pomyslec jak to zrobic na front endzie jesli websocket z backendu s
 ###
 
 trzeba by potestowac tego socketa na 2 uzytkowniach jdnoczesnie, jeden uzytkownik na dowch okienkach wyglda ze dziala wiec not bad
+
+
+####
+
+mozna by pomyslec o zrobieniu na froncie diaglgu kiedy user ma wlaczone odbieranie zamowien i zmienia firme
+
+
+#####
+
+pytanie czy ja musze cos robic kiedy otrzymam ordera na backendzie a front nic nie kliknie wiec order powinine zostac odrzucony 
+ale nie mam wgle logiki ktora wysle cos dlo glovo wydaje mi sie ze nie musze nic miec ale to upewnienia sie w przyszlosci
+
+###
+
+moze byc case gdzie jedno okno ma 2 queued orders i drugi okno zobaczy najnowszego 3 ordera wiec pierwsze okno nie moze akceptowac/rejectowac
+tego zamowienia xd do pomyslenia czy nie lepiel byloby dac tylko jednemu userowi z calej firmy w danym czase prawo do odbierania zamowien
 
 PERMISSIONS
 

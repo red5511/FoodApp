@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetStatisticsConfigResponse {
-    @Schema(description = "List of date range models", required = true) //dzieki temu nie mamy tej zminnej oznaczonej jako Optional
+    @Schema(description = "List of date range models", required = true)
     List<DateRangeModel> dataRangeModels;
     @Schema(description = "List of products", required = true)
     List<ProductDto> products;

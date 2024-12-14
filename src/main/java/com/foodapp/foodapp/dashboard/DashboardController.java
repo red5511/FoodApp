@@ -1,5 +1,6 @@
 package com.foodapp.foodapp.dashboard;
 
+import com.foodapp.foodapp.dashboard.request.GetActiveOrdersRequest;
 import com.foodapp.foodapp.dashboard.response.DashboardGetCompanyResponse;
 import com.foodapp.foodapp.dashboard.response.DashboardGetInitConfigResponse;
 import com.foodapp.foodapp.dashboard.response.DashboardGetOrdersResponse;
@@ -28,10 +29,11 @@ public class DashboardController {
         return ResponseEntity.ok(dashboardService.getCompany(companyId));
     }
 
-    @GetMapping("/orders/{companyId}")
+    @PostMapping("/orders/{companyId}")
     @PreAuthorize("hasAuthority('VIEW_LIVE_PANEL')")
-    public ResponseEntity<DashboardGetOrdersResponse> getActiveOrders(final @PathVariable Long companyId) {
-        return ResponseEntity.ok(dashboardService.getActiveOrders(companyId));
+    public ResponseEntity<DashboardGetOrdersResponse> getActiveOrders(final @PathVariable Long companyId,
+                                                                      final @RequestBody GetActiveOrdersRequest request) {
+        return ResponseEntity.ok(dashboardService.getActiveOrders(companyId, request));
     }
 //
 //    @GetMapping("/order/{companyId}")

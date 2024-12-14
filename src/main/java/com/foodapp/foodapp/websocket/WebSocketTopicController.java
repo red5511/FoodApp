@@ -17,8 +17,9 @@ public class WebSocketTopicController {
         eventHandler.handleHeartbeatWebSocketEvent(event);
     }
 
-    @MessageMapping("/disconnect") // Messages sent to `/app/heartbeat` arrive here
+    @MessageMapping("/disconnect") // Messages sent to `/app/disconnect` arrive here
     public void handleDisconnectionEvent(@Payload DisconnectionWebSocketEvent event) {
+        System.out.println("DC from socket");
         eventHandler.handleDisconnectionWebSocketEvent(event);
     }
 }

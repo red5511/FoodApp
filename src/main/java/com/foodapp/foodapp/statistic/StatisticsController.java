@@ -25,7 +25,7 @@ public class StatisticsController {
 
     @PostMapping("/config")
     public ResponseEntity<GetStatisticsConfigResponse> getStatisticsConfig(@RequestBody final GetStatisticsConfigRequest request) {
-        var result = statisticsService.getStatisticsConfig(request.getCompanyIds());
+        var result = statisticsService.getStatisticsConfig(request.getCompanyId());
         return ResponseEntity.ok(result);
     }
 

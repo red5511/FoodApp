@@ -7,6 +7,8 @@ import com.foodapp.foodapp.product.request.ModifyProductRequest;
 import com.foodapp.foodapp.security.ContextProvider;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
@@ -14,19 +16,19 @@ public class ProductService {
     private final ContextProvider contextProvider;
 
     public void saveProduct(final CreateProductRequest request) {
-        contextProvider.validateCompanyAccess(request.getProduct().getCompanyId());
+        contextProvider.validateCompanyAccess(List.of(request.getProduct().getCompanyId()));
         var product = buildProduct(request.getProduct());
         productRepository.save(product);
     }
 
     public void modifyProduct(final ModifyProductRequest request) {
-        contextProvider.validateCompanyAccess(request.getProduct().getCompanyId());
+        contextProvider.validateCompanyAccess(List.of(request.getProduct().getCompanyId()));
         var product = buildProduct(request.getProduct());
         productRepository.save(product);
     }
 
     public void deleteProduct(final DeleteProductRequest request) {
-        contextProvider.validateCompanyAccess(request.getCompanyId());
+        contextProvider.validateCompanyAccess(List.of(request.getCompanyId()));
         productRepository.deleteById(request.getProductId());
     }
 

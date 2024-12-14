@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Builder
@@ -13,11 +14,11 @@ public class SearchParams {
     private List<OrderStatus> statuses;
     private String name;
     private BigDecimal price;
-    private String description;
-    private DateParam dateParam;
+    private LocalDate dateFrom;
+    private LocalDate dateTo;
     private List<Sort> sorts;
     private int page;
     private int size;
-    private Long companyId;
+    private List<Long> companyIds;
     private String global;
 }

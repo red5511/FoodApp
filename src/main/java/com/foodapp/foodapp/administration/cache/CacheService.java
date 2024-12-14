@@ -27,11 +27,15 @@ public class CacheService {
 
 
     public boolean validateIfCompanyIsReceivingOrders(final Long companyId) {
+        System.out.println("cacheService"+companyWithActiveReceivingCacheWrapper.getAllIds());
         return companyWithActiveReceivingCacheWrapper.get(companyId) != null;
     }
 
     public void removeCacheFroReceivingOrders(final Long userId, final Long companyId) {
         usersConnectedToWebSocketCacheWrapper.remove(userId);
         companyWithActiveReceivingCacheWrapper.remove(companyId);
+
+        System.out.println("cacheServiceV2"+companyWithActiveReceivingCacheWrapper.getAllIds());
+
     }
 }

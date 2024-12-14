@@ -222,8 +222,9 @@ public class MainConfiguration {
 
     @Bean
     public StatisticsService statisticsService(final ProductRepository productRepository,
-                                               final OrderRepository orderRepository) {
-        return new StatisticsService(productRepository, orderRepository);
+                                               final OrderRepository orderRepository,
+                                               final ContextProvider contextProvider) {
+        return new StatisticsService(productRepository, orderRepository, contextProvider);
     }
 
     @Bean

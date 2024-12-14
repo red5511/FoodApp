@@ -17,29 +17,44 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @AllArgsConstructor
 @Slf4j
 public class SchedulerForTestingService {
+    public static int INDEX = 0;
+    public static final Map<String, List<Long>> PRODUCTS_IDS_BY_COMPANY_TOPIC_NAME = Map.of(
+            "Topic1", List.of(1L, 2L),
+            "Topic2", List.of(3L, 4L),
+            "Topic3", List.of(5L)
+    );
+    public static final Map<String, Long> COMPANY_ID_BY_COMPANY_TOPIC_NAME = Map.of(
+            "Topic1", 1L,
+            "Topic2", 2L,
+            "Topic3", 3L
+    );
     private final WebSocketService webSocketService;
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
     private final ProductRepository productRepository;
     private final Long timeToAcceptOrder;
-    private final Set<String> companyTopics;
+    private final Set<String> companyTopics = ConcurrentHashMap.newKeySet();
+
 
 
     @Scheduled(fixedRate = 10000)
     @TechnicalContextDev
     @Transactional
     public void sendOrdersToMainTopic() {
+        System.out.println("companyTopics"+companyTopics);
         companyTopics.forEach(this::handleSending);
     }
 
     public void handleSending(final String topicName) {
-        var orderProducts = createOrderProductForTest();
-        var company = companyRepository.findById(1L).orElseThrow(
+        var orderProducts = createOrderProductForTest(PRODUCTS_IDS_BY_COMPANY_TOPIC_NAME.get(topicName));
+        var company = companyRepository.findById(COMPANY_ID_BY_COMPANY_TOPIC_NAME.get(topicName)).orElseThrow(
                 () -> new IllegalStateException("Send new order - wrong company id"));
         var order = createOrderForTest(orderProducts, company);
         //todo no tutaj bedzie pytanie skad glovo ma wiedziec jakie id ma moja firma xd
@@ -50,8 +65,8 @@ public class SchedulerForTestingService {
         webSocketService.sendNewOrderToTopic(topicName, OrderMapper.mapToOrderDto(order), company.getId());
     }
 
-    private List<OrderProduct> createOrderProductForTest() {
-        var products = productRepository.findAllById(List.of(1L, 2L));
+    private List<OrderProduct> createOrderProductForTest(List<Long> productsIds) {
+        var products = productRepository.findAllById(productsIds);
         if (products.size() == 0) {
             throw new IllegalStateException("Send new order - wrong product ids");
         }
@@ -68,6 +83,7 @@ public class SchedulerForTestingService {
     }
 
     public Order createOrderForTest(final List<OrderProduct> orderProducts, final Company company) {
+        INDEX += 1;
         var price = orderProducts.stream()
                 .map(OrderProduct::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -84,7 +100,7 @@ public class SchedulerForTestingService {
                 .company(Company.builder()
                         .build())
                 .company(company)
-                .approvalDeadline(LocalDateTime.now().plusSeconds(25))
+                .approvalDeadline(LocalDateTime.now().plusSeconds(INDEX % 2 != 0 ? 25 : 10))
                 .orderProducts(orderProducts)
                 //.approvalDeadline(LocalDateTime.now().plusMinutes(timeToAcceptOrder))
                 .build();

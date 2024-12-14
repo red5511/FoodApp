@@ -16,6 +16,7 @@ import lombok.Getter;
 public class OrderDto {
     private Long id;
     private Long companyId;
+    private String companyName;
     private BigDecimal price;
     private String description;
     private OrderType orderType;
