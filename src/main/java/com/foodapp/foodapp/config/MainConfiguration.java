@@ -2,7 +2,7 @@ package com.foodapp.foodapp.config;
 
 import com.foodapp.foodapp.administration.AdministrationService;
 import com.foodapp.foodapp.administration.cache.CacheService;
-import com.foodapp.foodapp.administration.cache.CompanyWithActiveReceivingCacheWrapper;
+import com.foodapp.foodapp.administration.cache.CompanyWithActiveReceivingUsersCacheWrapper;
 import com.foodapp.foodapp.administration.cache.UsersConnectedToWebSocketCacheWrapper;
 import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.administration.company.CompanyService;
@@ -20,6 +20,7 @@ import com.foodapp.foodapp.order.OrderService;
 import com.foodapp.foodapp.order.OrderValidator;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.product.ProductService;
+import com.foodapp.foodapp.rabbitMQ.RabbitMQSender;
 import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
 import com.foodapp.foodapp.security.JwtService;
@@ -203,8 +204,8 @@ public class MainConfiguration {
     }
 
     @Bean
-    public OrderValidator orderValidator() {
-        return new OrderValidator(timeToAcceptOrder);
+    public OrderValidator orderValidator(final ContextProvider contextProvider) {
+        return new OrderValidator(contextProvider);
     }
 
     @Bean
@@ -231,23 +232,26 @@ public class MainConfiguration {
     public WebSocketService webSocketService(final ContextProvider contextProvider,
                                              final SchedulerForTestingService schedulerForTestingService,
                                              final CacheService cacheService,
-                                             final WebSocketEventSender webSocketEventSender) {
+                                             final WebSocketEventSender webSocketEventSender,
+                                             final RabbitMQSender rabbitMQSender) {
         return new WebSocketService(
                 contextProvider,
                 schedulerForTestingService,
                 cacheService,
-                webSocketEventSender);
+                webSocketEventSender,
+                rabbitMQSender);
     }
 
     @Bean
     public WebSocketEventHandler webSocketEventHandler(final CacheService cacheService,
-                                                       final WebSocketEventSender webSocketEventSender) {
-        return new WebSocketEventHandler(cacheService, webSocketEventSender);
+                                                       final WebSocketEventSender webSocketEventSender,
+                                                       final CompanyRepository companyRepository) {
+        return new WebSocketEventHandler(cacheService, webSocketEventSender, companyRepository);
     }
 
     @Bean
     public CacheService cacheService(final UsersConnectedToWebSocketCacheWrapper usersConnectedToWebSocketCacheWrapper,
-                                     final CompanyWithActiveReceivingCacheWrapper companyWithActiveReceivingCacheWrapper) {
+                                     final CompanyWithActiveReceivingUsersCacheWrapper companyWithActiveReceivingCacheWrapper) {
         return new CacheService(companyWithActiveReceivingCacheWrapper,
                 usersConnectedToWebSocketCacheWrapper);
     }

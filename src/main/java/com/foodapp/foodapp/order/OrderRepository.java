@@ -8,11 +8,12 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long>, OrderRepositoryCustom {
-    List<Order> findByCompanyIdAndStatus(Long companyId, OrderStatus status);
-    List<Order> findByCompanyIdAndStatus(Long companyId, OrderStatus status, Sort sort);
+    List<Order> findByCompany_IdInAndStatusIn(Set<Long> companyIds, List<OrderStatus> status);
+    List<Order> findByCompany_IdInAndStatusIn(Set<Long> companyIds, List<OrderStatus> statuses, Sort sort);
 
     @Query("SELECT COUNT(o), DATE_TRUNC(:range, o.deliveryTime) AS timePeriod " +
             "FROM Order o " +

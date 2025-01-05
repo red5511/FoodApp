@@ -5,6 +5,7 @@ import com.foodapp.foodapp.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class ContextProvider {
         return companyIds.size() == 1 && HOLDING_ID.equals(companyIds.get(0));
     }
 
-    public void validateCompanyAccess(final List<Long> companyIdsToCheck) {
+    public void validateCompanyAccess(final Collection<Long> companyIdsToCheck) {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof User user) {
             var companyIds = getCompanyIdList();
@@ -63,7 +64,7 @@ public class ContextProvider {
     }
 
     public void validateCompanyAccessWithHolding(final List<Long> companyIds) {
-        if (!isHolding(companyIds)){
+        if (!isHolding(companyIds)) {
             validateCompanyAccess(companyIds);
         }
     }

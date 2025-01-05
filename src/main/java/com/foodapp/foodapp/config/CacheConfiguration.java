@@ -1,7 +1,8 @@
 package com.foodapp.foodapp.config;
 
 
-import com.foodapp.foodapp.administration.cache.CompanyWithActiveReceivingCacheWrapper;
+import com.foodapp.foodapp.administration.cache.CompanyWithActiveReceivingTopicNamesCacheWrapper;
+import com.foodapp.foodapp.administration.cache.CompanyWithActiveReceivingUsersCacheWrapper;
 import com.foodapp.foodapp.administration.cache.UsersConnectedToWebSocketCacheWrapper;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.cache.CacheManager;
@@ -21,15 +22,21 @@ public class CacheConfiguration {
     }
 
     @Bean
-    public CompanyWithActiveReceivingCacheWrapper company(final CacheManager cacheManager) {
-        return new CompanyWithActiveReceivingCacheWrapper(cacheManager);
+    public CompanyWithActiveReceivingUsersCacheWrapper companyWithActiveReceivingUsersCacheWrapper(final CacheManager cacheManager) {
+        return new CompanyWithActiveReceivingUsersCacheWrapper(cacheManager);
     }
+
+//    @Bean
+//    public CompanyWithActiveReceivingTopicNamesCacheWrapper companyWithActiveReceivingTopicNamesCacheWrapper(
+//            final CacheManager cacheManager) {
+//        return new CompanyWithActiveReceivingTopicNamesCacheWrapper(cacheManager);
+//    }
 
     @Bean
     public CaffeineCacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
         cacheManager.setCaffeine(Caffeine.newBuilder()
-                .expireAfterAccess(1, TimeUnit.MINUTES) // Set eviction time to 5 minutes
+                .expireAfterAccess(5, TimeUnit.MINUTES) // Set eviction time to 5 minutes
         );
         return cacheManager;
     }

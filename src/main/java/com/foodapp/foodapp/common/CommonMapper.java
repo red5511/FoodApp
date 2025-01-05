@@ -78,11 +78,16 @@ public class CommonMapper {
 
     public static Sort toSort(List<com.foodapp.foodapp.common.Sort> sorts) {
         var springSort = Sort.unsorted();
-        sorts.forEach(sort -> springSort.and(Sort.by(getDirection(sort.getDirection()), sort.getField())));
+        for (var sort : sorts) {
+            var direction = getDirection(sort.getDirection());
+            springSort = springSort.and(Sort.by(direction, sort.getField()));
+        }
         return springSort;
     }
 
     public static Sort.Direction getDirection(final SortingDirection sortingDirection) {
         return SortingDirection.ASC.equals(sortingDirection) ? Sort.Direction.ASC : Sort.Direction.DESC;
     }
+
+
 }

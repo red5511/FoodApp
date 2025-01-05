@@ -31,9 +31,8 @@ public class DashboardController {
 
     @PostMapping("/orders/{companyId}")
     @PreAuthorize("hasAuthority('VIEW_LIVE_PANEL')")
-    public ResponseEntity<DashboardGetOrdersResponse> getActiveOrders(final @PathVariable Long companyId,
-                                                                      final @RequestBody GetActiveOrdersRequest request) {
-        return ResponseEntity.ok(dashboardService.getActiveOrders(companyId, request));
+    public ResponseEntity<DashboardGetOrdersResponse> getActiveOrders(final @RequestBody GetActiveOrdersRequest request) {
+        return ResponseEntity.ok(dashboardService.getActiveOrders(request));
     }
 //
 //    @GetMapping("/order/{companyId}")

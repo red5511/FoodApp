@@ -39,6 +39,10 @@ czy w paylodzie powinno leciec widoczne haslo przy rejsetaracji i chyba logowani
 
 ####
 
+ng prime ma fajny time line jak lifcycle moze dodac?
+
+####
+
 ![img_3.png](img_3.png)
 
 cos z tym soundListenerem

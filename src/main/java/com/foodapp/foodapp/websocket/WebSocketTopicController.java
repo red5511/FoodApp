@@ -14,6 +14,7 @@ public class WebSocketTopicController {
 
     @MessageMapping("/heartbeat") // Messages sent to `/app/heartbeat` arrive here
     public void handleHeartbeatEvent(@Payload HeartbeatWebSocketEvent event) {
+        System.out.println("HEARTBEAT");
         eventHandler.handleHeartbeatWebSocketEvent(event);
     }
 

@@ -1,30 +1,28 @@
 package com.foodapp.foodapp.forDevelopment.scheduler;
 
 
+import com.foodapp.foodapp.administration.cache.CacheService;
 import com.foodapp.foodapp.administration.company.Company;
 import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.forDevelopment.TechnicalContextDev;
 import com.foodapp.foodapp.order.*;
 import com.foodapp.foodapp.orderProduct.OrderProduct;
 import com.foodapp.foodapp.product.ProductRepository;
+import com.foodapp.foodapp.rabbitMQ.RabbitMQSender;
 import com.foodapp.foodapp.websocket.WebSocketService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
 public class SchedulerForTestingService {
-    public static int INDEX = 0;
     public static final Map<String, List<Long>> PRODUCTS_IDS_BY_COMPANY_TOPIC_NAME = Map.of(
             "Topic1", List.of(1L, 2L),
             "Topic2", List.of(3L, 4L),
@@ -35,20 +33,34 @@ public class SchedulerForTestingService {
             "Topic2", 2L,
             "Topic3", 3L
     );
+    public static int INDEX = 0;
     private final WebSocketService webSocketService;
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
     private final ProductRepository productRepository;
     private final Long timeToAcceptOrder;
     private final Set<String> companyTopics = ConcurrentHashMap.newKeySet();
-
-
+    private final CacheService cacheService;
+    private final RabbitMQSender rabbitMQSender;
 
     @Scheduled(fixedRate = 10000)
+    public void xd() {
+        System.out.println("sprawdzam cacheService");
+        log.info(cacheService.getCompanyUsersCache().getEntries().toString());
+        log.info(cacheService.getUsersConnectedToWebSocketCache().getEntries().toString());
+    }
+//
+//    @Scheduled(fixedRate = 20000)
+//    public void x2() {
+//        cacheService.getCompanyUsersCache().get(1L);
+//    }
+
+
+    @Scheduled(fixedRate = 25000)
     @TechnicalContextDev
-    @Transactional
+//    @Transactional w sumie to nie powinien byc transactional bo a noz sie wywali socket i przez to orer mi sie nie zapsize na bazie
     public void sendOrdersToMainTopic() {
-        System.out.println("companyTopics"+companyTopics);
+//        System.out.println("companyTopics" + companyTopics);
         companyTopics.forEach(this::handleSending);
     }
 
@@ -58,11 +70,13 @@ public class SchedulerForTestingService {
                 () -> new IllegalStateException("Send new order - wrong company id"));
         var order = createOrderForTest(orderProducts, company);
         //todo no tutaj bedzie pytanie skad glovo ma wiedziec jakie id ma moja firma xd
+
         final Order finalOrder = order;
         orderProducts.forEach(el -> el.setOrder(finalOrder));
         order = orderRepository.save(order);
         log.info("Sending order to ts");
         webSocketService.sendNewOrderToTopic(topicName, OrderMapper.mapToOrderDto(order), company.getId());
+        rabbitMQSender.sendMessage(order);
     }
 
     private List<OrderProduct> createOrderProductForTest(List<Long> productsIds) {
@@ -88,9 +102,10 @@ public class SchedulerForTestingService {
                 .map(OrderProduct::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return Order.builder()
-                .deliveryTime(LocalDateTime.now())
-                .deliveryAddress("Sikorskiego 43")
-                .orderType(OrderType.GLOVO)
+                .deliveryTime(LocalDateTime.now().plusMinutes(66))
+                .deliveryAddress("Sikorskiego 33 Katowice 42-504")
+                .deliveryCode(UUID.randomUUID().toString().substring(0, 8))
+                .orderType(INDEX % 2 != 0 ? OrderType.GLOVO : OrderType.PYSZNE_PL)
                 .customerName("Maciek Franczak")
                 .description(
                         "Poprosze osobno frytki i cole bez lodu. W razie problemow ze znalezeniem numry zostawic na portierni"
@@ -100,14 +115,29 @@ public class SchedulerForTestingService {
                 .company(Company.builder()
                         .build())
                 .company(company)
-                .approvalDeadline(LocalDateTime.now().plusSeconds(INDEX % 2 != 0 ? 25 : 10))
+//                .approvalDeadline(LocalDateTime.now().plusSeconds(INDEX % 2 != 0 ? 25 : 10))
+                .approvalDeadline(LocalDateTime.now().plusSeconds(90))
                 .orderProducts(orderProducts)
                 //.approvalDeadline(LocalDateTime.now().plusMinutes(timeToAcceptOrder))
                 .build();
     }
 
-    public void addNewTopicToSend(final String webSocketTopicName) {
-        companyTopics.add(webSocketTopicName);
+    public void updateTopicToSend(final Set<Long> companyIdsToAdd, final Set<Long> companyIdsToRemove) {
+        //funkcja na potrzeby testowe
+        var companiesToAdd = companyRepository.findAllById(companyIdsToAdd).stream()
+                .map(Company::getWebSocketTopicName)
+                .collect(Collectors.toList());
+        companyTopics.addAll(companiesToAdd);
+
+        var companiesToRemove = companyRepository.findAllById(companyIdsToRemove).stream()
+                .map(Company::getWebSocketTopicName)
+                .collect(Collectors.toList());
+        companiesToRemove.forEach(companyTopics::remove);
+
+        System.out.println("companyTopics");
+        System.out.println(companyTopics);
+
+
     }
 
     public void removeTopicFromSending(final String webSocketTopicName) {

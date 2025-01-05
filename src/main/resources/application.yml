@@ -36,6 +36,11 @@ spring:
           auth: true
           starttls.enable: true
   cache:
-    cache-names: usersConnectedToWebSocket,companyWithActiveReceiving
+    cache-names: usersConnectedToWebSocket,companyWithActiveReceivingUsers,companyWithActiveReceivingTopicNames
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
 app:
   time-to-accept-order: 2

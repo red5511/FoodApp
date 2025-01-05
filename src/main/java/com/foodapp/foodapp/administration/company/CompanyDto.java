@@ -18,4 +18,5 @@ public class CompanyDto {
     private boolean isReceivingOrdersActive;
     @Schema(required = true)
     private String webSocketTopicName;
+    private boolean isHolding;
 }

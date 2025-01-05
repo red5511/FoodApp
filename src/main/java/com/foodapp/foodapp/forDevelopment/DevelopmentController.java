@@ -43,4 +43,9 @@ public class DevelopmentController {
     public ResponseEntity<Void> ehh3(final @RequestBody ApprovedOrderWebSocketEvent request) {
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/forGeneratingApi7")
+    public ResponseEntity<Void> ehh3(final @RequestBody ApprovalDeadlinePassed request) {
+        return ResponseEntity.ok().build();
+    }
 }

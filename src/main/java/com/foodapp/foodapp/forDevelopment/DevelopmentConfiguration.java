@@ -1,10 +1,12 @@
 package com.foodapp.foodapp.forDevelopment;
 
+import com.foodapp.foodapp.administration.cache.CacheService;
 import com.foodapp.foodapp.administration.company.CompanyRepository;
 import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.orderProduct.OrderProductRepository;
 import com.foodapp.foodapp.product.ProductRepository;
+import com.foodapp.foodapp.rabbitMQ.RabbitMQSender;
 import com.foodapp.foodapp.user.UserRepository;
 import com.foodapp.foodapp.websocket.WebSocketService;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,12 +41,16 @@ public class DevelopmentConfiguration {
     public SchedulerForTestingService schedulerForTestingService(@Lazy final WebSocketService webSocketService,
                                                                  final OrderRepository orderRepository,
                                                                  final CompanyRepository companyRepository,
-                                                                 final ProductRepository productRepository) {
+                                                                 final ProductRepository productRepository,
+                                                                 final CacheService cacheService,
+                                                                 final RabbitMQSender rabbitMQSender) {
         return new SchedulerForTestingService(webSocketService,
                 orderRepository,
                 companyRepository,
                 productRepository,
-                timeToAcceptOrder
+                timeToAcceptOrder,
+                cacheService,
+                rabbitMQSender
         );
     }
 

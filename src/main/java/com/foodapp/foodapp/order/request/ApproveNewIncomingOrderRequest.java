@@ -15,6 +15,4 @@ public class ApproveNewIncomingOrderRequest {
     private Long companyId;
     @Schema(required = true)
     private Long orderId;
-    @Schema(required = true)
-    private String orderReceivingTopicName;
 }

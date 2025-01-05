@@ -10,6 +10,7 @@ import com.foodapp.foodapp.order.request.CreateOrderRequest;
 import com.foodapp.foodapp.order.request.GetOrdersForCompanyRequest;
 import com.foodapp.foodapp.order.request.RejectNewIncomingOrderRequest;
 import com.foodapp.foodapp.security.ContextProvider;
+import com.foodapp.foodapp.websocket.EventMapper;
 import com.foodapp.foodapp.websocket.WebSocketEventSender;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -28,30 +30,31 @@ public class OrderService {
     private final OrderValidator orderValidator;
     private final WebSocketEventSender webSocketEventSender;
 
-    @Transactional
     public void approveNewIncomingOrder(final ApproveNewIncomingOrderRequest request) {
-        handleNewIncomingOrder(OrderStatus.IN_EXECUTION, request.getCompanyId(), request.getOrderId());
-        webSocketEventSender.sendApprovedOrderWebSocketEvent(request.getOrderId(), request.getOrderReceivingTopicName());
+        var topicName = handleWaitingForAcceptanceOrder(OrderStatus.IN_EXECUTION, request.getCompanyId(), request.getOrderId());
+        var event = EventMapper.createApprovedOrderWebSocketEvent(request.getOrderId());
+        webSocketEventSender.fire(event, topicName);
 
         //todo pewnie trzeba strzelic czyms do glovo czy cos
     }
 
-    @Transactional
     public void rejectNewIncomingOrder(final RejectNewIncomingOrderRequest request) {
-        handleNewIncomingOrder(OrderStatus.REJECTED, request.getCompanyId(), request.getOrderId());
-        webSocketEventSender.sendRejectedOrderWebSocketEvent(request.getOrderId(), request.getOrderReceivingTopicName());
+        var topicName = handleWaitingForAcceptanceOrder(OrderStatus.REJECTED, request.getCompanyId(), request.getOrderId());
+        var event = EventMapper.createRejectedOrderWebSocketEvent(request.getOrderId());
+        webSocketEventSender.fire(event, topicName);
 
         //todo pewnie trzeba strzelic czyms do glovo czy cos
     }
 
-    private void handleNewIncomingOrder(final OrderStatus orderStatus,
-                                        final Long companyId,
-                                        final Long orderId) {
-        contextProvider.validateCompanyAccess(List.of(companyId));
+    private String handleWaitingForAcceptanceOrder(final OrderStatus orderStatus,
+                                                   final Long companyId,
+                                                   final Long orderId) {
+        contextProvider.validateCompanyAccessWithHolding(List.of(companyId));
         var order = orderRepository.findById(orderId).orElseThrow(() -> new SecurityException("Wrong action"));
-        orderValidator.validateIncomingOrder(order, companyId);
+        orderValidator.validateWaitingForAcceptanceOrder(order, companyId);
         order.setStatus(orderStatus);
         orderRepository.save(order);
+        return order.getCompany().getWebSocketTopicName();
     }
 
     public void saveOrder(final CreateOrderRequest request) {
@@ -70,10 +73,9 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public List<OrderDto> getOrders(final Long companyId, final OrderStatus orderStatus, final List<Sort> sorts) {
-        List<Order> orders = CollectionUtils.isEmpty(sorts) ? orderRepository.findByCompanyIdAndStatus(companyId, orderStatus) :
-                orderRepository.findByCompanyIdAndStatus(companyId, orderStatus,
-                        CommonMapper.toSort(sorts));  // nie uzywam tego obecnie bo front zalatwil sortowanie
+    public List<OrderDto> getOrders(final Set<Long> companyIds, final List<OrderStatus> orderStatuses, final List<Sort> sorts) {
+        List<Order> orders = CollectionUtils.isEmpty(sorts) ? orderRepository.findByCompany_IdInAndStatusIn(companyIds, orderStatuses) :
+                orderRepository.findByCompany_IdInAndStatusIn(companyIds, orderStatuses, CommonMapper.toSort(sorts));
         return orders.stream()
                 .map(OrderMapper::mapToOrderDto)
                 .collect(Collectors.toList());

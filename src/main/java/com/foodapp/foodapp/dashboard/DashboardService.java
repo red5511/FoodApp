@@ -13,6 +13,7 @@ import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.user.permission.PermissionUtils;
 import com.foodapp.foodapp.user.permission.PermittedModules;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang.BooleanUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -25,10 +26,11 @@ public class DashboardService {
     private final ContextProvider contextProvider;
     private final OrderService orderService;
 
-    public DashboardGetOrdersResponse getActiveOrders(final Long companyId,
-                                                      final GetActiveOrdersRequest request) {
-        contextProvider.validateCompanyAccessWithHolding(List.of(companyId));
-        var orders = orderService.getOrders(companyId, OrderStatus.IN_EXECUTION, request.getSorts());
+    public DashboardGetOrdersResponse getActiveOrders(final GetActiveOrdersRequest request) {
+        contextProvider.validateCompanyAccess(request.getCompanyIds());
+        var statuses = BooleanUtils.isTrue(request.getIsWaitingToAcceptanceSection()) ? List.of(OrderStatus.WAITING_FOR_ACCEPTANCE) :
+                List.of(OrderStatus.IN_EXECUTION, OrderStatus.READY_FOR_PICK_UP);
+        var orders = orderService.getOrders(request.getCompanyIds(), statuses, request.getSorts());
         return DashboardGetOrdersResponse.builder()
                 .orderList(orders)
                 .build();
@@ -68,6 +70,7 @@ public class DashboardService {
         return CompanyDto.builder()
                 .id(ContextProvider.HOLDING_ID)
                 .name("Wszystkie Firmy")
+                .isHolding(true)
                 .build();
     }
 

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Set;
+
 @Getter
 @Schema(description = "Heartbeat event via WebSocket")
 @SuperBuilder
@@ -15,14 +17,14 @@ public class HeartbeatWebSocketEvent extends WebSocketEvent {
     @Schema(required = true)
     public Long userId;
     @Schema(required = true)
-    public Long companyId;
+    public Set<Long> companyIds;
 
     @JsonCreator
     public HeartbeatWebSocketEvent(@JsonProperty("eventType") final EventType eventType,
                                    @JsonProperty("userId") final Long userId,
-                                   @JsonProperty("companyId") final Long companyId) {
+                                   @JsonProperty("companyIds") final Set<Long> companyIds) {
         super(eventType);
         this.userId = userId;
-        this.companyId = companyId;
+        this.companyIds = companyIds;
     }
 }

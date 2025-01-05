@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Set;
+
 @Getter
 @Schema(description = "Disconnection event via WebSocket")
 @SuperBuilder
@@ -15,17 +17,15 @@ public class DisconnectionWebSocketEvent extends WebSocketEvent {// User przesyl
     @Schema(required = true)
     public Long userId;
     @Schema(required = true)
-    public Long companyId;
-    @Schema(required = true)
-    public String orderReceivingTopicName;
+    public Set<Long> companyIds;
 
     @JsonCreator
     public DisconnectionWebSocketEvent(@JsonProperty("eventType") final EventType eventType,
                                        @JsonProperty("userId") final Long userId,
-                                       @JsonProperty("companyId") final Long companyId) {
+                                       @JsonProperty("companyId") final Set<Long> companyIds) {
         super(eventType);
         this.userId = userId;
-        this.companyId = companyId;
+        this.companyIds = companyIds;
     }
 
 }
