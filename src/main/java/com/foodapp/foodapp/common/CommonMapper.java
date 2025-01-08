@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class CommonMapper {
     public static SearchParams mapToSearchParams(final GetOrdersForCompanyRequest request, final List<Long> companyIds) {
         var dateFrom = CommonMapper.getDateFrom(request.getDateRange(), request.getDateFrom());
-        var dateTo = CommonMapper.getDateTo(request.getDateRange(), request.getDateFrom());
+        var dateTo = CommonMapper.getDateTo(request.getDateRange(), request.getDateTo());
         var builder = SearchParams.builder();
         return builder
                 .statuses(request.getStatuses())

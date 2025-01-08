@@ -48,14 +48,17 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             valueParamsMap.put(GLOBAL_PARAM, params.getGlobal());
         }
 
+        StringBuilder sortQueryBuilder = new StringBuilder();
+        sortQueryBuilder.append(BASE_SORT_QUERY);
         if (!Collections.isEmpty(params.getSorts())) {
-            StringBuilder sortQueryBuilder = new StringBuilder();
-            sortQueryBuilder.append(BASE_SORT_QUERY);
             for (var sort : params.getSorts()) {
                 sortQueryBuilder.append(" o.").append(sort.getField()).append(" ").append(sort.getDirection().name());
             }
-            queryBuilder.append(sortQueryBuilder.toString());
         }
+        else {
+            sortQueryBuilder.append(" o.").append(CREATED_DATE_PARAM).append(" ").append("ASC");
+        }
+        queryBuilder.append(sortQueryBuilder.toString());
 
         Query orderQuery = entityManager.createQuery(queryBuilder.toString(), Order.class)
                 .setParameter(COMPANY_IDS_PARAM, params.getCompanyIds())

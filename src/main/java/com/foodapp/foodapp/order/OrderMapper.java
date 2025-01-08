@@ -18,7 +18,7 @@ public class OrderMapper {
             OrderStatus.EXECUTED, "Wykonane",
             OrderStatus.REJECTED, "Odrzucone",
             OrderStatus.READY_FOR_PICK_UP, "Do odebrania",
-            OrderStatus.NOT_ACCEPTED, "Nie zaakceptowane"
+            OrderStatus.NOT_ACCEPTED, "Nie podjęte"
     );
     public static final Map<OrderStatus, Severity> SEVERITY_TO_ORDER_STATUS_MAP = Map.of(
             OrderStatus.WAITING_FOR_ACCEPTANCE, Severity.yellow,
@@ -66,6 +66,7 @@ public class OrderMapper {
                 .build();
         orderDto = orderDto.toBuilder()
                 .orderProducts(OrderProductMapper.toOrderProductsDto(orderProducts, orderDto))
+                .createdDate(order.getCreatedDate())
                 .build();
         return orderDto;
     }

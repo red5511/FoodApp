@@ -50,6 +50,16 @@ cos z tym soundListenerem
 
 ####
 
+no niestaty ten sidebar na tabletowej rozdzialce nie podswietla wybranego (to wiedzialem) ale kiedy sie kilknie w inna ikonke to sie pdosweitlaja dwa na raz na rozwiniecie xd
+
+![img_5.png](img_5.png)
+
+###
+
+pomyslec nad wybieraniem tej firmy bo popularny case bedzie ze ktos ma 4 firmy wirualne wiec zakladka wszystkie firmy bedzie na dole wiec przy odswiezeniu przekieruje nas na 1
+
+###
+
 no trzeba by pomyslec jak to zrobic na front endzie jesli websocket z backendu sie wyjebal ;/
 
 
@@ -72,6 +82,12 @@ ale nie mam wgle logiki ktora wysle cos dlo glovo wydaje mi sie ze nie musze nic
 
 moze byc case gdzie jedno okno ma 2 queued orders i drugi okno zobaczy najnowszego 3 ordera wiec pierwsze okno nie moze akceptowac/rejectowac
 tego zamowienia xd do pomyslenia czy nie lepiel byloby dac tylko jednemu userowi z calej firmy w danym czase prawo do odbierania zamowien
+
+
+##########
+
+![img_4.png](img_4.png)
+moze to powino byc tak jak unas na rozwijajce zeby byla tylko jedna linia?
 
 PERMISSIONS
 

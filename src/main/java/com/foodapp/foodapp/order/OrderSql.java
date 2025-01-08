@@ -7,6 +7,7 @@ public class OrderSql {
     public static final String DESCRIPTION_PARAM = "description";
     public static final String PRICE_PARAM = "price";
     public static final String STATUSES_PARAM = "statuses";
+    public static final String CREATED_DATE_PARAM = "createdDate";
     public static final String GLOBAL_PARAM = "global";
     public static final String DATE_FROM_PARAM = "dateFrom";
     public static final String DATE_TO_PARAM = "dateTo";

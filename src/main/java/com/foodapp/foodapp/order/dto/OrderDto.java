@@ -25,6 +25,7 @@ public class OrderDto {
     private String deliveryAddress;
     private String customerName;
     private LocalDateTime deliveryTime;
+    private LocalDateTime createdDate;
     private Set<OrderProductDto> orderProducts;
     private LocalDateTime approvalDeadline;
     private OrderActions actions;
