@@ -39,6 +39,15 @@ czy w paylodzie powinno leciec widoczne haslo przy rejsetaracji i chyba logowani
 
 ####
 
+moze dorby pomyslem bylo by dorobienie prawa na wyswietlenie w all orders czasu wstecz nielimitowanego i limitowanego zeby jakis jasiek
+nie mogl widziec full zamowien
+
+####
+
+jak mamy tabletowego/zamknietego sidbara to po klikniejciu w powa zakladke raczej fajnie byloby jakby sie zamknal
+
+####
+
 ng prime ma fajny time line jak lifcycle moze dodac?
 
 ####
