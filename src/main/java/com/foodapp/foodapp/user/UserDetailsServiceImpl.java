@@ -20,19 +20,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
-                             .orElseThrow(() -> new UsernameNotFoundException("Bad credentials"));
+                             .orElseThrow(() -> new UsernameNotFoundException("Nieprawidłowe dane logowania"));
     }
 
     @SneakyThrows
     public User loadUserByUsername2(final String username) {
-        return userRepository.findByEmail(username).orElseThrow(() -> new BusinessException("Bad credentials"));
+        return userRepository.findByEmail(username).orElseThrow(() -> new BusinessException("Nieprawidłowe dane logowania"));
     }
 
     @SneakyThrows
     public String registerUser(final User user) {
         boolean userExists = userRepository.findByEmail(user.getUsername()).isPresent();
         if(userExists) {
-            throw new BusinessException("User already exists");
+            throw new BusinessException("Podany email jest juz zajęty");
         }
         userRepository.save(user);
         return tokenConfirmationService.initTokenConfirmation(user);

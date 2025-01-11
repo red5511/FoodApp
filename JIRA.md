@@ -52,6 +52,20 @@ ng prime ma fajny time line jak lifcycle moze dodac?
 
 ####
 
+HTTPS! https://chatgpt.com/c/6780130b-bdc4-8002-ae13-69d7c107ca9c
+
+![img_6.png](img_6.png)
+
+![img_7.png](img_7.png)
+
+![img_8.png](img_8.png)
+
+![img_9.png](img_9.png)
+
+https://www.youtube.com/watch?v=jrR_WfgmWEw
+
+####
+
 ![img_3.png](img_3.png)
 
 cos z tym soundListenerem

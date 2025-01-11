@@ -1,5 +1,12 @@
 package com.foodapp.foodapp.auth;
 
+import java.util.regex.Pattern;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.foodapp.foodapp.advice.BusinessException;
 import com.foodapp.foodapp.auth.jwtToken.JwtToken;
 import com.foodapp.foodapp.auth.jwtToken.JwtTokenRepository;
@@ -14,19 +21,13 @@ import com.foodapp.foodapp.user.User;
 import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
 import com.foodapp.foodapp.user.email.EmailSender;
+
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private static final String EMAIL_REGEX = "^(.+)@(\\S+)$";
+    private static final String EMAIL_REGEX = "^[^@]+@[^@]+\\.[^@]+$";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -40,17 +41,18 @@ public class AuthenticationService {
     public AuthenticationResponse register(final RegisterRequest request) throws BusinessException {
         validEmail(request.getEmail());
         User user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
-                .build();
+                        .firstName(request.getFirstName())
+                        .lastName(request.getLastName())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(Role.USER)
+                        .phoneNumber(request.getPhoneNumber())
+                        .build();
         var activationToken = userDetailsService.registerUser(user);
         emailService.sendUserActivationEmail(request.getEmail(), activationToken);
         return AuthenticationResponse.builder()
-                .token("i dont generate it")
-                .build();
+                                     .token("OK")
+                                     .build();
     }
 
     @Transactional
@@ -58,20 +60,20 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(final AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user =
-                userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new SecurityException("Wrong email or password"));
-        if (!user.getEnabled()) {
-            throw new BusinessException("Account isn`t activated, pleas check your email");
+            userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new SecurityException("Wrong email or password"));
+        if(!user.getEnabled()) {
+            throw new BusinessException("Konto nie zostało aktywowane, sprawdź maila");
         }
         var jwtToken = jwtService.generateToken(user);
         saveJwtToken(user, jwtToken);
         return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+                                     .token(jwtToken)
+                                     .build();
     }
 
     @SneakyThrows
     public void initPasswordChange(final String email) {
-        var user = userRepository.findByEmail(email).orElseThrow(() -> new BusinessException("Bad credentials"));
+        var user = userRepository.findByEmail(email).orElseThrow(() -> new BusinessException("Nieprawidłowe dane logowania"));
         var passwordResetToken = passwordResetTokenService.createToken(user);
         emailService.sendPasswordResetEmail(email, passwordResetToken.getToken());
     }
@@ -86,8 +88,9 @@ public class AuthenticationService {
 
     private void revokeAllUserTokens(final User user) {
         var validUserTokens = jwtTokenRepository.findAllValidTokenByUser(user.getId());
-        if (validUserTokens.isEmpty())
+        if(validUserTokens.isEmpty()) {
             return;
+        }
         validUserTokens.forEach(token -> {
             token.setExpired(true);
             token.setRevoked(true);
@@ -97,21 +100,21 @@ public class AuthenticationService {
 
     private void saveJwtToken(final User user, final String jwtToken) {
         var token = JwtToken.builder()
-                .user(user)
-                .token(jwtToken)
-                .tokenType(TokenType.BEARER)
-                .expired(false)
-                .revoked(false)
-                .build();
+                            .user(user)
+                            .token(jwtToken)
+                            .tokenType(TokenType.BEARER)
+                            .expired(false)
+                            .revoked(false)
+                            .build();
         jwtTokenRepository.save(token);
     }
 
     private void validEmail(final String email) throws BusinessException {
         var isValid = Pattern.compile(EMAIL_REGEX)
-                .matcher(email)
-                .matches();
-        if (!isValid) {
-            throw new BusinessException("Bad structure of email");
+                             .matcher(email)
+                             .matches();
+        if(!isValid) {
+            throw new BusinessException("Błędny email");
         }
     }
 }

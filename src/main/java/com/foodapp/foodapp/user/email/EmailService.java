@@ -14,10 +14,10 @@ import javax.mail.internet.MimeMessage;
 public class EmailService implements EmailSender {
     public static final String ACTIVATION_LINK_BASE_PATH = "http://localhost:8080/api/v1/auth/register/confirm/";
     public static final String ACTIVATION_TXT_MSG =
-            "Thank you for registering. Please click on the below link to activate your account:";
+            "Dziękujemy za rejestracje w naszym serwisie. Aby aktywować konto kliknij na podany link: ";
     public static final String PASSWORD_RESET_LINK_BASE_PATH = "http://localhost:8080/api/v1/auth/password/change/confirm/";
     public static final String PASSWORD_RESET_TXT_MSG =
-            "You requested password reset. Please click on the below link to reset your password:";
+            "Zarządałeś zmiany hasła. Klikinj na podany link, aby kontynuować: ";
     private final JavaMailSender mailSender;
 
     @Override
@@ -30,11 +30,11 @@ public class EmailService implements EmailSender {
             var msg = buildActivationEmail(to, link, ACTIVATION_TXT_MSG);
             helper.setText(msg, true);
             helper.setTo(to);
-            helper.setSubject("Confirm your registration");
+            helper.setSubject("Aktywuj swoje konto");
             helper.setFrom("maciekKox@gamil.com");
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("failed to send email");
+            log.error("Failed to send email");
             throw new IllegalStateException("failed to send email");
         } catch (Exception e) {
             e.printStackTrace();

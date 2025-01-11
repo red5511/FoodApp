@@ -23,7 +23,7 @@ public class OrderValidator {
             throw new SecurityException("Wrong action");
         }
         if (LocalDateTime.now().isAfter(order.getApprovalDeadline())) {
-            throw new BusinessException("Time for accepting order has passed");
+            throw new BusinessException("Czas na zaakceptowanie zamówienia minął");
         }
     }
 }

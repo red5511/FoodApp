@@ -35,7 +35,7 @@ public class ApplicationHttpAdvice {
     @ExceptionHandler({AuthenticationException.class})
     public ResponseEntity handleBusinessException(final AuthenticationException ex) {
         if (ex instanceof BadCredentialsException) {
-            return handleException(ex, HttpStatus.FORBIDDEN);
+            return handleException(new BadCredentialsException("Nieprawidłowe dane logowania"), HttpStatus.FORBIDDEN);
         } else if (ex instanceof UsernameNotFoundException) {
             return handleException(ex, HttpStatus.UNAUTHORIZED);
         }
