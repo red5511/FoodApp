@@ -125,7 +125,8 @@ public class MainConfiguration {
                                                        final EmailSender emailSender,
                                                        final UserDetailsServiceImpl userDetailsService,
                                                        final PasswordResetTokenService passwordResetTokenService,
-                                                       final JwtTokenRepository jwtTokenRepository) {
+                                                       final JwtTokenRepository jwtTokenRepository,
+                                                       final ActivationTokenConfirmationService activationTokenConfirmationService) {
         return new AuthenticationService(userRepository,
                 passwordEncoder,
                 jwtService,
@@ -133,7 +134,8 @@ public class MainConfiguration {
                 emailSender,
                 userDetailsService,
                 passwordResetTokenService,
-                jwtTokenRepository
+                jwtTokenRepository,
+                activationTokenConfirmationService
         );
     }
 

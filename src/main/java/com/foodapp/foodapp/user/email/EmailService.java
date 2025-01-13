@@ -22,12 +22,12 @@ public class EmailService implements EmailSender {
 
     @Override
     @Async
-    public void sendUserActivationEmail(final String to, final String token) {
+    public void sendUserActivationEmail(final String to, final String name, final String token) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             String link = ACTIVATION_LINK_BASE_PATH + token;
-            var msg = buildActivationEmail(to, link, ACTIVATION_TXT_MSG);
+            var msg = buildActivationEmail(name, link, ACTIVATION_TXT_MSG, "Aktywuj swoje konto", "Aktywuj");
             helper.setText(msg, true);
             helper.setTo(to);
             helper.setSubject("Aktywuj swoje konto");
@@ -49,7 +49,7 @@ public class EmailService implements EmailSender {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             String link = PASSWORD_RESET_LINK_BASE_PATH + token;
-            var msg = buildActivationEmail(to, link, PASSWORD_RESET_TXT_MSG);
+            var msg = buildActivationEmail(to, link, PASSWORD_RESET_TXT_MSG, "Zresetuj swoje hasło", "Zresetuj");
             helper.setText(msg, true);
             helper.setTo(to);
             helper.setSubject("Reset your password");
@@ -64,75 +64,90 @@ public class EmailService implements EmailSender {
 
     }
 
-    private String buildActivationEmail(final String name, final String link, final String txtMsg) {
-        return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
-                "\n" +
-                "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
-                "\n" +
-                "  <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;min-width:100%;width:100%!important\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n" +
-                "    <tbody><tr>\n" +
-                "      <td width=\"100%\" height=\"53\" bgcolor=\"#0b0c0c\">\n" +
-                "        \n" +
-                "        <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;max-width:580px\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\">\n" +
-                "          <tbody><tr>\n" +
-                "            <td width=\"70\" bgcolor=\"#0b0c0c\" valign=\"middle\">\n" +
-                "                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
-                "                  <tbody><tr>\n" +
-                "                    <td style=\"padding-left:10px\">\n" +
-                "                  \n" +
-                "                    </td>\n" +
-                "                    <td style=\"font-size:28px;line-height:1.315789474;Margin-top:4px;padding-left:10px\">\n" +
-                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Confirm your email</span>\n" +
-                "                    </td>\n" +
-                "                  </tr>\n" +
-                "                </tbody></table>\n" +
-                "              </a>\n" +
-                "            </td>\n" +
-                "          </tr>\n" +
-                "        </tbody></table>\n" +
-                "        \n" +
-                "      </td>\n" +
-                "    </tr>\n" +
-                "  </tbody></table>\n" +
-                "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
-                "    <tbody><tr>\n" +
-                "      <td width=\"10\" height=\"10\" valign=\"middle\"></td>\n" +
-                "      <td>\n" +
-                "        \n" +
-                "                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
-                "                  <tbody><tr>\n" +
-                "                    <td bgcolor=\"#1D70B8\" width=\"100%\" height=\"10\"></td>\n" +
-                "                  </tr>\n" +
-                "                </tbody></table>\n" +
-                "        \n" +
-                "      </td>\n" +
-                "      <td width=\"10\" valign=\"middle\" height=\"10\"></td>\n" +
-                "    </tr>\n" +
-                "  </tbody></table>\n" +
-                "\n" +
-                "\n" +
-                "\n" +
-                "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
-                "    <tbody><tr>\n" +
-                "      <td height=\"30\"><br></td>\n" +
-                "    </tr>\n" +
-                "    <tr>\n" +
-                "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
-                "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
-                "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hi " + name +
-                ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> " + txtMsg +
-                " </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" +
-                link + "\">Process Now</a> </p></blockquote>\n Link will expire in 15 minutes. <p>See you soon</p>" +
-                "        \n" +
-                "      </td>\n" +
-                "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
-                "    </tr>\n" +
-                "    <tr>\n" +
-                "      <td height=\"30\"><br></td>\n" +
-                "    </tr>\n" +
-                "  </tbody></table><div class=\"yj6qo\"></div><div class=\"adL\">\n" +
-                "\n" +
-                "</div></div>";
+    private String buildActivationEmail(final String name, final String link, final String txtMsg, final String title,
+                                        final String btnText) {
+        return "<!DOCTYPE html>" +
+                "<html lang=\"en\">" +
+                "<head>" +
+                "    <meta charset=\"UTF-8\">" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
+                "    <title>Activate Your Account</title>" +
+                "    <style>" +
+                "        body {" +
+                "            font-family: 'Arial', sans-serif;" +
+                "            margin: 0;" +
+                "            padding: 0;" +
+                "            background-color: #f8f9fc;" +
+                "            color: #333;" +
+                "        }" +
+                "        .email-container {" +
+                "            max-width: 600px;" +
+                "            margin: 30px auto;" +
+                "            background-color: #ffffff;" +
+                "            border-radius: 10px;" +
+                "            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);" +
+                "            overflow: hidden;" +
+                "            border: 1px solid #ddd;" +
+                "        }" +
+                "        .header {" +
+                "            background-color: #007bff;" +
+                "            color: #ffffff;" +
+                "            text-align: center;" +
+                "            padding: 20px 10px;" +
+                "        }" +
+                "        .header h1 {" +
+                "            margin: 0;" +
+                "            font-size: 24px;" +
+                "        }" +
+                "        .content {" +
+                "            padding: 20px;" +
+                "            text-align: center;" +
+                "        }" +
+                "        .content p {" +
+                "            font-size: 16px;" +
+                "            margin: 15px 0;" +
+                "        }" +
+                "        .cta-button {" +
+                "            display: inline-block;" +
+                "            margin-top: 20px;" +
+                "            padding: 12px 25px;" +
+                "            background-color: #007bff;" +
+                "            color: #ffffff;" +
+                "            text-decoration: none;" +
+                "            font-size: 16px;" +
+                "            border-radius: 5px;" +
+                "        }" +
+                "        .cta-button:hover {" +
+                "            background-color: #0056b3;" +
+                "        }" +
+                "        .footer {" +
+                "            padding: 15px 20px;" +
+                "            font-size: 14px;" +
+                "            color: #666;" +
+                "            text-align: center;" +
+                "            background-color: #f1f3f5;" +
+                "        }" +
+                "        .footer p {" +
+                "            margin: 0;" +
+                "        }" +
+                "    </style>" +
+                "</head>" +
+                "<body>" +
+                "    <div class=\"email-container\">" +
+                "        <div class=\"header\">" +
+                "            <h1>" + title + "</h1>" +
+                "        </div>" +
+                "        <div class=\"content\">" +
+                "            <p>Cześć " + name + ",</p>" +
+                "            <p>" + txtMsg + "</p>" +
+                "            <a href=\"" + link + "\" class=\"cta-button\">" + btnText + "</a>" +
+                "        </div>" +
+                "        <div class=\"footer\">" +
+//                "            <p>Need help? Contact our support team at <a href=\"mailto:support@yourcompany.com\">support@yourcompany.com</a>.</p>" +
+//                "            <p>&copy; 2025 Your Company. All rights reserved.</p>" +
+                "        </div>" +
+                "    </div>" +
+                "</body>" +
+                "</html>";
     }
 }

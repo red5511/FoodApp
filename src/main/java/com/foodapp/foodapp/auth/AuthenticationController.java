@@ -29,7 +29,6 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(final @RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
-
     }
 
     @GetMapping("/register/confirm/{token}") //todo czy to powinien byc Get??
@@ -56,4 +55,9 @@ public class AuthenticationController {
         return ResponseEntity.ok("Your password was changed correctly!");
     }
 
+    @GetMapping("resend-activation-email/{email}")
+    public ResponseEntity<Void> resendActivationEmail(final @PathVariable("email") String email) throws BusinessException {
+        authenticationService.resendActivationEmail(email);
+        return ResponseEntity.ok().build();
+    }
 }

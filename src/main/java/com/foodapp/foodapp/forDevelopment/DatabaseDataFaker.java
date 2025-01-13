@@ -148,6 +148,7 @@ public class DatabaseDataFaker {
         permissions.add(Permission.VIEW_LIVE_PANEL);
         permissions.add(Permission.VIEW_ORDERS);
         permissions.add(Permission.VIEW_STATISTICS);
+        permissions.add(Permission.VIEW_RESTAURANT_ORDER);
 
         return User.builder()
                 .email("macmac")

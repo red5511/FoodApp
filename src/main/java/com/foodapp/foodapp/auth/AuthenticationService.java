@@ -1,13 +1,7 @@
 package com.foodapp.foodapp.auth;
 
-import java.util.regex.Pattern;
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.foodapp.foodapp.advice.BusinessException;
+import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationService;
 import com.foodapp.foodapp.auth.jwtToken.JwtToken;
 import com.foodapp.foodapp.auth.jwtToken.JwtTokenRepository;
 import com.foodapp.foodapp.auth.jwtToken.TokenType;
@@ -21,9 +15,15 @@ import com.foodapp.foodapp.user.User;
 import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
 import com.foodapp.foodapp.user.email.EmailSender;
-
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.lang.BooleanUtils;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -36,23 +36,24 @@ public class AuthenticationService {
     private final UserDetailsServiceImpl userDetailsService;
     private final PasswordResetTokenService passwordResetTokenService;
     private final JwtTokenRepository jwtTokenRepository;
+    private final ActivationTokenConfirmationService activationTokenConfirmationService;
 
     @Transactional
     public AuthenticationResponse register(final RegisterRequest request) throws BusinessException {
         validEmail(request.getEmail());
         User user = User.builder()
-                        .firstName(request.getFirstName())
-                        .lastName(request.getLastName())
-                        .email(request.getEmail())
-                        .password(passwordEncoder.encode(request.getPassword()))
-                        .role(Role.USER)
-                        .phoneNumber(request.getPhoneNumber())
-                        .build();
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.USER)
+                .phoneNumber(request.getPhoneNumber())
+                .build();
         var activationToken = userDetailsService.registerUser(user);
-        emailService.sendUserActivationEmail(request.getEmail(), activationToken);
+        emailService.sendUserActivationEmail(request.getEmail(), request.getFirstName(), activationToken);
         return AuthenticationResponse.builder()
-                                     .token("OK")
-                                     .build();
+                .token("OK")
+                .build();
     }
 
     @Transactional
@@ -60,15 +61,15 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(final AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user =
-            userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new SecurityException("Wrong email or password"));
-        if(!user.getEnabled()) {
+                userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new SecurityException("Wrong email or password"));
+        if (!user.getEnabled()) {
             throw new BusinessException("Konto nie zostało aktywowane, sprawdź maila");
         }
         var jwtToken = jwtService.generateToken(user);
         saveJwtToken(user, jwtToken);
         return AuthenticationResponse.builder()
-                                     .token(jwtToken)
-                                     .build();
+                .token(jwtToken)
+                .build();
     }
 
     @SneakyThrows
@@ -88,7 +89,7 @@ public class AuthenticationService {
 
     private void revokeAllUserTokens(final User user) {
         var validUserTokens = jwtTokenRepository.findAllValidTokenByUser(user.getId());
-        if(validUserTokens.isEmpty()) {
+        if (validUserTokens.isEmpty()) {
             return;
         }
         validUserTokens.forEach(token -> {
@@ -100,21 +101,33 @@ public class AuthenticationService {
 
     private void saveJwtToken(final User user, final String jwtToken) {
         var token = JwtToken.builder()
-                            .user(user)
-                            .token(jwtToken)
-                            .tokenType(TokenType.BEARER)
-                            .expired(false)
-                            .revoked(false)
-                            .build();
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
         jwtTokenRepository.save(token);
     }
 
     private void validEmail(final String email) throws BusinessException {
         var isValid = Pattern.compile(EMAIL_REGEX)
-                             .matcher(email)
-                             .matches();
-        if(!isValid) {
+                .matcher(email)
+                .matches();
+        if (!isValid) {
             throw new BusinessException("Błędny email");
+        }
+    }
+
+    public void resendActivationEmail(final String email) throws BusinessException {
+        validEmail(email);
+        var userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()){
+            var user = userOptional.get();
+            if (BooleanUtils.isFalse(user.getEnabled())){
+                var activationToken = activationTokenConfirmationService.initTokenConfirmation(user);
+                emailService.sendUserActivationEmail(email, user.getEmail(), activationToken);
+            }
         }
     }
 }

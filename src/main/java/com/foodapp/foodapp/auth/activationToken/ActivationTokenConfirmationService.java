@@ -11,10 +11,6 @@ import java.util.UUID;
 public class ActivationTokenConfirmationService {
     private final ActivationTokenConfirmationRepository tokenConfirmationRepository;
 
-    public void saveConfirmationToken(final ActivationTokenConfirmation token) {
-        tokenConfirmationRepository.save(token);
-    }
-
     public String initTokenConfirmation(final User user) {
         String token = UUID.randomUUID().toString();
         ActivationTokenConfirmation tokenConfirmation = ActivationTokenConfirmation.builder()
@@ -22,7 +18,7 @@ public class ActivationTokenConfirmationService {
                 .activationToken(token)
                 .user(user)
                 .build();
-        saveConfirmationToken(tokenConfirmation);
+        tokenConfirmationRepository.save(tokenConfirmation);
         return token;
     }
 

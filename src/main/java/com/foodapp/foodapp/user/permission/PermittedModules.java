@@ -4,4 +4,5 @@ public enum PermittedModules {
     LIVE_PANEL,
     STATISTICS,
     ORDERS,
+    RESTAURANT_ORDER
 }
