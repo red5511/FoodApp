@@ -1,5 +1,8 @@
 package com.foodapp.foodapp.common;
 
+import com.foodapp.foodapp.administration.userAdministration.UsersSearchParams;
+import com.foodapp.foodapp.administration.userAdministration.request.GetUsersAdministrationRequest;
+import com.foodapp.foodapp.order.OrderSearchParams;
 import com.foodapp.foodapp.order.OrderStatus;
 import com.foodapp.foodapp.order.request.GetOrdersForCompanyRequest;
 import org.springframework.data.domain.Sort;
@@ -9,19 +12,33 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommonMapper {
-    public static SearchParams mapToSearchParams(final GetOrdersForCompanyRequest request, final List<Long> companyIds) {
-        var dateFrom = CommonMapper.getDateFrom(request.getDateRange(), request.getDateFrom());
-        var dateTo = CommonMapper.getDateTo(request.getDateRange(), request.getDateTo());
-        var builder = SearchParams.builder();
+    public static SearchParams.SearchParamsBuilder createBaseSearchParams(final SearchParams.SearchParamsBuilder builder,
+                                                                          final BasePagedRequest baseRequest) {
+        var dateFrom = CommonMapper.getDateFrom(baseRequest.getDateRange(), baseRequest.getDateFrom());
+        var dateTo = CommonMapper.getDateTo(baseRequest.getDateRange(), baseRequest.getDateTo());
         return builder
-                .statuses(request.getStatuses())
                 .dateFrom(dateFrom)
                 .dateTo(dateTo)
-                .page(request.getPage())
-                .size(request.getSize())
+                .sorts(baseRequest.getSorts())
+                .page(baseRequest.getPage())
+                .size(baseRequest.getSize());
+    }
+
+    public static OrderSearchParams mapToSearchParams(final GetOrdersForCompanyRequest request, final List<Long> companyIds) {
+        var builder = OrderSearchParams.builder();
+        createBaseSearchParams(builder, request);
+        return builder
+                .statuses(request.getStatuses())
                 .companyIds(companyIds)
-                .sorts(request.getSorts())
                 .price(request.getPrice())
+                .global(request.getGlobalSearch())
+                .build();
+    }
+
+    public static UsersSearchParams mapToSearchParams(final GetUsersAdministrationRequest request) {
+        var builder = UsersSearchParams.builder();
+        createBaseSearchParams(builder, request);
+        return builder
                 .global(request.getGlobalSearch())
                 .build();
     }

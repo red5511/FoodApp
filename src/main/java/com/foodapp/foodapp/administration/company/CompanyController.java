@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/administration/company")
+@RequestMapping("/api/v1/admin-panel/companies")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "Company")

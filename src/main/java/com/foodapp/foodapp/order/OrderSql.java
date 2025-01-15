@@ -16,7 +16,7 @@ public class OrderSql {
     public static final String BASE_SORT_QUERY = " ORDER BY";
     public static final String BASE_COUNT_QUERY = "SELECT COUNT(o) FROM Order o WHERE o.company.id IN (:" + COMPANY_IDS_PARAM + ")";
     public static final String DATE_IS_BETWEEN_QUERY =
-            " AND DATE(o.deliveryTime) BETWEEN :" + DATE_FROM_PARAM + " AND :" + DATE_TO_PARAM;
+            " AND DATE(o.createdDate) BETWEEN :" + DATE_FROM_PARAM + " AND :" + DATE_TO_PARAM;
     public static final String DATE_IS_QUERY = " AND :" + DELIVERY_DATE_PARAM + " = DATE(o.deliveryTime)";
     public static final String DATE_IS_NOT_QUERY = " AND :" + DELIVERY_DATE_PARAM + " != DATE(o.deliveryTime)";
     public static final String DATE_BEFORE_QUERY = " AND :" + DELIVERY_DATE_PARAM + " > DATE(o.deliveryTime)";

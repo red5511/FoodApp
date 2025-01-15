@@ -1,33 +1,25 @@
 package com.foodapp.foodapp.order.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.foodapp.foodapp.common.DateRange;
-import com.foodapp.foodapp.common.Filter;
-import com.foodapp.foodapp.common.Sort;
+import com.foodapp.foodapp.common.BasePagedRequest;
 import com.foodapp.foodapp.order.OrderStatus;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@SuperBuilder
 @Getter
-public class GetOrdersForCompanyRequest {
+@NoArgsConstructor
+@AllArgsConstructor
+public class GetOrdersForCompanyRequest extends BasePagedRequest {
     private Long validatableCompanyId;
-    private List<Sort> sorts;
-    private int page;
-    private int size;
     private List<Long> companyIds;
     private List<OrderStatus> statuses;
     private BigDecimal price;
-    private DateRange dateRange;
-    @JsonFormat(pattern = "d.MM.yyyy")
-    LocalDate dateFrom;
-    @JsonFormat(pattern = "d.MM.yyyy")
-    LocalDate dateTo;
     private String globalSearch;
 }

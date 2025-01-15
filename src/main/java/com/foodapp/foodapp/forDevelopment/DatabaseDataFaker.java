@@ -48,6 +48,7 @@ public class DatabaseDataFaker {
         var company2 = createFakeCompany("#2", "Topic2");
         var company3 = createFakeCompany("#3", "Topic3");
         var user = createFakeUser();
+        var admin = createFakeAdmin();
         var product = createFakeProduct("Duży kebab");
         var product2 = createFakeProduct2("Mały kebab");
 
@@ -70,6 +71,7 @@ public class DatabaseDataFaker {
         company3 = companyRepository.save(company3);
         user.setCompanies(new HashSet<>(Arrays.asList(company, company2, company3)));
         user = userRepository.save(user);
+        userRepository.save(admin);
         company.setCompanyUsers(new HashSet<>(Arrays.asList(user)));
         company2.setCompanyUsers(new HashSet<>(Arrays.asList(user)));
         company3.setCompanyUsers(new HashSet<>(Arrays.asList(user)));
@@ -158,6 +160,23 @@ public class DatabaseDataFaker {
                 .role(Role.USER)
                 .enabled(true)
                 .permissions(permissions)
+                .phoneNumber("987654321")
+                .build();
+    }
+
+    private User createFakeAdmin() {
+        Set<Permission> permissions = new HashSet<>();
+        permissions.add(Permission.SUPER_ADMINISTRATOR);
+
+        return User.builder()
+                .email("admin")
+                .firstName("Admin Eustachy")
+                .lastName("Admin Motyka")
+                .password(passwordEncoder.encode("admin"))
+                .role(Role.SUPER_ADMIN)
+                .enabled(true)
+                .permissions(permissions)
+                .phoneNumber("123456789")
                 .build();
     }
 

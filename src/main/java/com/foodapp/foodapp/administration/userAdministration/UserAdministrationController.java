@@ -1,25 +1,33 @@
 package com.foodapp.foodapp.administration.userAdministration;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.foodapp.foodapp.administration.userAdministration.request.GetUsersAdministrationRequest;
+import com.foodapp.foodapp.administration.userAdministration.response.GetPagedUsersResponse;
 import com.foodapp.foodapp.administration.userAdministration.response.GetUsersResponse;
-
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/administration/user")
+@RequestMapping("/api/v1/admin-panel/users")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "UserAdministration")
 public class UserAdministrationController {
 
     private final UserAdministrationService userAdministrationService;
+
+    @PostMapping("/users")
+    @PreAuthorize("hasAuthority('SUPER_ADMINISTRATOR')")
+    public ResponseEntity<GetPagedUsersResponse> getPagedUsers(final @RequestBody GetUsersAdministrationRequest request) {
+        var pagedResult = userAdministrationService.getAllUsers(request);
+        var response = GetPagedUsersResponse.builder()
+                .pagedResult(pagedResult)
+                .build();
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/users")
     public ResponseEntity<GetUsersResponse> getAllUsers() {
@@ -35,7 +43,8 @@ public class UserAdministrationController {
 
     @GetMapping("/{companyId}/users-to-add")
     public ResponseEntity<GetUsersResponse> getUsersNotBelongToCompany(final @PathVariable Long companyId) {
-        var response = UserAdministrationMapper.toGetUsersResponse(userAdministrationService.getDtoUsersNotBelongToCompany(companyId));
+        var response =
+                UserAdministrationMapper.toGetUsersResponse(userAdministrationService.getDtoUsersNotBelongToCompany(companyId));
         return ResponseEntity.ok(response);
     }
 

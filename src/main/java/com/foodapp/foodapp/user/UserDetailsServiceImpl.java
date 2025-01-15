@@ -1,16 +1,17 @@
 package com.foodapp.foodapp.user;
 
-import java.util.List;
-
+import com.foodapp.foodapp.administration.userAdministration.UsersSearchParams;
+import com.foodapp.foodapp.advice.BusinessException;
+import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationService;
+import com.foodapp.foodapp.common.SearchParams;
+import com.foodapp.foodapp.common.UsersPagedResult;
+import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.foodapp.foodapp.advice.BusinessException;
-import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationService;
-
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
+import java.util.List;
 
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -20,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
-                             .orElseThrow(() -> new UsernameNotFoundException("Nieprawidłowe dane logowania"));
+                .orElseThrow(() -> new UsernameNotFoundException("Nieprawidłowe dane logowania"));
     }
 
     @SneakyThrows
@@ -31,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @SneakyThrows
     public String registerUser(final User user) {
         boolean userExists = userRepository.findByEmail(user.getUsername()).isPresent();
-        if(userExists) {
+        if (userExists) {
             throw new BusinessException("Podany email jest juz zajęty");
         }
         userRepository.save(user);
@@ -53,6 +54,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public List<UserDto> getDtoUsers(final Long companyId) {
         return UserMapper.toUsersDto(userRepository.findByCompanyId(companyId));
+    }
+
+    public UsersPagedResult getDtoUsersBySearchParams(final UsersSearchParams searchParams) {
+        return UsersPagedResult.builder().build();
+//        return UserMapper.toUsersDto(userRepository.findByCompanyId(companyId));
     }
 
     public List<UserDto> getDtoUsersNotBelongToCompany(final Long companyId) {

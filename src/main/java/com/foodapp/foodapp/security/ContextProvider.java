@@ -1,6 +1,7 @@
 package com.foodapp.foodapp.security;
 
 import com.foodapp.foodapp.administration.company.Company;
+import com.foodapp.foodapp.user.Role;
 import com.foodapp.foodapp.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -75,5 +76,14 @@ public class ContextProvider {
         }
         validateCompanyAccess(companyIds);
         return companyIds;
+    }
+
+    public void validateSuperAdminRights() {
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User user) {
+            if (!Role.SUPER_ADMIN.equals(user.getRole())) {
+                throw new SecurityException("No super admin access");
+            }
+        }
     }
 }

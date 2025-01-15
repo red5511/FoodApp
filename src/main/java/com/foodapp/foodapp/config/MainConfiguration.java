@@ -219,8 +219,9 @@ public class MainConfiguration {
     }
 
     @Bean
-    public UserAdministrationService userAdministrationService(final UserDetailsServiceImpl userDetailsService) {
-        return new UserAdministrationService(userDetailsService);
+    public UserAdministrationService userAdministrationService(final UserDetailsServiceImpl userDetailsService,
+                                                               final ContextProvider contextProvider) {
+        return new UserAdministrationService(userDetailsService, contextProvider);
     }
 
     @Bean
