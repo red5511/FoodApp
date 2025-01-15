@@ -28,7 +28,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 
         queryBuilder.append(DATE_IS_BETWEEN_QUERY);
         countQueryBuilder.append(DATE_IS_BETWEEN_QUERY);
-        valueParamsMap.put(DATE_TO_PARAM, params.getDateTo().atTime(23, 59));
+        valueParamsMap.put(DATE_TO_PARAM, params.getDateTo().atTime(23, 59, 59));
         valueParamsMap.put(DATE_FROM_PARAM, params.getDateFrom().atStartOfDay());
 
         if (params.getPrice() != null) {

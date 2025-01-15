@@ -19,7 +19,7 @@ public class UserAdministrationService {
         return userDetailsService.getDtoUsers();
     }
 
-    public UsersPagedResult getAllUsers(final GetUsersAdministrationRequest request) {
+    public UsersPagedResult getNormalUsers(final GetUsersAdministrationRequest request) {
         contextProvider.validateSuperAdminRights();
         var searchParams = CommonMapper.mapToSearchParams(request);
         return userDetailsService.getDtoUsersBySearchParams(searchParams);

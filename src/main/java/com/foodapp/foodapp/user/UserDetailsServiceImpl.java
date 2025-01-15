@@ -57,8 +57,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public UsersPagedResult getDtoUsersBySearchParams(final UsersSearchParams searchParams) {
-        return UsersPagedResult.builder().build();
-//        return UserMapper.toUsersDto(userRepository.findByCompanyId(companyId));
+        return userRepository.searchOrders(searchParams);
     }
 
     public List<UserDto> getDtoUsersNotBelongToCompany(final Long companyId) {

@@ -22,7 +22,7 @@ public class UserAdministrationController {
     @PostMapping("/users")
     @PreAuthorize("hasAuthority('SUPER_ADMINISTRATOR')")
     public ResponseEntity<GetPagedUsersResponse> getPagedUsers(final @RequestBody GetUsersAdministrationRequest request) {
-        var pagedResult = userAdministrationService.getAllUsers(request);
+        var pagedResult = userAdministrationService.getNormalUsers(request);
         var response = GetPagedUsersResponse.builder()
                 .pagedResult(pagedResult)
                 .build();

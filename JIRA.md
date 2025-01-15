@@ -39,6 +39,10 @@ czy w paylodzie powinno leciec widoczne haslo przy rejsetaracji i chyba logowani
 
 ####
 
+kurla przy przelogowaniy sie usera wyswietlaja sie te same zakladki co na poprzednim userze xd jak odswieze to dziala normlanie
+
+####
+
 moze dorby pomyslem bylo by dorobienie prawa na wyswietlenie w all orders czasu wstecz nielimitowanego i limitowanego zeby jakis jasiek
 nie mogl widziec full zamowien
 
