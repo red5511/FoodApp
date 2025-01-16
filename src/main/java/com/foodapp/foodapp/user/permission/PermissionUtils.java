@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 
 public class PermissionUtils {
     private static final Map<Permission, Set<PermittedModules>> PERMISSION_PERMITTED_MODULES_MAP = Map.of(
-            Permission.VIEW_ORDERS, Set.of(PermittedModules.ORDERS),
-            Permission.VIEW_LIVE_PANEL, Set.of(PermittedModules.LIVE_PANEL),
+            Permission.VIEW_ORDERS_HISTORY, Set.of(PermittedModules.ORDERS_HISTORY),
+            Permission.VIEW_ONLINE_ORDERING, Set.of(PermittedModules.ONLINE_ORDERS),
             Permission.VIEW_STATISTICS, Set.of(PermittedModules.STATISTICS),
-            Permission.VIEW_RESTAURANT_ORDER, Set.of(PermittedModules.RESTAURANT_ORDER),
+            Permission.VIEW_RESTAURANT_ORDERING, Set.of(PermittedModules.RESTAURANT_ORDERS),
             Permission.SUPER_ADMINISTRATOR, Set.of(PermittedModules.SUPER_ADMIN_PANEL, PermittedModules.ADMIN_PANEL));
 
     public static Set<PermittedModules> getPermittedModules(final Set<Permission> permissions) {

@@ -25,7 +25,9 @@ public class OrderSql {
     public static final String PRICE_QUERY = " AND o.price = :" + PRICE_PARAM;
     public static final String STATUSES_QUERY = " AND o.status IN (:" + STATUSES_PARAM + ")";
     public static final String GLOBAL_QUERY = " AND (CAST(o.id AS text) LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%') " +
-            " OR o.description LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%') " +
+            " OR LOWER(o.description) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%') " +
+            " OR LOWER(o.deliveryAddress) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%') " +
+            " OR LOWER(o.deliveryCode) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%') " +
             " OR CAST(o.price AS text) LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%')) ";
     //" OR CAST(o.deliveryTime AS text) LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%'))";
 

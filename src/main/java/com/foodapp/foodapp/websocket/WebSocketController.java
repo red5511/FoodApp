@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class WebSocketController {
     private final WebSocketService webSocketService;
 
-    @PreAuthorize("hasAuthority('VIEW_LIVE_PANEL')")
+    @PreAuthorize("hasAuthority('VIEW_ONLINE_ORDERING')")
     @PostMapping("/init-main-topic")
     public ResponseEntity<Void> initOrderWebSocketTopic(final @RequestBody InitOrderWebSocketTopicRequest request) {
         webSocketService.initMainTopic(request);

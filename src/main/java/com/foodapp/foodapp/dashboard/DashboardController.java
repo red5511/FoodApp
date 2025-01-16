@@ -30,7 +30,7 @@ public class DashboardController {
     }
 
     @PostMapping("/orders/{companyId}")
-    @PreAuthorize("hasAuthority('VIEW_LIVE_PANEL')")
+    @PreAuthorize("hasAuthority('VIEW_ONLINE_ORDERING')")
     public ResponseEntity<DashboardGetOrdersResponse> getActiveOrders(final @RequestBody GetActiveOrdersRequest request) {
         return ResponseEntity.ok(dashboardService.getActiveOrders(request));
     }

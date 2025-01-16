@@ -147,10 +147,10 @@ public class DatabaseDataFaker {
 
     private User createFakeUser() {
         Set<Permission> permissions = new HashSet<>();
-        permissions.add(Permission.VIEW_LIVE_PANEL);
-        permissions.add(Permission.VIEW_ORDERS);
+        permissions.add(Permission.VIEW_ONLINE_ORDERING);
+        permissions.add(Permission.VIEW_ORDERS_HISTORY);
         permissions.add(Permission.VIEW_STATISTICS);
-        permissions.add(Permission.VIEW_RESTAURANT_ORDER);
+        permissions.add(Permission.VIEW_RESTAURANT_ORDERING);
 
         return User.builder()
                 .email("macmac")

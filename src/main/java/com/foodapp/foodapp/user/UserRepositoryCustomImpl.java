@@ -49,8 +49,19 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
             StringBuilder sortQueryBuilder = new StringBuilder();
             sortQueryBuilder.append(UserSql.BASE_SORT_QUERY);
             for(var sort : params.getSorts()) {
-                sortQueryBuilder.append(" u.").append(sort.getField()).append(" ").append(sort.getDirection().name());
-            }
+                if ("companyAmount".equals(sort.getField())) {
+                    // Handle sorting by the number of companies
+                    sortQueryBuilder.append(" ")
+                            .append(UserSql.COMPANY_AMOUNT_SORT_QUERY)
+                            .append(" ")
+                            .append(sort.getDirection().name());
+                } else {
+                    // Handle regular field sorting
+                    sortQueryBuilder.append(" u.")
+                            .append(sort.getField())
+                            .append(" ")
+                            .append(sort.getDirection().name());
+                }            }
             queryBuilder.append(sortQueryBuilder.toString());
         }
 

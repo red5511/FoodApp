@@ -35,6 +35,8 @@ Nie ma 400 500 jak nulle leca znowu jakies gowno w tym catchu
 
 ####
 
+edge case gdzie uzytklonik wylacza websocketa ale ma wciaz jedno zamowienie W Akceptacji to po zaakceptowaniu/odrzuceniu zamowienie bedzie mu lezalo (bo bez web socketa nie ma eventa gdzie idzie toast + odswiezenie listy xd)
+
 czy w paylodzie powinno leciec widoczne haslo przy rejsetaracji i chyba logowaniu?
 
 ####
@@ -118,6 +120,6 @@ moze to powino byc tak jak unas na rozwijajce zeby byla tylko jedna linia?
 
 PERMISSIONS
 
-VIEW_ORDERS - prawo do podgladu zakladki Zamówienia oraz wszysktich endpointow zwiazanych z nim
+VIEW_ORDERS_HISTORY - prawo do podgladu zakladki Zamówienia oraz wszysktich endpointow zwiazanych z nim
 VIEW_STATISTICS - prawo do podgladu zakladki Statystyki oraz wszysktich endpointow zwiazanych z nim
-VIEW_LIVE_PANEL - prawo do podgladu zakladki Panel Live oraz wszysktich endpointow zwiazanych z nim
+VIEW_ONLINE_ORDERING - prawo do podgladu zakladki Panel Live oraz wszysktich endpointow zwiazanych z nim

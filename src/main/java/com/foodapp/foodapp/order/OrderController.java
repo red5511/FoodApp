@@ -29,21 +29,21 @@ public class OrderController {
     }
 
     @PostMapping("/approve")
-    @PreAuthorize("hasAuthority('VIEW_LIVE_PANEL')")
+    @PreAuthorize("hasAuthority('VIEW_ONLINE_ORDERING')")
     public ResponseEntity<Void> approveNewIncomingOrder(final @RequestBody ApproveNewIncomingOrderRequest request) {
         orderService.approveNewIncomingOrder(request);
         return ResponseEntity.ok().build(); // Return 200 OK with no body
     }
 
     @PostMapping("/reject")
-    @PreAuthorize("hasAuthority('VIEW_LIVE_PANEL')")
+    @PreAuthorize("hasAuthority('VIEW_ONLINE_ORDERING')")
     public ResponseEntity<Void> rejectNewIncomingOrder(final @RequestBody RejectNewIncomingOrderRequest request) {
         orderService.rejectNewIncomingOrder(request);
         return ResponseEntity.ok().build(); // Return 200 OK with no body
     }
 
     @PostMapping("/orders")
-    @PreAuthorize("hasAuthority('VIEW_ORDERS')")
+    @PreAuthorize("hasAuthority('VIEW_ORDERS_HISTORY')")
     public ResponseEntity<PagedOrdersResponse> getOrdersForCompany(final @RequestBody GetOrdersForCompanyRequest request) {
         var pagedResult = orderService.getOrders(request);
         var response = PagedOrdersResponse.builder()
@@ -53,7 +53,7 @@ public class OrderController {
     }
 
     @PostMapping("/config")
-    @PreAuthorize("hasAuthority('VIEW_LIVE_PANEL') or hasAuthority('VIEW_ORDERS')")
+    @PreAuthorize("hasAuthority('VIEW_ONLINE_ORDERING') or hasAuthority('VIEW_ORDERS_HISTORY')")
     public ResponseEntity<GetOrdersConfigResponse> getOrdersConfig(@RequestBody final GetOrdersConfigRequest request) {
         return ResponseEntity.ok(GetOrdersConfigResponse.builder()
                 .orderStatusModels(OrderMapper.getStatusModels())

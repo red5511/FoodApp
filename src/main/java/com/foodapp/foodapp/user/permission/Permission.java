@@ -1,9 +1,9 @@
 package com.foodapp.foodapp.user.permission;
 
 public enum Permission {
-    VIEW_LIVE_PANEL,
+    VIEW_ONLINE_ORDERING,
     VIEW_STATISTICS,
-    VIEW_ORDERS,
-    VIEW_RESTAURANT_ORDER,
+    VIEW_ORDERS_HISTORY,
+    VIEW_RESTAURANT_ORDERING,
     SUPER_ADMINISTRATOR
 }
