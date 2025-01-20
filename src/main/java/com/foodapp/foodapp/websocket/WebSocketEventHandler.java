@@ -1,8 +1,8 @@
 package com.foodapp.foodapp.websocket;
 
 import com.foodapp.foodapp.administration.cache.CacheService;
-import com.foodapp.foodapp.administration.company.Company;
-import com.foodapp.foodapp.administration.company.CompanyRepository;
+import com.foodapp.foodapp.administration.company.sql.Company;
+import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.websocket.event.DisconnectionWebSocketEvent;
 import com.foodapp.foodapp.websocket.event.HeartbeatWebSocketEvent;
 import lombok.AllArgsConstructor;

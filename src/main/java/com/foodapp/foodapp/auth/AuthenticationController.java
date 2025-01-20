@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +23,8 @@ public class AuthenticationController {
     private final ActivationTokenConfirmationService tokenConfirmationService;
 
     @PostMapping("/register/init")
-    public ResponseEntity<AuthenticationResponse> register(final @RequestBody @Valid RegisterRequest request) throws BusinessException {
+    public ResponseEntity<AuthenticationResponse> register(final @RequestBody @Valid RegisterRequest request)
+            throws BusinessException {
         return ResponseEntity.ok(authenticationService.register(request));
     }
 
@@ -58,6 +60,20 @@ public class AuthenticationController {
     @GetMapping("resend-activation-email/{email}")
     public ResponseEntity<Void> resendActivationEmail(final @PathVariable("email") String email) throws BusinessException {
         authenticationService.resendActivationEmail(email);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("block-user/{userId}")
+    @PreAuthorize("hasAuthority('SUPER_ADMINISTRATOR') or hasAuthority('ADMINISTRATOR')")
+    public ResponseEntity<Void> blockUser(final @PathVariable("userId") Long userId) {
+        authenticationService.blockUser(userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("unblock-user/{userId}")
+    @PreAuthorize("hasAuthority('SUPER_ADMINISTRATOR') or hasAuthority('ADMINISTRATOR')")
+    public ResponseEntity<Void> unblockUser(final @PathVariable("userId") Long userId) {
+        authenticationService.unblockUser(userId);
         return ResponseEntity.ok().build();
     }
 }

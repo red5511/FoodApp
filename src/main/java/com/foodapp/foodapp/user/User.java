@@ -1,7 +1,7 @@
 package com.foodapp.foodapp.user;
 
 import com.foodapp.foodapp.common.BaseEntity;
-import com.foodapp.foodapp.administration.company.Company;
+import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.user.permission.Permission;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,7 +40,7 @@ public class User extends BaseEntity implements UserDetails {
     @Builder.Default
     @Setter
     private Boolean enabled = false;
-    @ManyToMany(mappedBy = "companyUsers", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     private Set<Company> companies;
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)

@@ -1,6 +1,5 @@
-package com.foodapp.foodapp.common;
+package com.foodapp.foodapp.user;
 
-import com.foodapp.foodapp.user.UserDto;
 import lombok.Builder;
 import lombok.Getter;
 

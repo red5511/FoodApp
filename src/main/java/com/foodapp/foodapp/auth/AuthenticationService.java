@@ -9,6 +9,7 @@ import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
 import com.foodapp.foodapp.auth.request.AuthenticationRequest;
 import com.foodapp.foodapp.auth.request.RegisterRequest;
 import com.foodapp.foodapp.auth.response.AuthenticationResponse;
+import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.security.JwtService;
 import com.foodapp.foodapp.user.Role;
 import com.foodapp.foodapp.user.User;
@@ -37,6 +38,7 @@ public class AuthenticationService {
     private final PasswordResetTokenService passwordResetTokenService;
     private final JwtTokenRepository jwtTokenRepository;
     private final ActivationTokenConfirmationService activationTokenConfirmationService;
+    private final ContextProvider contextProvider;
 
     @Transactional
     public AuthenticationResponse register(final RegisterRequest request) throws BusinessException {
@@ -64,6 +66,9 @@ public class AuthenticationService {
                 userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new SecurityException("Wrong email or password"));
         if (!user.getEnabled()) {
             throw new BusinessException("Konto nie zostało aktywowane, sprawdź maila");
+        }
+        if (user.getLocked()) {
+            throw new BusinessException("Konto zostało zablokowane");
         }
         var jwtToken = jwtService.generateToken(user);
         saveJwtToken(user, jwtToken);
@@ -129,5 +134,19 @@ public class AuthenticationService {
                 emailService.sendUserActivationEmail(email, user.getEmail(), activationToken);
             }
         }
+    }
+
+    @Transactional
+    public void blockUser(final Long userId) {
+        contextProvider.validateSuperAdminRights();
+        userRepository.blockUserById(userId);
+        jwtTokenRepository.updateRevokedByUserId(true, userId);
+
+    }
+
+    @Transactional
+    public void unblockUser(final Long userId) {
+        contextProvider.validateSuperAdminRights();
+        userRepository.unblockUserById(userId);
     }
 }

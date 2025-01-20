@@ -5,10 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
-import com.foodapp.foodapp.administration.company.Company;
+import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.orderProduct.OrderProduct;
 

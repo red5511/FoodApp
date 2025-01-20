@@ -3,8 +3,6 @@ package com.foodapp.foodapp.user;
 import com.foodapp.foodapp.administration.userAdministration.UsersSearchParams;
 import com.foodapp.foodapp.advice.BusinessException;
 import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationService;
-import com.foodapp.foodapp.common.SearchParams;
-import com.foodapp.foodapp.common.UsersPagedResult;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -57,7 +55,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public UsersPagedResult getDtoUsersBySearchParams(final UsersSearchParams searchParams) {
-        return userRepository.searchOrders(searchParams);
+        return userRepository.searchUsers(searchParams);
     }
 
     public List<UserDto> getDtoUsersNotBelongToCompany(final Long companyId) {

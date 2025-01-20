@@ -1,7 +1,7 @@
 package com.foodapp.foodapp.administration;
 
-import com.foodapp.foodapp.administration.company.Company;
-import com.foodapp.foodapp.administration.company.CompanyRepository;
+import com.foodapp.foodapp.administration.company.sql.Company;
+import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.user.User;
 import com.foodapp.foodapp.user.UserRepository;
 
@@ -18,7 +18,7 @@ public class AdministrationService {
         User user = userRepository.findById(userId)
                                   .orElseThrow(() -> new SecurityException("User not found"));
 
-        company.getCompanyUsers().add(user);
+        company.getUsers().add(user);
         user.getCompanies().add(company);
 
         companyRepository.save(company);

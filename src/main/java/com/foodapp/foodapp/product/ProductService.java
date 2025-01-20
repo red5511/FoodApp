@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.product;
 
-import com.foodapp.foodapp.administration.company.CompanyRepository;
+import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.product.request.CreateProductRequest;
 import com.foodapp.foodapp.product.request.DeleteProductRequest;
 import com.foodapp.foodapp.product.request.ModifyProductRequest;

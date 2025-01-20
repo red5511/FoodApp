@@ -4,8 +4,9 @@ import com.foodapp.foodapp.administration.AdministrationService;
 import com.foodapp.foodapp.administration.cache.CacheService;
 import com.foodapp.foodapp.administration.cache.CompanyWithActiveReceivingUsersCacheWrapper;
 import com.foodapp.foodapp.administration.cache.UsersConnectedToWebSocketCacheWrapper;
-import com.foodapp.foodapp.administration.company.CompanyRepository;
+import com.foodapp.foodapp.administration.company.CompanyAdministrationService;
 import com.foodapp.foodapp.administration.company.CompanyService;
+import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.administration.userAdministration.UserAdministrationService;
 import com.foodapp.foodapp.auth.AuthenticationService;
 import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationRepository;
@@ -126,7 +127,8 @@ public class MainConfiguration {
                                                        final UserDetailsServiceImpl userDetailsService,
                                                        final PasswordResetTokenService passwordResetTokenService,
                                                        final JwtTokenRepository jwtTokenRepository,
-                                                       final ActivationTokenConfirmationService activationTokenConfirmationService) {
+                                                       final ActivationTokenConfirmationService activationTokenConfirmationService,
+                                                       final ContextProvider contextProvider) {
         return new AuthenticationService(userRepository,
                 passwordEncoder,
                 jwtService,
@@ -135,7 +137,8 @@ public class MainConfiguration {
                 userDetailsService,
                 passwordResetTokenService,
                 jwtTokenRepository,
-                activationTokenConfirmationService
+                activationTokenConfirmationService,
+                contextProvider
         );
     }
 
@@ -220,8 +223,9 @@ public class MainConfiguration {
 
     @Bean
     public UserAdministrationService userAdministrationService(final UserDetailsServiceImpl userDetailsService,
-                                                               final ContextProvider contextProvider) {
-        return new UserAdministrationService(userDetailsService, contextProvider);
+                                                               final ContextProvider contextProvider,
+                                                               final UserRepository userRepository) {
+        return new UserAdministrationService(userDetailsService, contextProvider, userRepository);
     }
 
     @Bean
@@ -262,5 +266,15 @@ public class MainConfiguration {
     @Bean
     public WebSocketEventSender webSocketEventSender(final SimpMessagingTemplate messagingTemplate) {
         return new WebSocketEventSender(messagingTemplate);
+    }
+
+
+    @Bean
+    public CompanyAdministrationService companyAdministrationService(final ContextProvider contextProvider,
+                                                                     final CompanyRepository companyRepository,
+                                                                     final UserRepository userRepository) {
+        return new CompanyAdministrationService(contextProvider,
+                companyRepository,
+                userRepository);
     }
 }

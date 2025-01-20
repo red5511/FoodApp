@@ -2,8 +2,8 @@ package com.foodapp.foodapp.forDevelopment.scheduler;
 
 
 import com.foodapp.foodapp.administration.cache.CacheService;
-import com.foodapp.foodapp.administration.company.Company;
-import com.foodapp.foodapp.administration.company.CompanyRepository;
+import com.foodapp.foodapp.administration.company.sql.Company;
+import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.forDevelopment.TechnicalContextDev;
 import com.foodapp.foodapp.order.*;
 import com.foodapp.foodapp.orderProduct.OrderProduct;

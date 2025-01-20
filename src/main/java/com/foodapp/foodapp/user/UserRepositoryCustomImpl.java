@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import com.foodapp.foodapp.administration.userAdministration.UsersSearchParams;
-import com.foodapp.foodapp.common.UsersPagedResult;
 
 import io.jsonwebtoken.lang.Collections;
 import jakarta.persistence.EntityManager;
@@ -21,7 +20,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public UsersPagedResult searchOrders(UsersSearchParams params) {
+    public UsersPagedResult searchUsers(UsersSearchParams params) {
         StringBuilder queryBuilder = new StringBuilder(UserSql.BASE_QUERY);
         StringBuilder countQueryBuilder = new StringBuilder(UserSql.BASE_COUNT_QUERY);
         Map<String, Object> valueParamsMap = new HashMap<>();

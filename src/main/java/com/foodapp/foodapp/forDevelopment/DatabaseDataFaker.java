@@ -1,9 +1,10 @@
 package com.foodapp.foodapp.forDevelopment;
 
-import com.foodapp.foodapp.administration.company.Company;
-import com.foodapp.foodapp.administration.company.CompanyRepository;
-import com.foodapp.foodapp.administration.company.Content;
-import com.foodapp.foodapp.administration.company.OpenHours;
+import com.foodapp.foodapp.administration.company.sql.Company;
+import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
+import com.foodapp.foodapp.administration.company.sql.Content;
+import com.foodapp.foodapp.administration.company.sql.OpenHours;
+import com.foodapp.foodapp.common.Address;
 import com.foodapp.foodapp.order.Order;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.order.OrderStatus;
@@ -44,9 +45,13 @@ public class DatabaseDataFaker {
         if (companyOptional.isPresent() && userOptional.isPresent() && productOptional.isPresent() && orderOptional.isPresent()) {
             return;
         }
-        var company = createFakeCompany("", "Topic1");
-        var company2 = createFakeCompany("#2", "Topic2");
-        var company3 = createFakeCompany("#3", "Topic3");
+        var company = createFakeCompany("", "Topic1", true);
+        var company2 = createFakeCompany("#2", "Topic2", true);
+        var company3 = createFakeCompany("#3", "Topic3", true);
+        var company4 = createFakeCompany("abd_", "Topic4", false);
+        var company5 = createFakeCompany("_1234567890", "Topic5", true);
+        var company6 = createFakeCompany("bbbbb", "Topic6", false);
+        var company7 = createFakeCompany("GIGA_KEBAB_", "Topic7", false);
         var user = createFakeUser();
         var admin = createFakeAdmin();
         var product = createFakeProduct("Duży kebab");
@@ -69,12 +74,16 @@ public class DatabaseDataFaker {
         company = companyRepository.save(company);
         company2 = companyRepository.save(company2);
         company3 = companyRepository.save(company3);
+        company4 = companyRepository.save(company4);
+        company5 = companyRepository.save(company5);
+        company6 = companyRepository.save(company6);
+        company7 = companyRepository.save(company7);
         user.setCompanies(new HashSet<>(Arrays.asList(company, company2, company3)));
         user = userRepository.save(user);
         userRepository.save(admin);
-        company.setCompanyUsers(new HashSet<>(Arrays.asList(user)));
-        company2.setCompanyUsers(new HashSet<>(Arrays.asList(user)));
-        company3.setCompanyUsers(new HashSet<>(Arrays.asList(user)));
+        company.setUsers(new HashSet<>(Arrays.asList(user)));
+        company2.setUsers(new HashSet<>(Arrays.asList(user)));
+        company3.setUsers(new HashSet<>(Arrays.asList(user)));
         companyRepository.saveAll(List.of(company, company2, company3));
 
         product.setCompany(company);
@@ -180,13 +189,19 @@ public class DatabaseDataFaker {
                 .build();
     }
 
-    private Company createFakeCompany(final String postfix, final String topic) {
+    private Company createFakeCompany(final String postfix, final String topic, final boolean isPostfix) {
+        var name = isPostfix ? "Firma Testowa" + postfix : postfix + "Firma Testowa";
         return Company.builder()
-                .name("Firma Testowa" + postfix)
-                .address("Powstańców 34a, Warszawa 33-999")
+                .name(name)
                 .content(createContent())
                 .webSocketTopicName(UUID.randomUUID().toString())
                 .webSocketTopicName(topic)
+                .address(Address.builder()
+                        .street(new Random().nextInt(2) % 2 == 1 ? "Generała Piłsudskiego" : "Piastów")
+                        .city(new Random().nextInt(2) % 2 == 1 ? "Warszawa" : "Kraków")
+                        .streetNumber("555 / 102b")
+                        .postalCode("34-999")
+                        .build())
                 .build();
     }
 

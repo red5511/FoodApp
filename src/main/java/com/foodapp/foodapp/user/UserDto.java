@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.user;
 
-import com.foodapp.foodapp.administration.company.CompanyDto;
+import com.foodapp.foodapp.administration.company.common.CompanyDto;
 import com.foodapp.foodapp.user.permission.Permission;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;

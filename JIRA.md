@@ -14,6 +14,15 @@ i odrazu znikac ;/
 7. Zrobic jakis komunikat jak odbieramy ordery i checemy przejsc na inna firme to raczej odbieranie orderow powinno sie wyjebac
 
 8. pamietac o dorobieniu sprawdzen uprawnien uzytkonika do firm na endpointach
+
+##########
+
+sql injection
+
+#####
+
+aktywna sesja JWT - obecnie jest problem bo daje ze jest walid np 3dni wiec moze cie wyjebac w sorkdu roboty za 3 dni !!!!!!!!!
+
 ###########
 
 ta rura robi resiza jak sie wyswielta caly opis xd

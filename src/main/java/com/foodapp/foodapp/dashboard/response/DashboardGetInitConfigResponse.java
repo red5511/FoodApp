@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.dashboard.response;
 
-import com.foodapp.foodapp.administration.company.CompanyDto;
+import com.foodapp.foodapp.administration.company.common.CompanyDto;
 import com.foodapp.foodapp.user.permission.PermittedModules;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

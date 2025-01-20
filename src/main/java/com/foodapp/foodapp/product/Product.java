@@ -1,7 +1,7 @@
 package com.foodapp.foodapp.product;
 
 import com.foodapp.foodapp.common.BaseEntity;
-import com.foodapp.foodapp.administration.company.Company;
+import com.foodapp.foodapp.administration.company.sql.Company;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

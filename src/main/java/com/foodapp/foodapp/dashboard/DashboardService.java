@@ -1,7 +1,7 @@
 package com.foodapp.foodapp.dashboard;
 
-import com.foodapp.foodapp.administration.company.CompanyDto;
-import com.foodapp.foodapp.administration.company.CompanyMapper;
+import com.foodapp.foodapp.administration.company.common.CompanyDto;
+import com.foodapp.foodapp.administration.company.common.CompanyMapper;
 import com.foodapp.foodapp.administration.company.CompanyService;
 import com.foodapp.foodapp.dashboard.request.GetActiveOrdersRequest;
 import com.foodapp.foodapp.dashboard.response.DashboardGetCompanyResponse;

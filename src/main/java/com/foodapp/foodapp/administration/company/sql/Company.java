@@ -1,5 +1,8 @@
-package com.foodapp.foodapp.administration.company;
+package com.foodapp.foodapp.administration.company.sql;
 
+import com.foodapp.foodapp.administration.company.common.CompanyType;
+import com.foodapp.foodapp.administration.company.sql.Content;
+import com.foodapp.foodapp.common.Address;
 import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.user.User;
 import jakarta.persistence.*;
@@ -23,7 +26,6 @@ public class Company extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "company_sequence")
     private Long id;
     private String name;
-    private String address;
     @JdbcTypeCode(SqlTypes.JSON)
     private Content content;
     @Enumerated(EnumType.STRING)
@@ -33,12 +35,11 @@ public class Company extends BaseEntity {
             name = "company_user",
             joinColumns = @JoinColumn(name = "company_id"),
             inverseJoinColumns = @JoinColumn(name = "_user_id"))
-    private Set<User> companyUsers;
+    private Set<User> users;
     @Setter
     private boolean locked;
     @Setter
-    @Column(columnDefinition = "boolean default false")
-    private boolean isReceivingOrdersActive;
     private String webSocketTopicName;
-
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Address address;
 }

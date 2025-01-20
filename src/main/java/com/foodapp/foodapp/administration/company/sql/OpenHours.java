@@ -1,4 +1,4 @@
-package com.foodapp.foodapp.administration.company;
+package com.foodapp.foodapp.administration.company.sql;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

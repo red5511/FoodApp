@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.order;
 
-import com.foodapp.foodapp.administration.company.CompanyRepository;
+import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.common.CommonMapper;
 import com.foodapp.foodapp.common.OrdersPagedResult;
 import com.foodapp.foodapp.common.Sort;
@@ -14,7 +14,6 @@ import com.foodapp.foodapp.websocket.EventMapper;
 import com.foodapp.foodapp.websocket.WebSocketEventSender;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;

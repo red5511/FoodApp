@@ -1,14 +1,13 @@
 package com.foodapp.foodapp.administration.company.response;
 
-import java.util.Set;
-
-import com.foodapp.foodapp.administration.company.CompanyDto;
-
+import com.foodapp.foodapp.administration.company.common.CompanyDto;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 @Builder
 @Getter
 public class GetAllCompaniesResponse {
-    Set<CompanyDto> companies;
+    List<CompanyDto> companies;
 }
