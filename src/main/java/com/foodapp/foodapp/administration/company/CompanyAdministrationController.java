@@ -36,6 +36,7 @@ public class CompanyAdministrationController {
     private final CompanyAdministrationService companyAdministrationService;
 
     @PostMapping("/save")
+    @PreAuthorize("hasAuthority('SUPER_ADMINISTRATOR') or hasAuthority('ADMINISTRATOR')")
     public ResponseEntity<SaveCompanyResponse> saveCompany(final @RequestBody SaveCompanyRequest request) {
         var id = companyService.saveCompany(request);
         var response = SaveCompanyResponse.builder().id(id).build();

@@ -3,6 +3,7 @@ package com.foodapp.foodapp.product;
 import com.foodapp.foodapp.administration.userAdministration.request.GetUsersAdministrationRequest;
 import com.foodapp.foodapp.administration.userAdministration.response.GetPagedUsersResponse;
 import com.foodapp.foodapp.product.request.DeleteProductRequest;
+import com.foodapp.foodapp.product.request.GetProductsRequest;
 import com.foodapp.foodapp.product.request.ModifyProductRequest;
 import com.foodapp.foodapp.product.request.CreateProductRequest;
 import com.foodapp.foodapp.product.response.GetPagedProductsResponse;
@@ -42,7 +43,7 @@ public class ProductController {
 
     @PostMapping("/pages")
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING')")
-    public ResponseEntity<GetPagedProductsResponse> getPagedProducts(final @RequestBody GetUsersAdministrationRequest request) {
+    public ResponseEntity<GetPagedProductsResponse> getPagedProducts(final @RequestBody GetProductsRequest request) {
         var pagedResult = productService.getPagedProducts(request);
         var response = GetPagedProductsResponse.builder()
                                             .pagedResult(pagedResult)

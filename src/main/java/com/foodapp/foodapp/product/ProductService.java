@@ -1,8 +1,10 @@
 package com.foodapp.foodapp.product;
 
 import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
+import com.foodapp.foodapp.common.CommonMapper;
 import com.foodapp.foodapp.product.request.CreateProductRequest;
 import com.foodapp.foodapp.product.request.DeleteProductRequest;
+import com.foodapp.foodapp.product.request.GetProductsRequest;
 import com.foodapp.foodapp.product.request.ModifyProductRequest;
 import com.foodapp.foodapp.security.ContextProvider;
 import lombok.AllArgsConstructor;
@@ -42,5 +44,11 @@ public class ProductService {
                 .imgUrl(productDto.getImgUrl())
                 .company(company)
                 .build();
+    }
+
+    public ProductsPagedResult getPagedProducts(final GetProductsRequest request) {
+        contextProvider.validateCompanyAccess(List.of(request.getCompanyId()));
+        var searchParams = CommonMapper.mapToSearchParams(request);
+        return productRepository.searchProducts(searchParams);
     }
 }
