@@ -32,13 +32,7 @@ public class CompanyService {
     }
 
     @Transactional
-    public void saveCompany(final SaveCompanyRequest request) {
-        Set<User> userSet = new HashSet<>();
-        User user = null;
-        if (request.getUserEmail() != null) {
-            user = (User) userDetailsService.loadUserByUsername(request.getUserEmail());
-            userSet.add(user);
-        }
+    public Long saveCompany(final SaveCompanyRequest request) {
         var companyDto = request.getCompany();
         var company = Company.builder()
                 .name(companyDto.getName())
@@ -46,14 +40,10 @@ public class CompanyService {
                 .content(Content.builder()
                         .openHours(companyDto.getOpenHours())
                         .build())
-                .users(userSet)
                 .webSocketTopicName(UUID.randomUUID().toString())
                 .build();
-        if (user != null) {
-            user.getCompanies().add(company);
-            userRepository.save(user);
-        }
-        companyRepository.save(company);
+        company = companyRepository.save(company);
+        return company.getId();
     }
 
     public void modifyCompany(final ModifyCompanyRequest request) {

@@ -47,9 +47,6 @@ public class CompanyAdministrationService {
             user.getCompanies().remove(company);
         });
 
-        user.getCompanies().addAll(companiesToAdd);
-        companiesToRemove.forEach(user.getCompanies()::remove);
-
         userRepository.save(user);
         companyRepository.saveAll(companiesToAdd);
         companyRepository.saveAll(companiesToRemove);

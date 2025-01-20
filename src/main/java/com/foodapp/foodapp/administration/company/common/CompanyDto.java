@@ -21,8 +21,6 @@ public class CompanyDto {
     private OpenHours openHours;
     @Schema(required = true)
     private Address address;
-    private CompanyType companyType;
-    private boolean isReceivingOrdersActive;
     @Schema(required = true)
     private String webSocketTopicName;
     private boolean isHolding;

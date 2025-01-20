@@ -10,7 +10,7 @@ public class PermissionUtils {
             Permission.VIEW_ORDERS_HISTORY, Set.of(PermittedModules.ORDERS_HISTORY),
             Permission.VIEW_ONLINE_ORDERING, Set.of(PermittedModules.ONLINE_ORDERS),
             Permission.VIEW_STATISTICS, Set.of(PermittedModules.STATISTICS),
-            Permission.VIEW_RESTAURANT_ORDERING, Set.of(PermittedModules.RESTAURANT_ORDERS),
+            Permission.VIEW_RESTAURANT_ORDERING, Set.of(PermittedModules.RESTAURANT_ORDERS, PermittedModules.MENU_PANEL),
             Permission.SUPER_ADMINISTRATOR, Set.of(PermittedModules.SUPER_ADMIN_PANEL, PermittedModules.ADMIN_PANEL));
 
     public static Set<PermittedModules> getPermittedModules(final Set<Permission> permissions) {

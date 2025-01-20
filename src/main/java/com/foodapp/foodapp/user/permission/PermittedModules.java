@@ -6,5 +6,6 @@ public enum PermittedModules {
     ORDERS_HISTORY,
     RESTAURANT_ORDERS,
     ADMIN_PANEL,
-    SUPER_ADMIN_PANEL
+    SUPER_ADMIN_PANEL,
+    MENU_PANEL
 }

@@ -1,7 +1,5 @@
 package com.foodapp.foodapp.administration.company.sql;
 
-import com.foodapp.foodapp.administration.company.common.CompanyType;
-import com.foodapp.foodapp.administration.company.sql.Content;
 import com.foodapp.foodapp.common.Address;
 import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.user.User;
@@ -28,8 +26,6 @@ public class Company extends BaseEntity {
     private String name;
     @JdbcTypeCode(SqlTypes.JSON)
     private Content content;
-    @Enumerated(EnumType.STRING)
-    private CompanyType companyType;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "company_user",

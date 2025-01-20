@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SaveCompanyRequest {
     private CompanyDto company;
-    private String userEmail;
 }
