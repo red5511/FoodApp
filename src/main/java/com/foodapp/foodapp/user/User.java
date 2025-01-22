@@ -40,6 +40,7 @@ public class User extends BaseEntity implements UserDetails {
     @Builder.Default
     @Setter
     private Boolean enabled = false;
+    @ToString.Exclude
     @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     private Set<Company> companies;
     @ElementCollection(fetch = FetchType.EAGER)

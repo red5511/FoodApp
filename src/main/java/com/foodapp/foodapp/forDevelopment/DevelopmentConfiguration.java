@@ -1,17 +1,23 @@
 package com.foodapp.foodapp.forDevelopment;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.foodapp.foodapp.administration.cache.CacheService;
 import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.orderProduct.OrderProductRepository;
 import com.foodapp.foodapp.product.ProductRepository;
+import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
 import com.foodapp.foodapp.rabbitMQ.RabbitMQSender;
 import com.foodapp.foodapp.user.UserRepository;
 import com.foodapp.foodapp.websocket.WebSocketService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @Profile("TEST")
@@ -26,13 +32,15 @@ public class DevelopmentConfiguration {
                                                final ProductRepository productRepository,
                                                final OrderRepository orderRepository,
                                                final OrderProductRepository orderProductRepository,
-                                               final PasswordEncoder passwordEncoder) {
+                                               final PasswordEncoder passwordEncoder,
+                                               final ProductCategoryRepository productCategoryRepository) {
         return new DatabaseDataFaker(companyRepository,
-                userRepository,
-                productRepository,
-                orderRepository,
-                orderProductRepository,
-                passwordEncoder
+                                     userRepository,
+                                     productRepository,
+                                     orderRepository,
+                                     orderProductRepository,
+                                     passwordEncoder,
+                                     productCategoryRepository
         );
     }
 
@@ -45,12 +53,12 @@ public class DevelopmentConfiguration {
                                                                  final CacheService cacheService,
                                                                  final RabbitMQSender rabbitMQSender) {
         return new SchedulerForTestingService(webSocketService,
-                orderRepository,
-                companyRepository,
-                productRepository,
-                timeToAcceptOrder,
-                cacheService,
-                rabbitMQSender
+                                              orderRepository,
+                                              companyRepository,
+                                              productRepository,
+                                              timeToAcceptOrder,
+                                              cacheService,
+                                              rabbitMQSender
         );
     }
 

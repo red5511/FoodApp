@@ -5,6 +5,8 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 
+import com.foodapp.foodapp.productCategory.ProductCategoryDto;
+
 @Builder
 @Getter
 public class ProductDto {
@@ -15,4 +17,5 @@ public class ProductDto {
     private String imgUrl;
     private String description;
     private boolean soldOut;
+    private ProductCategoryDto productCategory;
 }

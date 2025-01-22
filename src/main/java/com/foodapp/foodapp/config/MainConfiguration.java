@@ -51,6 +51,8 @@ import com.foodapp.foodapp.order.OrderService;
 import com.foodapp.foodapp.order.OrderValidator;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.product.ProductService;
+import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
+import com.foodapp.foodapp.productCategory.ProductCategoryService;
 import com.foodapp.foodapp.rabbitMQ.RabbitMQSender;
 import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
@@ -287,5 +289,10 @@ public class MainConfiguration {
                                                 companyRepository,
                                                 userRepository
         );
+    }
+
+    @Bean
+    public ProductCategoryService productCategoryService(final ProductCategoryRepository productCategoryRepository) {
+        return new ProductCategoryService(productCategoryRepository);
     }
 }

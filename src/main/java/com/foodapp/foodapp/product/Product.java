@@ -2,6 +2,9 @@ package com.foodapp.foodapp.product;
 
 import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.administration.company.sql.Company;
+import com.foodapp.foodapp.order.Order;
+import com.foodapp.foodapp.productCategory.ProductCategory;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,4 +33,7 @@ public class Product extends BaseEntity {
     private String imgUrl;
     private String description;
     private boolean soldOut;
+    @ManyToOne
+    @JoinColumn(name = "product_category_id")
+    private ProductCategory productCategory;
 }
