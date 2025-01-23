@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.foodapp.foodapp.product.ProductsPagedResult;
 import com.foodapp.foodapp.productCategory.ProductCategoryDto;
+import com.foodapp.foodapp.productProperties.ProductPropertiesDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,4 +18,5 @@ import lombok.NoArgsConstructor;
 public class GetPagedProductsResponse {
     private ProductsPagedResult pagedResult;
     private List<ProductCategoryDto> productCategories;
+    private List<ProductPropertiesDto> productPropertiesList;
 }

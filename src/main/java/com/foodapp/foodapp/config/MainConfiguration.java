@@ -53,6 +53,8 @@ import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.product.ProductService;
 import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
 import com.foodapp.foodapp.productCategory.ProductCategoryService;
+import com.foodapp.foodapp.productProperties.ProductPropertiesRepository;
+import com.foodapp.foodapp.productProperties.ProductPropertiesService;
 import com.foodapp.foodapp.rabbitMQ.RabbitMQSender;
 import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
@@ -294,5 +296,10 @@ public class MainConfiguration {
     @Bean
     public ProductCategoryService productCategoryService(final ProductCategoryRepository productCategoryRepository) {
         return new ProductCategoryService(productCategoryRepository);
+    }
+
+    @Bean
+    public ProductPropertiesService productPropertiesService(final ProductPropertiesRepository productPropertiesRepository) {
+        return new ProductPropertiesService(productPropertiesRepository);
     }
 }

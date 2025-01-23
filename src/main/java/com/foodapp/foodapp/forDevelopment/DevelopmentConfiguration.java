@@ -15,6 +15,8 @@ import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.orderProduct.OrderProductRepository;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
+import com.foodapp.foodapp.productProperties.ProductPropertiesRepository;
+import com.foodapp.foodapp.productProperties.productProperty.ProductPropertyRepository;
 import com.foodapp.foodapp.rabbitMQ.RabbitMQSender;
 import com.foodapp.foodapp.user.UserRepository;
 import com.foodapp.foodapp.websocket.WebSocketService;
@@ -33,14 +35,18 @@ public class DevelopmentConfiguration {
                                                final OrderRepository orderRepository,
                                                final OrderProductRepository orderProductRepository,
                                                final PasswordEncoder passwordEncoder,
-                                               final ProductCategoryRepository productCategoryRepository) {
+                                               final ProductCategoryRepository productCategoryRepository,
+                                               final ProductPropertyRepository productPropertyRepository,
+                                               final ProductPropertiesRepository productPropertiesRepository) {
         return new DatabaseDataFaker(companyRepository,
                                      userRepository,
                                      productRepository,
                                      orderRepository,
                                      orderProductRepository,
                                      passwordEncoder,
-                                     productCategoryRepository
+                                     productCategoryRepository,
+                                     productPropertyRepository,
+                                     productPropertiesRepository
         );
     }
 

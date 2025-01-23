@@ -29,6 +29,10 @@ import com.foodapp.foodapp.product.Product;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.productCategory.ProductCategory;
 import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
+import com.foodapp.foodapp.productProperties.ProductProperties;
+import com.foodapp.foodapp.productProperties.ProductPropertiesRepository;
+import com.foodapp.foodapp.productProperties.productProperty.ProductProperty;
+import com.foodapp.foodapp.productProperties.productProperty.ProductPropertyRepository;
 import com.foodapp.foodapp.user.Role;
 import com.foodapp.foodapp.user.User;
 import com.foodapp.foodapp.user.UserRepository;
@@ -45,6 +49,8 @@ public class DatabaseDataFaker {
     private final OrderProductRepository orderProductRepository;
     private final PasswordEncoder passwordEncoder;
     private final ProductCategoryRepository productCategoryRepository;
+    private final ProductPropertyRepository productPropertyRepository;
+    private final ProductPropertiesRepository productPropertiesRepository;
 
     @TechnicalContextDev
     @Transactional
@@ -68,6 +74,18 @@ public class DatabaseDataFaker {
 
         var productCategory = createFakeProductCategory("Kebab ciasto");
         var productCategory2 = createFakeProductCategory("Kebab byłka");
+
+        var productProperty = createFakeProductProperty("Sos czosnkowy", BigDecimal.ZERO);
+        var productProperty2 = createFakeProductProperty("Sos pomidorowy", BigDecimal.ZERO);
+
+        var productProperty3 = createFakeProductProperty("Jalapino", new BigDecimal("1.00"));
+        var productProperty4 = createFakeProductProperty("Dodatkowe mieso", new BigDecimal("9.99"));
+        var productProperty5 = createFakeProductProperty("Podwójny ser", new BigDecimal("4.99"));
+        var productProperty6 = createFakeProductProperty("Buraki", new BigDecimal("19.99"));
+
+        var productProperties = createFakeProductProperties("Sosy", true);
+        var productProperties2 = createFakeProductProperties("Dodatki", false);
+
         var product = createFakeProduct("Duży kebab");
         var product2 = createFakeProduct2("Mały kebab");
 
@@ -104,6 +122,38 @@ public class DatabaseDataFaker {
         productCategory2.setCompany(company);
         productCategory = productCategoryRepository.save(productCategory);
         productCategory2 = productCategoryRepository.save(productCategory2);
+        //
+        //        productProperty = productPropertyRepository.save(productProperty);
+        //        productProperty2 = productPropertyRepository.save(productProperty2);
+        //        productProperty3 = productPropertyRepository.save(productProperty3);
+        //        productProperty4 = productPropertyRepository.save(productProperty4);
+        //        productProperty5 = productPropertyRepository.save(productProperty5);
+        //        productProperty6 = productPropertyRepository.save(productProperty6);
+
+        productProperties.setCompany(company);
+        productProperties.setProductPropertyList(List.of(productProperty, productProperty2));
+        productProperties.setProducts(List.of(product));
+        productProperties2.setProductPropertyList(List.of(productProperty3, productProperty4, productProperty5, productProperty6));
+        productProperties2.setCompany(company);
+        productProperties2.setProducts(List.of(product));
+
+
+        var productPropertiesList = productPropertiesRepository.saveAll(List.of(productProperties, productProperties2));
+        product.setProductPropertiesList(productPropertiesList);
+
+        productProperty.setProductProperties(productProperties);
+        productProperty2.setProductProperties(productProperties);
+        productProperty3.setProductProperties(productProperties2);
+        productProperty4.setProductProperties(productProperties2);
+        productProperty5.setProductProperties(productProperties2);
+        productProperty6.setProductProperties(productProperties2);
+//
+//        productPropertyRepository.save(productProperty);
+//        productPropertyRepository.save(productProperty2);
+//        productPropertyRepository.save(productProperty3);
+//        productPropertyRepository.save(productProperty4);
+//        productPropertyRepository.save(productProperty5);
+//        productPropertyRepository.save(productProperty6);
 
         product.setProductCategory(productCategory);
         product.setCompany(company);
@@ -125,6 +175,20 @@ public class DatabaseDataFaker {
         orderProductRepository.saveAll(orderProducts);
         orderProductRepository.saveAll(orderProductsForCompany2);
         orderProductRepository.saveAll(orderProductsForCompany3);
+    }
+
+    private ProductProperties createFakeProductProperties(final String name, final boolean required) {
+        return ProductProperties.builder()
+                                .required(required)
+                                .name(name)
+                                .build();
+    }
+
+    private ProductProperty createFakeProductProperty(final String name, final BigDecimal price) {
+        return ProductProperty.builder()
+                              .name(name)
+                              .price(price)
+                              .build();
     }
 
     private ProductCategory createFakeProductCategory(final String name) {

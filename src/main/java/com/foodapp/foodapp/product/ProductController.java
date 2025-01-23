@@ -15,6 +15,7 @@ import com.foodapp.foodapp.product.request.GetProductsRequest;
 import com.foodapp.foodapp.product.request.ModifyProductRequest;
 import com.foodapp.foodapp.product.response.GetPagedProductsResponse;
 import com.foodapp.foodapp.productCategory.ProductCategoryService;
+import com.foodapp.foodapp.productProperties.ProductPropertiesService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +29,7 @@ import lombok.AllArgsConstructor;
 public class ProductController {
     private final ProductService productService;
     private final ProductCategoryService productCategoryService;
+    private final ProductPropertiesService productPropertiesService;
 
     @PostMapping("/save")
     public ResponseEntity<String> saveProduct(final @RequestBody CreateProductRequest request) {
@@ -52,9 +54,11 @@ public class ProductController {
     public ResponseEntity<GetPagedProductsResponse> getPagedProducts(final @RequestBody GetProductsRequest request) {
         var pagedResult = productService.getPagedProducts(request);
         var productCategories = productCategoryService.getAllProductCategoriesByCompanyId(request.getCompanyId());
+        var productPropertiesList = productPropertiesService.getAllProductPropertiesByCompanyId(request.getCompanyId());
         var response = GetPagedProductsResponse.builder()
                                                .pagedResult(pagedResult)
                                                .productCategories(productCategories)
+                                               .productPropertiesList(productPropertiesList)
                                                .build();
         return ResponseEntity.ok(response);
     }

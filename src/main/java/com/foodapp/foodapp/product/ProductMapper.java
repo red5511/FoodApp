@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.foodapp.foodapp.productCategory.ProductCategoryDto;
+import com.foodapp.foodapp.productProperties.ProductPropertiesMapper;
 
 public class ProductMapper {
     public static List<ProductDto> mapToProductsDto(final List<Product> products) {
@@ -26,6 +27,7 @@ public class ProductMapper {
                                                             .name(product.getCompany().getName())
                                                             .id(product.getCompany().getId())
                                                             .build())
+                         .productPropertiesList(ProductPropertiesMapper.toProductPropertiesDto(product.getProductPropertiesList()))
                          .build();
     }
 }
