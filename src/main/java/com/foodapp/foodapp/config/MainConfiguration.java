@@ -1,35 +1,5 @@
 package com.foodapp.foodapp.config;
 
-import static org.springframework.http.HttpHeaders.ACCEPT;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.HttpHeaders.ORIGIN;
-import static org.springframework.http.HttpMethod.DELETE;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpMethod.PUT;
-import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
-
-import java.util.Arrays;
-import java.util.Collections;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
-
 import com.foodapp.foodapp.administration.AdministrationService;
 import com.foodapp.foodapp.administration.cache.CacheService;
 import com.foodapp.foodapp.administration.cache.CompanyWithActiveReceivingUsersCacheWrapper;
@@ -53,6 +23,7 @@ import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.product.ProductService;
 import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
 import com.foodapp.foodapp.productCategory.ProductCategoryService;
+import com.foodapp.foodapp.productProperties.ProductPropertiesController;
 import com.foodapp.foodapp.productProperties.ProductPropertiesRepository;
 import com.foodapp.foodapp.productProperties.ProductPropertiesService;
 import com.foodapp.foodapp.rabbitMQ.RabbitMQSender;
@@ -67,6 +38,29 @@ import com.foodapp.foodapp.user.email.EmailService;
 import com.foodapp.foodapp.websocket.WebSocketEventHandler;
 import com.foodapp.foodapp.websocket.WebSocketEventSender;
 import com.foodapp.foodapp.websocket.WebSocketService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+import static org.springframework.http.HttpHeaders.*;
+import static org.springframework.http.HttpMethod.*;
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 
 @Configuration
 public class MainConfiguration {
@@ -80,17 +74,17 @@ public class MainConfiguration {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
         config.setAllowedHeaders(Arrays.asList(
-            ORIGIN,
-            CONTENT_TYPE,
-            ACCEPT,
-            AUTHORIZATION
+                ORIGIN,
+                CONTENT_TYPE,
+                ACCEPT,
+                AUTHORIZATION
         ));
         config.setAllowedMethods(Arrays.asList(
-            GET.name(),
-            POST.name(),
-            DELETE.name(),
-            PUT.name(),
-            PATCH.name()
+                GET.name(),
+                POST.name(),
+                DELETE.name(),
+                PUT.name(),
+                PATCH.name()
         ));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
@@ -141,15 +135,15 @@ public class MainConfiguration {
                                                        final ActivationTokenConfirmationService activationTokenConfirmationService,
                                                        final ContextProvider contextProvider) {
         return new AuthenticationService(userRepository,
-                                         passwordEncoder,
-                                         jwtService,
-                                         authenticationManager,
-                                         emailSender,
-                                         userDetailsService,
-                                         passwordResetTokenService,
-                                         jwtTokenRepository,
-                                         activationTokenConfirmationService,
-                                         contextProvider
+                passwordEncoder,
+                jwtService,
+                authenticationManager,
+                emailSender,
+                userDetailsService,
+                passwordResetTokenService,
+                jwtTokenRepository,
+                activationTokenConfirmationService,
+                contextProvider
         );
     }
 
@@ -165,7 +159,7 @@ public class MainConfiguration {
 
     @Bean
     public ActivationTokenConfirmationService tokenConfirmationService(
-        final ActivationTokenConfirmationRepository tokenConfirmationRepository) {
+            final ActivationTokenConfirmationRepository tokenConfirmationRepository) {
         return new ActivationTokenConfirmationService(tokenConfirmationRepository);
     }
 
@@ -212,10 +206,10 @@ public class MainConfiguration {
                                      final ContextProvider contextProvider,
                                      final WebSocketEventSender webSocketEventSender) {
         return new OrderService(orderRepository,
-                                companyRepository,
-                                contextProvider,
-                                orderValidator,
-                                webSocketEventSender
+                companyRepository,
+                contextProvider,
+                orderValidator,
+                webSocketEventSender
         );
     }
 
@@ -228,7 +222,7 @@ public class MainConfiguration {
     public AdministrationService administrationService(CompanyRepository companyRepository,
                                                        final UserRepository userRepository) {
         return new AdministrationService(companyRepository,
-                                         userRepository
+                userRepository
         );
     }
 
@@ -254,11 +248,11 @@ public class MainConfiguration {
                                              final WebSocketEventSender webSocketEventSender,
                                              final RabbitMQSender rabbitMQSender) {
         return new WebSocketService(
-            contextProvider,
-            schedulerForTestingService,
-            cacheService,
-            webSocketEventSender,
-            rabbitMQSender
+                contextProvider,
+                schedulerForTestingService,
+                cacheService,
+                webSocketEventSender,
+                rabbitMQSender
         );
     }
 
@@ -273,7 +267,7 @@ public class MainConfiguration {
     public CacheService cacheService(final UsersConnectedToWebSocketCacheWrapper usersConnectedToWebSocketCacheWrapper,
                                      final CompanyWithActiveReceivingUsersCacheWrapper companyWithActiveReceivingCacheWrapper) {
         return new CacheService(companyWithActiveReceivingCacheWrapper,
-                                usersConnectedToWebSocketCacheWrapper
+                usersConnectedToWebSocketCacheWrapper
         );
     }
 
@@ -288,8 +282,8 @@ public class MainConfiguration {
                                                                      final CompanyRepository companyRepository,
                                                                      final UserRepository userRepository) {
         return new CompanyAdministrationService(contextProvider,
-                                                companyRepository,
-                                                userRepository
+                companyRepository,
+                userRepository
         );
     }
 
@@ -299,7 +293,14 @@ public class MainConfiguration {
     }
 
     @Bean
-    public ProductPropertiesService productPropertiesService(final ProductPropertiesRepository productPropertiesRepository) {
-        return new ProductPropertiesService(productPropertiesRepository);
+    public ProductPropertiesService productPropertiesService(final ProductPropertiesRepository productPropertiesRepository,
+                                                             final ContextProvider contextProvider,
+                                                             final CompanyRepository companyRepository) {
+        return new ProductPropertiesService(productPropertiesRepository, contextProvider, companyRepository);
+    }
+
+    @Bean
+    public ProductPropertiesController productPropertiesController(final ProductPropertiesService productPropertiesService) {
+        return new ProductPropertiesController(productPropertiesService);
     }
 }

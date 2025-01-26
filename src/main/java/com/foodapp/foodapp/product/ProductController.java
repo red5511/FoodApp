@@ -32,25 +32,28 @@ public class ProductController {
     private final ProductPropertiesService productPropertiesService;
 
     @PostMapping("/save")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
     public ResponseEntity<String> saveProduct(final @RequestBody CreateProductRequest request) {
         productService.saveProduct(request);
         return ResponseEntity.ok("Saved");
     }
 
     @DeleteMapping("/delete")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
     public ResponseEntity<String> saveProduct(final @RequestBody DeleteProductRequest request) {
         productService.deleteProduct(request);
         return ResponseEntity.ok("Deleted");
     }
 
     @PutMapping("/modify")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
     public ResponseEntity<String> saveProduct(final @RequestBody ModifyProductRequest request) {
         productService.modifyProduct(request);
         return ResponseEntity.ok("Modified");
     }
 
     @PostMapping("/pages")
-    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING')")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
     public ResponseEntity<GetPagedProductsResponse> getPagedProducts(final @RequestBody GetProductsRequest request) {
         var pagedResult = productService.getPagedProducts(request);
         var productCategories = productCategoryService.getAllProductCategoriesByCompanyId(request.getCompanyId());
