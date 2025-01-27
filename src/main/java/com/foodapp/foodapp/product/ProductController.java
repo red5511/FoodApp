@@ -33,23 +33,23 @@ public class ProductController {
 
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
-    public ResponseEntity<String> saveProduct(final @RequestBody CreateProductRequest request) {
+    public ResponseEntity<Void> saveProduct(final @RequestBody CreateProductRequest request) {
         productService.saveProduct(request);
-        return ResponseEntity.ok("Saved");
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
-    public ResponseEntity<String> saveProduct(final @RequestBody DeleteProductRequest request) {
+    public ResponseEntity<Void> deleteProduct(final @RequestBody DeleteProductRequest request) {
         productService.deleteProduct(request);
-        return ResponseEntity.ok("Deleted");
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/modify")
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
-    public ResponseEntity<String> saveProduct(final @RequestBody ModifyProductRequest request) {
+    public ResponseEntity<Void> modifyProduct(final @RequestBody ModifyProductRequest request) {
         productService.modifyProduct(request);
-        return ResponseEntity.ok("Modified");
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/pages")

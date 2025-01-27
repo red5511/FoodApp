@@ -288,8 +288,10 @@ public class MainConfiguration {
     }
 
     @Bean
-    public ProductCategoryService productCategoryService(final ProductCategoryRepository productCategoryRepository) {
-        return new ProductCategoryService(productCategoryRepository);
+    public ProductCategoryService productCategoryService(final ProductCategoryRepository productCategoryRepository,
+                                                         final ContextProvider contextProvider,
+                                                         final CompanyRepository companyRepository) {
+        return new ProductCategoryService(productCategoryRepository, contextProvider, companyRepository);
     }
 
     @Bean
