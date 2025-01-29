@@ -41,7 +41,7 @@ public class ProductController {
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
     public ResponseEntity<Void> deleteProduct(final @RequestBody DeleteProductRequest request) {
-        productService.deleteProduct(request);
+        productService.softDeleteProduct(request);
         return ResponseEntity.ok().build();
     }
 

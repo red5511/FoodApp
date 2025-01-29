@@ -1,6 +1,5 @@
 package com.foodapp.foodapp.product;
 
-import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.common.CommonMapper;
 import com.foodapp.foodapp.product.request.CreateProductRequest;
 import com.foodapp.foodapp.product.request.DeleteProductRequest;
@@ -14,36 +13,36 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
-    private final CompanyRepository companyRepository;
     private final ContextProvider contextProvider;
+    private final ProductValidator productValidator;
+    private final ProductMapper productMapper;
 
     public void saveProduct(final CreateProductRequest request) {
-        contextProvider.validateCompanyAccess(List.of(request.getProduct().getCompanyId()));
-        var product = buildProduct(request.getProduct());
+        productValidator.validate(request.getProduct(), request.getProduct().getCompanyId());
+        var product = productMapper.mapToProductDto(request.getProduct(), request.getProduct().getCompanyId());
         productRepository.save(product);
     }
 
     public void modifyProduct(final ModifyProductRequest request) {
-        contextProvider.validateCompanyAccess(List.of(request.getProduct().getCompanyId()));
-        var product = buildProduct(request.getProduct());
+        productValidator.validate(request.getProduct(), request.getProduct().getCompanyId());
+        var product = productMapper.mapToProductDto(request.getProduct(), request.getProduct().getCompanyId());
+        var modifiedProduct = productRepository.findById(request.getModifiedId())
+                .orElseThrow(() -> new SecurityException("Wrong modified product id"));
+        if (!modifiedProduct.getCompany().getId().equals(request.getProduct().getCompanyId())) {
+            throw new SecurityException("Miss match between comapnyId and modifiedProduct.companyId");
+        }
+        modifiedProduct.setStatus(ProductStatus.MODIFIED);
         productRepository.save(product);
+        productRepository.save(modifiedProduct);
     }
 
-    public void deleteProduct(final DeleteProductRequest request) {
+    public void softDeleteProduct(final DeleteProductRequest request) {
         contextProvider.validateCompanyAccess(List.of(request.getCompanyId()));
-        productRepository.deleteById(request.getProductId());
-    }
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
 
-    private Product buildProduct(final ProductDto productDto) {
-        var company = companyRepository.findById(productDto.getCompanyId())
-                .orElseThrow(() -> new SecurityException("Company id not valid"));
-        return Product.builder()
-                .name(productDto.getName())
-                .price(productDto.getPrice())
-                .description(productDto.getDescription())
-                .imgUrl(productDto.getImgUrl())
-                .company(company)
-                .build();
+        product.setStatus(ProductStatus.DELETED);
+        productRepository.save(product);
     }
 
     public ProductsPagedResult getPagedProducts(final GetProductsRequest request) {

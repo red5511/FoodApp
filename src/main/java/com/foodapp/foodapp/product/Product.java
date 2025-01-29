@@ -1,19 +1,13 @@
 package com.foodapp.foodapp.product;
 
-import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.administration.company.sql.Company;
-import com.foodapp.foodapp.order.Order;
+import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.productCategory.ProductCategory;
 import com.foodapp.foodapp.productProperties.ProductProperties;
-import com.foodapp.foodapp.productProperties.productProperty.ProductProperty;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
@@ -26,6 +20,9 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class Product extends BaseEntity {
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    public ProductStatus status = ProductStatus.ACTIVE;
     @Id
     @SequenceGenerator(name = "product_sequence", sequenceName = "product_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_sequence")
@@ -45,9 +42,9 @@ public class Product extends BaseEntity {
     private ProductCategory productCategory;
     @ManyToMany
     @JoinTable(
-        name = "product_product_properties", // Join table name
-        joinColumns = @JoinColumn(name = "product_id"),  // Column for the Product side of the relationship
-        inverseJoinColumns = @JoinColumn(name = "product_properties_id") // Column for ProductProperties side
-        )
+            name = "product_product_properties", // Join table name
+            joinColumns = @JoinColumn(name = "product_id"),  // Column for the Product side of the relationship
+            inverseJoinColumns = @JoinColumn(name = "product_properties_id") // Column for ProductProperties side
+    )
     private List<ProductProperties> productPropertiesList;
 }

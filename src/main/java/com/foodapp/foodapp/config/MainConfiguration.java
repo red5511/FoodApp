@@ -19,8 +19,10 @@ import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.order.OrderService;
 import com.foodapp.foodapp.order.OrderValidator;
+import com.foodapp.foodapp.product.ProductMapper;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.product.ProductService;
+import com.foodapp.foodapp.product.ProductValidator;
 import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
 import com.foodapp.foodapp.productCategory.ProductCategoryService;
 import com.foodapp.foodapp.productProperties.ProductPropertiesController;
@@ -184,9 +186,13 @@ public class MainConfiguration {
 
     @Bean
     public ProductService productService(final ProductRepository productRepository,
-                                         final CompanyRepository companyRepository,
-                                         final ContextProvider contextProvider) {
-        return new ProductService(productRepository, companyRepository, contextProvider);
+                                         final ContextProvider contextProvider,
+                                         final ProductValidator productValidator,
+                                         final ProductMapper productMapper) {
+        return new ProductService(productRepository,
+                contextProvider,
+                productValidator,
+                productMapper);
     }
 
     @Bean
@@ -304,5 +310,19 @@ public class MainConfiguration {
     @Bean
     public ProductPropertiesController productPropertiesController(final ProductPropertiesService productPropertiesService) {
         return new ProductPropertiesController(productPropertiesService);
+    }
+
+    @Bean
+    public ProductMapper productMapper(final ProductCategoryRepository productCategoryRepository,
+                                       final CompanyRepository companyRepository,
+                                       final ProductPropertiesRepository productPropertiesRepository) {
+        return new ProductMapper(productCategoryRepository,
+                companyRepository,
+                productPropertiesRepository);
+    }
+
+    @Bean
+    public ProductValidator productValidator(final ContextProvider contextProvider) {
+        return new ProductValidator(contextProvider);
     }
 }

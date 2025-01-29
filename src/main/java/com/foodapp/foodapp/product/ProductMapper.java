@@ -1,33 +1,68 @@
 package com.foodapp.foodapp.product;
 
+import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
+import com.foodapp.foodapp.productCategory.ProductCategoryDto;
+import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
+import com.foodapp.foodapp.productProperties.ProductProperties;
+import com.foodapp.foodapp.productProperties.ProductPropertiesDto;
+import com.foodapp.foodapp.productProperties.ProductPropertiesMapper;
+import com.foodapp.foodapp.productProperties.ProductPropertiesRepository;
+import lombok.AllArgsConstructor;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.foodapp.foodapp.productCategory.ProductCategoryDto;
-import com.foodapp.foodapp.productProperties.ProductPropertiesMapper;
-
+@AllArgsConstructor
 public class ProductMapper {
+    private final ProductCategoryRepository productCategoryRepository;
+    private final CompanyRepository companyRepository;
+    private final ProductPropertiesRepository productPropertiesRepository;
+
     public static List<ProductDto> mapToProductsDto(final List<Product> products) {
         return products.stream()
-                       .map(ProductMapper::mapToProductDto)
-                       .collect(Collectors.toList());
+                .map(ProductMapper::mapToProductDto)
+                .collect(Collectors.toList());
     }
 
     public static ProductDto mapToProductDto(final Product product) {
+        var productCategoryDto = product.getProductCategory() != null ? ProductCategoryDto.builder()
+                .companyId(product.getCompany().getId())
+                .name(product.getProductCategory().getName())
+                .id(product.getProductCategory().getId())
+                .build() : null;
         return ProductDto.builder()
-                         .id(product.getId())
-                         .name(product.getName())
-                         .description(product.getDescription())
-                         .imgUrl(product.getImgUrl())
-                         .soldOut(product.isSoldOut())
-                         .price(product.getPrice())
-                         .companyId(product.getCompany().getId())
-                         .productCategory(ProductCategoryDto.builder()
-                                                            .companyId(product.getCompany().getId())
-                                                            .name(product.getCompany().getName())
-                                                            .id(product.getCompany().getId())
-                                                            .build())
-                         .productPropertiesList(ProductPropertiesMapper.toProductPropertiesDto(product.getProductPropertiesList()))
-                         .build();
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .imgUrl(product.getImgUrl())
+                .soldOut(product.isSoldOut())
+                .price(product.getPrice())
+                .companyId(product.getCompany().getId())
+                .productCategory(productCategoryDto)
+                .productPropertiesList(ProductPropertiesMapper.toProductPropertiesDto(product.getProductPropertiesList()))
+                .build();
+    }
+
+    public Product mapToProductDto(final ProductDto productDto, final Long companyId) {
+        var company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new SecurityException("Company id not valid"));
+        var productCategory = productCategoryRepository.findById(productDto.getProductCategory().getId())
+                .orElseThrow(() -> new SecurityException("Wrong category id"));
+
+        List<ProductProperties> productPropertiesList = null;
+        if (productDto.getProductPropertiesList() != null) {
+            var productPropertiesIds = productDto.getProductPropertiesList().stream()
+                    .map(ProductPropertiesDto::getId).toList();
+            productPropertiesList = productPropertiesRepository.findAllById(productPropertiesIds);
+        }
+        return Product.builder()
+                .name(productDto.getName())
+                .price(productDto.getPrice())
+                .description(productDto.getDescription())
+                .imgUrl(productDto.getImgUrl())
+                .company(company)
+                .productCategory(productCategory)
+                .productPropertiesList(productPropertiesList)
+                .build();
     }
 }

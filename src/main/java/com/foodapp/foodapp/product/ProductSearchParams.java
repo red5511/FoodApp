@@ -11,4 +11,5 @@ import lombok.experimental.SuperBuilder;
 public class ProductSearchParams extends SearchParams {
     private String global;
     private Long companyId;
+    private ProductStatus status;
 }

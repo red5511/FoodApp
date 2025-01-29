@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class ModifyProductRequest {
+    private Long modifiedId;
     private ProductDto product;
 }
