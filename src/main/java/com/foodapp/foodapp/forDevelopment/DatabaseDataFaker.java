@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,8 +73,16 @@ public class DatabaseDataFaker {
         var user = createFakeUser();
         var admin = createFakeAdmin();
 
-        var productCategory = createFakeProductCategory("Kebab ciasto");
-        var productCategory2 = createFakeProductCategory("Kebab byłka");
+        var categoryStrings = List.of("Kebab ciasto",
+                                      "Kebab bułka",
+                                      "Napoje",
+                                      "Desery",
+                                      "Desery2",
+                                      "Desery3",
+                                      "Desery4",
+                                      "Desery5"
+        );
+        var productCategoryList = categoryStrings.stream().map(this::createFakeProductCategory).toList();
 
         var productProperty = createFakeProductProperty("Sos czosnkowy", BigDecimal.ZERO);
         var productProperty2 = createFakeProductProperty("Sos pomidorowy", BigDecimal.ZERO);
@@ -86,14 +95,18 @@ public class DatabaseDataFaker {
         var productProperties = createFakeProductProperties("Sosy", true);
         var productProperties2 = createFakeProductProperties("Dodatki", false);
 
-        var product = createFakeProduct("Duży kebab");
-        var product2 = createFakeProduct2("Mały kebab");
+        var productStrings = List.of("Duży kebab", "Średni kebab", "Mały kebab", "Duży falafel", "Średni falafel", "Mały falafel", "Duży specjał", "Mały specjał");
+        List<Product> productForEveryCategory = new ArrayList<>();
+        for(int i = 0; i < productCategoryList.size(); i++) {
+            productForEveryCategory.add(createFakeProduct("Fake#" + i));
+        }
+        var productList = productStrings.stream().map(this::createFakeProduct).toList();
 
         var productForCompany2 = createFakeProduct("Duża pita");
         var product2ForCompany2 = createFakeProduct("Pizza");
         var productForCompany3 = createFakeProduct2("Mała pita");
 
-        var orderProducts = createFakeOrderProduct(List.of(product, product2));
+        var orderProducts = createFakeOrderProduct(productList);
         var orderProductsForCompany2 = createFakeOrderProduct(List.of(productForCompany2, product2ForCompany2));
         var orderProductsForCompany3 = createFakeOrderProduct(List.of(productForCompany3));
         final var order = createFakeOrder(orderProducts);
@@ -118,10 +131,11 @@ public class DatabaseDataFaker {
         company3.setUsers(new HashSet<>(Arrays.asList(user)));
         companyRepository.saveAll(List.of(company, company2, company3));
 
-        productCategory.setCompany(company);
-        productCategory2.setCompany(company);
-        productCategory = productCategoryRepository.save(productCategory);
-        productCategory2 = productCategoryRepository.save(productCategory2);
+        final Company finalCompany = company;
+        productCategoryList.forEach(productCategory ->{
+            productCategory.setCompany(finalCompany);
+            productCategoryRepository.save(productCategory);
+        });
         //
         //        productProperty = productPropertyRepository.save(productProperty);
         //        productProperty2 = productPropertyRepository.save(productProperty2);
@@ -132,14 +146,14 @@ public class DatabaseDataFaker {
 
         productProperties.setCompany(company);
         productProperties.setProductPropertyList(List.of(productProperty, productProperty2));
-        productProperties.setProducts(List.of(product));
+        productProperties.setProducts(productList);
         productProperties2.setProductPropertyList(List.of(productProperty3, productProperty4, productProperty5, productProperty6));
         productProperties2.setCompany(company);
-        productProperties2.setProducts(List.of(product));
+        productProperties2.setProducts(productList);
 
 
         var productPropertiesList = productPropertiesRepository.saveAll(List.of(productProperties, productProperties2));
-        product.setProductPropertiesList(productPropertiesList);
+        productList.forEach(product -> product.setProductPropertiesList(productPropertiesList));
 
         productProperty.setProductProperties(productProperties);
         productProperty2.setProductProperties(productProperties);
@@ -147,22 +161,29 @@ public class DatabaseDataFaker {
         productProperty4.setProductProperties(productProperties2);
         productProperty5.setProductProperties(productProperties2);
         productProperty6.setProductProperties(productProperties2);
-//
-//        productPropertyRepository.save(productProperty);
-//        productPropertyRepository.save(productProperty2);
-//        productPropertyRepository.save(productProperty3);
-//        productPropertyRepository.save(productProperty4);
-//        productPropertyRepository.save(productProperty5);
-//        productPropertyRepository.save(productProperty6);
+        //
+        //        productPropertyRepository.save(productProperty);
+        //        productPropertyRepository.save(productProperty2);
+        //        productPropertyRepository.save(productProperty3);
+        //        productPropertyRepository.save(productProperty4);
+        //        productPropertyRepository.save(productProperty5);
+        //        productPropertyRepository.save(productProperty6);
 
-        product.setProductCategory(productCategory);
-        product.setCompany(company);
-        product2.setProductCategory(productCategory2);
-        product2.setCompany(company);
+        final Company finalCompany1 = company;
+        productList.forEach(product -> {
+            product.setProductCategory(productCategoryList.get(0));
+            product.setCompany(finalCompany1);
+        });
+        for (int i = 0; i < productForEveryCategory.size(); i++) {
+            productForEveryCategory.get(i).setProductCategory(productCategoryList.get(i));
+            productForEveryCategory.get(i).setCompany(finalCompany1);
+        }
         productForCompany2.setCompany(company2);
         product2ForCompany2.setCompany(company2);
         productForCompany3.setCompany(company3);
-        productRepository.saveAll(List.of(product, product2, productForCompany2, product2ForCompany2, productForCompany3));
+        productRepository.saveAll(List.of(productForCompany2, product2ForCompany2, productForCompany3));
+        productRepository.saveAll(productList);
+        productRepository.saveAll(productForEveryCategory);
 
         order.setCompany(company);
         orderForCompany2.setCompany(company2);

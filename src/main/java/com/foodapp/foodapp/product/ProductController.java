@@ -3,6 +3,8 @@ package com.foodapp.foodapp.product;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +16,7 @@ import com.foodapp.foodapp.product.request.DeleteProductRequest;
 import com.foodapp.foodapp.product.request.GetProductsRequest;
 import com.foodapp.foodapp.product.request.ModifyProductRequest;
 import com.foodapp.foodapp.product.response.GetPagedProductsResponse;
+import com.foodapp.foodapp.product.response.GetProductsByCategoriesResponse;
 import com.foodapp.foodapp.productCategory.ProductCategoryService;
 import com.foodapp.foodapp.productProperties.ProductPropertiesService;
 
@@ -62,6 +65,17 @@ public class ProductController {
                                                .pagedResult(pagedResult)
                                                .productCategories(productCategories)
                                                .productPropertiesList(productPropertiesList)
+                                               .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/menu-ordering/{companyId}")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
+    public ResponseEntity<GetProductsByCategoriesResponse> getProductsByCategories(final @PathVariable Long companyId) {
+        var productsByCategories = productService.getProductsByCategories(companyId);
+        var result = ProductMapper.toMenuOrderingTabs(productsByCategories);
+        var response = GetProductsByCategoriesResponse.builder()
+                                               .menuOrderingTabs(result)
                                                .build();
         return ResponseEntity.ok(response);
     }
