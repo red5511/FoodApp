@@ -33,6 +33,8 @@ public class ProductController {
     private final ProductService productService;
     private final ProductCategoryService productCategoryService;
     private final ProductPropertiesService productPropertiesService;
+    private final ProductMapper productMapper;
+
 
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
@@ -73,7 +75,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
     public ResponseEntity<GetProductsByCategoriesResponse> getProductsByCategories(final @PathVariable Long companyId) {
         var productsByCategories = productService.getProductsByCategories(companyId);
-        var result = ProductMapper.toMenuOrderingTabs(productsByCategories);
+        var result = productMapper.toMenuOrderingTabs(productsByCategories, companyId);
         var response = GetProductsByCategoriesResponse.builder()
                                                .menuOrderingTabs(result)
                                                .build();

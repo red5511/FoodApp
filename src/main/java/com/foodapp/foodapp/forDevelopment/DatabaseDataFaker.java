@@ -95,7 +95,7 @@ public class DatabaseDataFaker {
         var productProperties = createFakeProductProperties("Sosy", true);
         var productProperties2 = createFakeProductProperties("Dodatki", false);
 
-        var productStrings = List.of("Duży kebab", "Średni kebab", "Mały kebab", "Duży falafel", "Średni falafel", "Mały falafel", "Duży specjał", "Mały specjał");
+        var productStrings = List.of("Duży kebab", "Średni kebab", "Mały kebab", "Duży falafel bardzo bardzo dlugaaa nazwa esktra dluga dlyga", "Średni falafel", "Mały falafel", "Duży specjał", "Mały specjał");
         List<Product> productForEveryCategory = new ArrayList<>();
         for(int i = 0; i < productCategoryList.size(); i++) {
             productForEveryCategory.add(createFakeProduct("Fake#" + i));
@@ -249,9 +249,16 @@ public class DatabaseDataFaker {
     }
 
     private Product createFakeProduct(final String name) {
+        List<String> images = new ArrayList<>();
+        images.add("images/kebab1.png");
+        images.add("images/kebab2.png");
+        images.add("images/kebab3.png");
+        images.add("images/kebab3.png");
+        images.add(null);
+        images.add("images/kebab2.png");
         return Product.builder()
-                      .imgUrl("images/kebab1.png")
-                      .description("Pyszny kebab")
+                      .imgUrl(images.get(new Random().nextInt(6)))
+                      .description(new Random().nextInt(5) != 1 ? "Bardzo dobre jedzenie" : "Bardzo bardzo dlugiiiii opissssssssssssss extraaaa xddd")
                       .name(name)
                       .price(new BigDecimal("20.20"))
                       .build();

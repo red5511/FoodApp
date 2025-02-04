@@ -3,6 +3,7 @@ package com.foodapp.foodapp.productCategory;
 import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.common.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,4 +29,5 @@ public class ProductCategory extends BaseEntity {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
     private String name;
+    private Integer sortOrder;
 }
