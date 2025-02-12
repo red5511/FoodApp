@@ -49,10 +49,13 @@ public class Order extends BaseEntity {
     private OrderType orderType;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
     private String deliveryAddress;
     private String customerName;
-    private LocalDateTime deliveryTime;
+    private LocalDateTime executionTime;
     private LocalDateTime approvalDeadline;
+    private boolean takeaway;
     //    @JdbcTypeCode(SqlTypes.JSON)
     //    private OrderContent content;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

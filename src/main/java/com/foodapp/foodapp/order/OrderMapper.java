@@ -1,7 +1,9 @@
 package com.foodapp.foodapp.order;
 
+import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.order.dto.OrderDto;
 import com.foodapp.foodapp.order.response.OrderStatusModel;
+import com.foodapp.foodapp.orderProduct.OrderProduct;
 import com.foodapp.foodapp.orderProduct.OrderProductMapper;
 import lombok.AllArgsConstructor;
 
@@ -59,7 +61,8 @@ public class OrderMapper {
                 .status(order.getStatus())
                 .customerName(order.getCustomerName())
                 .deliveryAddress(order.getDeliveryAddress())
-                .deliveryTime(order.getDeliveryTime())
+                .takeaway(order.isTakeaway())
+                .executionTime(order.getExecutionTime())
                 //.approvalDeadline(order.getId() % 2 == 0 ? order.getApprovalDeadline() : order.getApprovalDeadline().minusSeconds(20))
                 .approvalDeadline(order.getApprovalDeadline())
                 .actions(getActions(order))
@@ -67,8 +70,32 @@ public class OrderMapper {
         orderDto = orderDto.toBuilder()
                 .orderProducts(OrderProductMapper.toOrderProductsDto(orderProducts, orderDto))
                 .createdDate(order.getCreatedDate())
+                .paymentMethod(order.getPaymentMethod())
                 .build();
         return orderDto;
+    }
+
+    public static Order mapToOrder(final OrderDto orderDto, final Company company) {
+        var orderProducts = OrderProductMapper.toOrderProducts(orderDto.getOrderProducts(), company);
+        var order = Order.builder()
+                .orderType(orderDto.getOrderType())
+                .company(company)
+                .description(orderDto.getDescription())
+                .price(orderDto.getPrice())
+                .status(orderDto.getStatus() == null ? OrderStatus.WAITING_FOR_ACCEPTANCE : orderDto.getStatus())
+                .customerName(orderDto.getCustomerName())
+                .deliveryAddress(orderDto.getDeliveryAddress())
+                .executionTime(orderDto.getExecutionTime())
+                .deliveryCode(orderDto.getDeliveryCode())
+                .paymentMethod(orderDto.getPaymentMethod())
+                .approvalDeadline(orderDto.getApprovalDeadline())
+                .orderProducts(orderProducts)
+                .takeaway(orderDto.isTakeaway())
+                .build();
+        for (OrderProduct orderProduct : orderProducts) {
+            orderProduct.setOrder(order);
+        }
+        return order;
     }
 
     public static OrderActions getActions(Order order) {

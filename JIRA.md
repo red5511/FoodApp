@@ -21,6 +21,11 @@ sql injection
 
 #####
 
+jest jakies dziwne gowno jak sie kilka w expandlina to jest jakis overflow i pokazuje sie scroll z prawiej strony na danym rekordzie ;/ przy zwijaniu jest troche randomowe bo nie za kazdym razem sie pojawia
+
+#####
+
+
 aktywna sesja JWT - obecnie jest problem bo daje ze jest walid np 3dni wiec moze cie wyjebac w sorkdu roboty za 3 dni !!!!!!!!!
 
 ###########
@@ -30,6 +35,26 @@ ta rura robi resiza jak sie wyswielta caly opis xd
 (prime ng ma tooltipa fjanie bedzie go uzyc)
 ty chyba w zaleznosci od thema inaczej te rzeczy reaguja xdddd fluent-light
 ########
+
+przyjrzenie sie intervala na froncie
+(chyba czas na online cos nie szankuje
+)
+####
+
+jakis mechanizm odrzucenia na froncie
+
+
+###
+
+
+LOGIII!!!
+
+###
+
+obsluga socketa na froncie na dc
+
+###
+
 
 
 double request po przejsciu i wroceniu na zakladke live panel

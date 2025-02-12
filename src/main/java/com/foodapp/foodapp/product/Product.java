@@ -20,13 +20,13 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class Product extends BaseEntity {
-    @Enumerated(EnumType.STRING)
-    @Builder.Default
-    public ProductStatus status = ProductStatus.ACTIVE;
     @Id
     @SequenceGenerator(name = "product_sequence", sequenceName = "product_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_sequence")
     private Long id;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    public ProductStatus status = ProductStatus.ACTIVE;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;

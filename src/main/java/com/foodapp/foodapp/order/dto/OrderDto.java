@@ -3,13 +3,14 @@ package com.foodapp.foodapp.order.dto;
 import com.foodapp.foodapp.order.OrderActions;
 import com.foodapp.foodapp.order.OrderStatus;
 import com.foodapp.foodapp.order.OrderType;
+import com.foodapp.foodapp.order.PaymentMethod;
 import com.foodapp.foodapp.orderProduct.OrderProductDto;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Builder(toBuilder = true)
@@ -24,9 +25,11 @@ public class OrderDto {
     private OrderStatus status;
     private String deliveryAddress;
     private String customerName;
-    private LocalDateTime deliveryTime;
+    private LocalDateTime executionTime;
     private LocalDateTime createdDate;
-    private Set<OrderProductDto> orderProducts;
+    private List<OrderProductDto> orderProducts;
     private LocalDateTime approvalDeadline;
     private OrderActions actions;
+    private PaymentMethod paymentMethod;
+    private boolean takeaway;
 }

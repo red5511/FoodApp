@@ -14,6 +14,7 @@ import com.foodapp.foodapp.websocket.EventMapper;
 import com.foodapp.foodapp.websocket.WebSocketEventSender;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -56,25 +57,20 @@ public class OrderService {
         return order.getCompany().getWebSocketTopicName();
     }
 
-    public void saveOrder(final CreateOrderRequest request) {
-        var company = companyRepository.findById(request.getOrder().getCompanyId())
-                .orElseThrow(() -> new SecurityException("Comapny id not valid"));
-        var order = Order.builder()
-                .orderType(request.getOrder().getOrderType())
-                .company(company)
-                .description(request.getOrder().getDescription())
-                .price(request.getOrder().getPrice())
-                .status(request.getOrder().getStatus() == null ? OrderStatus.WAITING_FOR_ACCEPTANCE : request.getOrder().getStatus())
-                .customerName(request.getOrder().getCustomerName())
-                .deliveryAddress(request.getOrder().getDeliveryAddress())
-                .deliveryTime(request.getOrder().getDeliveryTime())
-                .build();
+    @Transactional
+    public void saveOrder(final CreateOrderRequest request, final Long companyId) {
+        contextProvider.validateCompanyAccess(List.of(companyId));
+        //todo dorobic walidacje statusu i ogolnie pomyuslec czy cos robic
+        var company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new SecurityException("Wrong company Id"));
+        var order = OrderMapper.mapToOrder(request.getOrder(), company);
         orderRepository.save(order);
     }
 
     public List<OrderDto> getOrders(final Set<Long> companyIds, final List<OrderStatus> orderStatuses, final List<Sort> sorts) {
-        List<Order> orders = CollectionUtils.isEmpty(sorts) ? orderRepository.findByCompany_IdInAndStatusIn(companyIds, orderStatuses) :
-                orderRepository.findByCompany_IdInAndStatusIn(companyIds, orderStatuses, CommonMapper.toSort(sorts));
+        List<Order> orders =
+                CollectionUtils.isEmpty(sorts) ? orderRepository.findByCompany_IdInAndStatusIn(companyIds, orderStatuses) :
+                        orderRepository.findByCompany_IdInAndStatusIn(companyIds, orderStatuses, CommonMapper.toSort(sorts));
         return orders.stream()
                 .map(OrderMapper::mapToOrderDto)
                 .collect(Collectors.toList());

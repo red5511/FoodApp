@@ -102,7 +102,7 @@ public class SchedulerForTestingService {
                 .map(OrderProduct::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return Order.builder()
-                .deliveryTime(LocalDateTime.now().plusMinutes(66))
+                .executionTime(LocalDateTime.now().plusMinutes(66))
                 .deliveryAddress("Sikorskiego 33 Katowice 42-504")
                 .deliveryCode(UUID.randomUUID().toString().substring(0, 8))
                 .orderType(INDEX % 2 != 0 ? OrderType.GLOVO : OrderType.PYSZNE_PL)

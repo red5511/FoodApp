@@ -1,8 +1,10 @@
 package com.foodapp.foodapp.product;
 
+import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.product.response.ProductsByCategoryTabView;
 import com.foodapp.foodapp.productCategory.ProductCategoryDto;
+import com.foodapp.foodapp.productCategory.ProductCategoryMapper;
 import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
 import com.foodapp.foodapp.productProperties.ProductProperties;
 import com.foodapp.foodapp.productProperties.ProductPropertiesDto;
@@ -45,6 +47,21 @@ public class ProductMapper {
                 .companyId(product.getCompany().getId())
                 .productCategory(productCategoryDto)
                 .productPropertiesList(ProductPropertiesMapper.toProductPropertiesDto(product.getProductPropertiesList()))
+                .build();
+    }
+
+    public static Product mapToProduct(final ProductDto product, final Company company) {
+        return Product.builder()
+                .id(product.getId())
+                .status(product.getProductStatus())
+                .company(company)
+                .name(product.getName())
+                .price(product.getPrice())
+                .imgUrl(product.getImgUrl())
+                .description(product.getDescription())
+                .soldOut(product.isSoldOut())
+                .productCategory(ProductCategoryMapper.toProductCategory(product.getProductCategory(), company))
+                .productPropertiesList(ProductPropertiesMapper.toProductProperties(product.getProductPropertiesList(), company))
                 .build();
     }
 

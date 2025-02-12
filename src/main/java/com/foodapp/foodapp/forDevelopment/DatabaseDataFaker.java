@@ -17,6 +17,7 @@ import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.productCategory.ProductCategory;
 import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
 import com.foodapp.foodapp.productProperties.ProductProperties;
+import com.foodapp.foodapp.productProperties.ProductPropertiesDto;
 import com.foodapp.foodapp.productProperties.ProductPropertiesMapper;
 import com.foodapp.foodapp.productProperties.ProductPropertiesRepository;
 import com.foodapp.foodapp.productProperties.productProperty.ProductProperty;
@@ -45,6 +46,16 @@ public class DatabaseDataFaker {
     private final ProductCategoryRepository productCategoryRepository;
     private final ProductPropertyRepository productPropertyRepository;
     private final ProductPropertiesRepository productPropertiesRepository;
+    Random rand;
+
+    public List<Company> createCompanies() {
+        var names = List.of("", "#2", "#3", "abd_", "_1234567890", "bbbbb", "GIGA_KEBAB");
+        List<Company> companies = new ArrayList<>();
+        for (int i = 0; i < names.size(); i++) {
+            companies.add(createFakeCompany(names.get(i), i + 1));
+        }
+        return companies;
+    }
 
     @TechnicalContextDev
     @Transactional
@@ -56,16 +67,135 @@ public class DatabaseDataFaker {
         if (companyOptional.isPresent() && userOptional.isPresent() && productOptional.isPresent() && orderOptional.isPresent()) {
             return;
         }
-        var company = createFakeCompany("", "Topic1", true);
-        var company2 = createFakeCompany("#2", "Topic2", true);
-        var company3 = createFakeCompany("#3", "Topic3", true);
-        var company4 = createFakeCompany("abd_", "Topic4", false);
-        var company5 = createFakeCompany("_1234567890", "Topic5", true);
-        var company6 = createFakeCompany("bbbbb", "Topic6", false);
-        var company7 = createFakeCompany("GIGA_KEBAB_", "Topic7", false);
-        var user = createFakeUser();
+        var companies = createCompanies();
+        var users = createFakeUsers();
         var admin = createFakeAdmin();
+        setUsersAndCompaniesAndSave(companies, users);
+        var productCategories = createCategories(companies);
+        var productPropertyList = createProductPropertyList();
+        var productPropertiesList = createProductPropertiesList(companies, productPropertyList);
+        productPropertyList = productPropertyRepository.saveAll(productPropertyList);
+        setProductProperty(productPropertyList, productPropertiesList);
+        var products = createFakeProducts(companies, productCategories);
+        setProductProperties(products, productPropertiesList);
+        productPropertiesList = productPropertiesRepository.saveAll(productPropertiesList);
 
+        var orders = createFakeOrders(companies, products, productPropertiesList);
+
+        companyRepository.saveAll(companies);
+        userRepository.save(admin);
+        productCategoryRepository.saveAll(productCategories);
+        productRepository.saveAll(products);
+        orderRepository.saveAll(orders);
+    }
+
+    private void setProductProperty(List<ProductProperty> productPropertyList, List<ProductProperties> productPropertiesList) {
+        for (int i = 0; i < 2; i++) {
+            productPropertyList.get(i).setProductProperties(productPropertiesList.get(0));
+        }
+        for (int i = 2; i < productPropertyList.size(); i++) {
+            productPropertyList.get(i).setProductProperties(productPropertiesList.get(1));
+        }
+    }
+
+    private void setProductProperties(List<Product> products, List<ProductProperties> productPropertiesList) {
+        products.forEach(product -> product.setProductPropertiesList(productPropertiesList));
+        productPropertiesList.forEach(productProperties -> productProperties.setProducts(products));
+    }
+
+    private void setUsersAndCompaniesAndSave(List<Company> companies, List<User> users) {
+        users = userRepository.saveAll(users);
+
+        List<User> finalUsers = users;
+        companies.forEach(company -> {
+            // Using the helper method ensures both sides are updated
+            company.setUsers(new HashSet<>(finalUsers));
+        });
+        users.forEach(user -> {
+            // Using the helper method ensures both sides are updated
+            user.setCompanies(new HashSet<>(companies));
+        });
+        companyRepository.saveAll(companies);
+
+    }
+
+    private List<Order> createFakeOrders(List<Company> companies, List<Product> products, List<ProductProperties> propertiesList) {
+        var orders = new ArrayList<Order>();
+
+        for (int i = 0; i < companies.size(); i++) {
+            int finalI = i;
+            var companyProducts =
+                    products.stream().filter(el -> Objects.equals(el.getCompany().getId(), companies.get(finalI).getId())).toList();
+            var productListProducts =
+                    propertiesList.stream().filter(el -> Objects.equals(el.getCompany().getId(), companies.get(finalI).getId()))
+                            .toList();
+            var productProperties =
+                    productListProducts.size() == 0 ? null : productListProducts.get(rand.nextInt(productListProducts.size()));
+            if (productProperties != null) {
+                if (productProperties.isRequired()) {
+                    productProperties.getProductPropertyList().get(0);
+                } else {
+                    if (productProperties.getProductPropertyList().size() > 1) {
+                        var subList = productProperties.getProductPropertyList()
+                                .subList(0, productProperties.getProductPropertyList().size() - 1);
+                        productProperties.setProductPropertyList(subList);
+                    }
+                }
+            }
+            var orderProducts =
+                    createFakeOrderProduct(companyProducts, productProperties);
+            var order = createFakeOrder(orderProducts);
+            order.setCompany(companies.get(i));
+            orders.add(order);
+        }
+
+        return orders;
+    }
+
+    private List<Product> createFakeProducts(List<Company> companies, List<ProductCategory> productCategories) {
+        List<Product> productForEveryCategory = new ArrayList<>();
+        for (int i = 0; i < productCategories.size(); i++) {
+            var prod = createFakeProduct("Fake#" + i);
+            prod.setProductCategory(productCategories.get(i));
+            prod.setCompany(companies.get(0));
+            productForEveryCategory.add(prod);
+        }
+
+        var prodList2 =
+                List.of("Duży kebab", "Średni kebab", "Mały kebab", "Duży falafel bardzo bardzo dlugaaa nazwa esktra dluga dlyga",
+                                "Średni falafel", "Mały falafel", "Duży specjał", "Mały specjał")
+                        .stream().map(name -> {
+                            var product = createFakeProduct(name);
+                            product.setCompany(companies.get(0));
+                            product.setProductCategory(productCategories.get(0)); // Assigning first category
+                            return product;
+                        }).toList();
+        productForEveryCategory.addAll(prodList2);
+        return productForEveryCategory;
+    }
+
+    private List<ProductProperties> createProductPropertiesList(
+            List<Company> companies,
+            List<ProductProperty> productPropertyList) {
+        return List.of(
+                createFakeProductProperties("Sosy", true, companies.get(0), productPropertyList.subList(0, 2)),
+                createFakeProductProperties("Dodatki", false, companies.get(0),
+                        productPropertyList.subList(2, productPropertyList.size())
+                ));
+    }
+
+    private List<ProductProperty> createProductPropertyList() {
+        return List.of(
+                createFakeProductProperty("Sos czosnkowy", BigDecimal.ZERO),
+                createFakeProductProperty("Sos pomidorowy", BigDecimal.ZERO),
+                createFakeProductProperty("Jalapino", new BigDecimal("1.00")),
+                createFakeProductProperty("Dodatkowe mieso", new BigDecimal("9.99")),
+                createFakeProductProperty("Podwójny ser", new BigDecimal("4.99")),
+                createFakeProductProperty("Buraki", new BigDecimal("19.99"))
+        );
+    }
+
+    private List<ProductCategory> createCategories(final List<Company> companies) {
         var categoryStrings = List.of("Kebab ciasto",
                 "Kebab bułka",
                 "Napoje",
@@ -75,128 +205,16 @@ public class DatabaseDataFaker {
                 "Desery4",
                 "Desery5"
         );
-        var productCategoryList = categoryStrings.stream().map(this::createFakeProductCategory).toList();
-
-        var productProperty = createFakeProductProperty("Sos czosnkowy", BigDecimal.ZERO);
-        var productProperty2 = createFakeProductProperty("Sos pomidorowy", BigDecimal.ZERO);
-
-        var productProperty3 = createFakeProductProperty("Jalapino", new BigDecimal("1.00"));
-        var productProperty4 = createFakeProductProperty("Dodatkowe mieso", new BigDecimal("9.99"));
-        var productProperty5 = createFakeProductProperty("Podwójny ser", new BigDecimal("4.99"));
-        var productProperty6 = createFakeProductProperty("Buraki", new BigDecimal("19.99"));
-
-        var productProperties = createFakeProductProperties("Sosy", true);
-        var productProperties2 = createFakeProductProperties("Dodatki", false);
-
-        var productStrings =
-                List.of("Duży kebab", "Średni kebab", "Mały kebab", "Duży falafel bardzo bardzo dlugaaa nazwa esktra dluga dlyga",
-                        "Średni falafel", "Mały falafel", "Duży specjał", "Mały specjał");
-        List<Product> productForEveryCategory = new ArrayList<>();
-        for (int i = 0; i < productCategoryList.size(); i++) {
-            productForEveryCategory.add(createFakeProduct("Fake#" + i));
-        }
-        var productList = productStrings.stream().map(this::createFakeProduct).toList();
-
-        var productForCompany2 = createFakeProduct("Duża pita");
-        var product2ForCompany2 = createFakeProduct("Pizza");
-        var productForCompany3 = createFakeProduct2("Mała pita");
-
-        var orderProducts = createFakeOrderProduct(productList, productProperties);
-        var orderProductsForCompany2 = createFakeOrderProduct(List.of(productForCompany2, product2ForCompany2), null);
-        var orderProductsForCompany3 = createFakeOrderProduct(List.of(productForCompany3), null);
-        final var order = createFakeOrder(orderProducts);
-        final var orderForCompany2 = createFakeOrder(orderProductsForCompany2);
-        final var orderForCompany3 = createFakeOrder(orderProductsForCompany3);
-        orderProducts.forEach(el -> el.setOrder(order));
-        orderProductsForCompany2.forEach(el -> el.setOrder(orderForCompany2));
-        orderProductsForCompany3.forEach(el -> el.setOrder(orderForCompany3));
-
-        company = companyRepository.save(company);
-        company2 = companyRepository.save(company2);
-        company3 = companyRepository.save(company3);
-        company4 = companyRepository.save(company4);
-        company5 = companyRepository.save(company5);
-        company6 = companyRepository.save(company6);
-        company7 = companyRepository.save(company7);
-        user.setCompanies(new HashSet<>(Arrays.asList(company, company2, company3)));
-        user = userRepository.save(user);
-        userRepository.save(admin);
-        company.setUsers(new HashSet<>(Arrays.asList(user)));
-        company2.setUsers(new HashSet<>(Arrays.asList(user)));
-        company3.setUsers(new HashSet<>(Arrays.asList(user)));
-        companyRepository.saveAll(List.of(company, company2, company3));
-
-        final Company finalCompany = company;
-        productCategoryList.forEach(productCategory -> {
-            productCategory.setCompany(finalCompany);
-            productCategoryRepository.save(productCategory);
-        });
-        //
-        //        productProperty = productPropertyRepository.save(productProperty);
-        //        productProperty2 = productPropertyRepository.save(productProperty2);
-        //        productProperty3 = productPropertyRepository.save(productProperty3);
-        //        productProperty4 = productPropertyRepository.save(productProperty4);
-        //        productProperty5 = productPropertyRepository.save(productProperty5);
-        //        productProperty6 = productPropertyRepository.save(productProperty6);
-
-        productProperties.setCompany(company);
-        productProperties.setProductPropertyList(List.of(productProperty, productProperty2));
-        productProperties.setProducts(productList);
-        productProperties2.setProductPropertyList(List.of(productProperty3, productProperty4, productProperty5, productProperty6));
-        productProperties2.setCompany(company);
-        productProperties2.setProducts(productList);
-
-
-        var productPropertiesList = productPropertiesRepository.saveAll(List.of(productProperties, productProperties2));
-        productList.forEach(product -> product.setProductPropertiesList(productPropertiesList));
-
-        productProperty.setProductProperties(productProperties);
-        productProperty2.setProductProperties(productProperties);
-        productProperty3.setProductProperties(productProperties2);
-        productProperty4.setProductProperties(productProperties2);
-        productProperty5.setProductProperties(productProperties2);
-        productProperty6.setProductProperties(productProperties2);
-        //
-        //        productPropertyRepository.save(productProperty);
-        //        productPropertyRepository.save(productProperty2);
-        //        productPropertyRepository.save(productProperty3);
-        //        productPropertyRepository.save(productProperty4);
-        //        productPropertyRepository.save(productProperty5);
-        //        productPropertyRepository.save(productProperty6);
-
-        final Company finalCompany1 = company;
-        productList.forEach(product -> {
-            product.setProductCategory(productCategoryList.get(0));
-            product.setCompany(finalCompany1);
-        });
-        for (int i = 0; i < productForEveryCategory.size(); i++) {
-            productForEveryCategory.get(i).setProductCategory(productCategoryList.get(i));
-            productForEveryCategory.get(i).setCompany(finalCompany1);
-        }
-        productForCompany2.setCompany(company2);
-        product2ForCompany2.setCompany(company2);
-        productForCompany3.setCompany(company3);
-        productRepository.saveAll(List.of(productForCompany2, product2ForCompany2, productForCompany3));
-        productRepository.saveAll(productList);
-        productRepository.saveAll(productForEveryCategory);
-
-        order.setCompany(company);
-        orderForCompany2.setCompany(company2);
-        orderForCompany3.setCompany(company3);
-
-        orderRepository.save(order);
-        orderRepository.save(orderForCompany2);
-        orderRepository.save(orderForCompany3);
-
-        orderProductRepository.saveAll(orderProducts);
-        orderProductRepository.saveAll(orderProductsForCompany2);
-        orderProductRepository.saveAll(orderProductsForCompany3);
+        return categoryStrings.stream().map(el -> createFakeProductCategory(el, companies.get(0))).toList();
     }
 
-    private ProductProperties createFakeProductProperties(final String name, final boolean required) {
+    private ProductProperties createFakeProductProperties(final String name, final boolean required, final Company company,
+                                                          final List<ProductProperty> productPropertyList) {
         return ProductProperties.builder()
                 .required(required)
                 .name(name)
+                .company(company)
+                .productPropertyList(productPropertyList)
                 .build();
     }
 
@@ -207,15 +225,16 @@ public class DatabaseDataFaker {
                 .build();
     }
 
-    private ProductCategory createFakeProductCategory(final String name) {
+    private ProductCategory createFakeProductCategory(final String name, final Company company) {
         return ProductCategory.builder()
                 .name(name)
+                .company(company)
                 .build();
     }
 
     private List<OrderProduct> createFakeOrderProduct(final List<Product> products, final ProductProperties productProperties) {
-        var productPropertiesList =
-                productProperties == null ? null : List.of(ProductPropertiesMapper.toProductPropertiesDto(productProperties));
+        List<ProductPropertiesDto> productPropertiesList =
+                productProperties == null ? List.of() : List.of(ProductPropertiesMapper.toProductPropertiesDto(productProperties));
         List<OrderProduct> orderProducts = new ArrayList<>();
         for (int i = 0; i < products.size(); i++) {
             orderProducts.add(OrderProduct.builder()
@@ -231,21 +250,24 @@ public class DatabaseDataFaker {
     }
 
     private Order createFakeOrder(final List<OrderProduct> orderProducts) {
-        var price = orderProducts.stream()
-                .map(OrderProduct::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return Order.builder()
+        Order order = Order.builder()
                 .deliveryCode(UUID.randomUUID().toString())
                 .customerName("Iwona Kowalska")
                 .orderType(OrderType.PYSZNE_PL)
-                .price(price)
-                .deliveryAddress("Piłsudskiego 33 Warszawa 22-322")
-                .description("Poprosze osobno frytki i cole bez lodu. W razie problemow ze znalezeniem numry zostawic na portierni")
+                .price(orderProducts.stream()
+                        .map(OrderProduct::getPrice)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add))
+                .deliveryAddress("Piłsudskiego 33 Warszawa")
+                .description("Poproszę osobno frytki i colę bez lodu.")
                 .status(OrderStatus.EXECUTED)
-                .deliveryTime(LocalDateTime.now())
+                .executionTime(LocalDateTime.now())
                 .orderProducts(orderProducts)
                 .build();
+
+        // Ensure each OrderProduct references the parent order
+        orderProducts.forEach(orderProduct -> orderProduct.setOrder(order));
+
+        return order;
     }
 
     private Product createFakeProduct(final String name) {
@@ -274,8 +296,14 @@ public class DatabaseDataFaker {
                 .build();
     }
 
+    private List<User> createFakeUsers() {
+        var user = createFakeUser();
+        return List.of(user);
+    }
+
     private User createFakeUser() {
-        Set<Permission> permissions = new HashSet<>();
+        Set<Permission> permissions;
+        permissions = new HashSet<>();
         permissions.add(Permission.VIEW_ONLINE_ORDERING);
         permissions.add(Permission.VIEW_ORDERS_HISTORY);
         permissions.add(Permission.VIEW_STATISTICS);
@@ -310,13 +338,13 @@ public class DatabaseDataFaker {
                 .build();
     }
 
-    private Company createFakeCompany(final String postfix, final String topic, final boolean isPostfix) {
-        var name = isPostfix ? "Firma Testowa" + postfix : postfix + "Firma Testowa";
+    private Company createFakeCompany(final String name, final long i) {
         return Company.builder()
-                .name(name)
+                .id(i)
+                .name("Firma Testowa" + name)
                 .content(createContent())
                 .webSocketTopicName(UUID.randomUUID().toString())
-                .webSocketTopicName(topic)
+                .webSocketTopicName("Topic" + i)
                 .address(Address.builder()
                         .street(new Random().nextInt(2) % 2 == 1 ? "Generała Piłsudskiego" : "Piastów")
                         .city(new Random().nextInt(2) % 2 == 1 ? "Warszawa" : "Kraków")

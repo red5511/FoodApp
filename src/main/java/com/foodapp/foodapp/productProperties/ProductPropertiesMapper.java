@@ -28,6 +28,13 @@ public class ProductPropertiesMapper {
     }
 
 
+    public static List<ProductProperties> toProductProperties(final List<ProductPropertiesDto> productPropertiesDto,
+                                                              final Company company) {
+        return productPropertiesDto.stream()
+                .map(el -> ProductPropertiesMapper.toProductProperties(el, company))
+                .collect(Collectors.toList());
+    }
+
     public static ProductProperties toProductProperties(final ProductPropertiesDto productPropertiesDto,
                                                         final Company company) {
         return ProductProperties.builder()

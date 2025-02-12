@@ -9,10 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/order")
@@ -22,24 +19,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
     private final OrderService orderService;
 
-    @PostMapping("/save")
-    public ResponseEntity<Void> saveOrder(final @RequestBody CreateOrderRequest request) {
-        orderService.saveOrder(request);
-        return ResponseEntity.ok().build(); // Return 200 OK with no body
+    @PostMapping("/save/{companyId}")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING')")
+    public ResponseEntity<Void> saveOrder(final @RequestBody CreateOrderRequest request, final @PathVariable Long companyId) {
+        orderService.saveOrder(request, companyId);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/approve")
     @PreAuthorize("hasAuthority('VIEW_ONLINE_ORDERING')")
     public ResponseEntity<Void> approveNewIncomingOrder(final @RequestBody ApproveNewIncomingOrderRequest request) {
         orderService.approveNewIncomingOrder(request);
-        return ResponseEntity.ok().build(); // Return 200 OK with no body
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/reject")
     @PreAuthorize("hasAuthority('VIEW_ONLINE_ORDERING')")
     public ResponseEntity<Void> rejectNewIncomingOrder(final @RequestBody RejectNewIncomingOrderRequest request) {
         orderService.rejectNewIncomingOrder(request);
-        return ResponseEntity.ok().build(); // Return 200 OK with no body
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/orders")

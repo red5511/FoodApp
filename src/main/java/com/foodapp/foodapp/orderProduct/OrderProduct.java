@@ -1,25 +1,18 @@
 package com.foodapp.foodapp.orderProduct;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import com.foodapp.foodapp.common.BaseEntity;
+import com.foodapp.foodapp.order.Order;
+import com.foodapp.foodapp.product.Product;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
-
-import com.foodapp.foodapp.common.BaseEntity;
-import com.foodapp.foodapp.order.Order;
-import com.foodapp.foodapp.product.Product;
 
 @Data
 @SuperBuilder
@@ -45,8 +38,11 @@ public class OrderProduct extends BaseEntity {
     private Product product;
 
     @Column(nullable = false)
-    private int quantity; // Number of this product in the order
+    private int quantity;
 
     @Column(nullable = false)
     private BigDecimal price;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    private OrderProductContent content;
 }
