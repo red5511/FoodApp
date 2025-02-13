@@ -5,6 +5,7 @@ import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.administration.company.sql.Content;
 import com.foodapp.foodapp.administration.company.sql.OpenHours;
 import com.foodapp.foodapp.common.Address;
+import com.foodapp.foodapp.common.CommonUtils;
 import com.foodapp.foodapp.order.Order;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.order.OrderStatus;
@@ -52,7 +53,7 @@ public class DatabaseDataFaker {
         var names = List.of("", "#2", "#3", "abd_", "_1234567890", "bbbbb", "GIGA_KEBAB");
         List<Company> companies = new ArrayList<>();
         for (int i = 0; i < names.size(); i++) {
-            companies.add(createFakeCompany(names.get(i), i + 1));
+            companies.add(createFakeCompany(names.get(i), i + 1L));
         }
         return companies;
     }
@@ -338,7 +339,7 @@ public class DatabaseDataFaker {
                 .build();
     }
 
-    private Company createFakeCompany(final String name, final long i) {
+    private Company createFakeCompany(final String name, final Long i) {
         return Company.builder()
                 .id(i)
                 .name("Firma Testowa" + name)
@@ -351,6 +352,7 @@ public class DatabaseDataFaker {
                         .streetNumber("555 / 102b")
                         .postalCode("34-999")
                         .build())
+                .defaultProductImgUrl(CommonUtils.createDefaultProductImgUrl(i.toString()))
                 .build();
     }
 

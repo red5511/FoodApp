@@ -43,7 +43,7 @@ public class SchedulerForTestingService {
     private final CacheService cacheService;
     private final RabbitMQSender rabbitMQSender;
 
-    @Scheduled(fixedRate = 10000)
+//    @Scheduled(fixedRate = 10000)
     public void xd() {
         System.out.println("sprawdzam cacheService");
         log.info(cacheService.getCompanyUsersCache().getEntries().toString());
@@ -56,7 +56,7 @@ public class SchedulerForTestingService {
 //    }
 
 
-    @Scheduled(fixedRate = 25000)
+//    @Scheduled(fixedRate = 25000)
     @TechnicalContextDev
 //    @Transactional w sumie to nie powinien byc transactional bo a noz sie wywali socket i przez to orer mi sie nie zapsize na bazie
     public void sendOrdersToMainTopic() {

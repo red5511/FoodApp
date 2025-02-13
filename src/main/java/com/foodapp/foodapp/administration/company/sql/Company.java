@@ -38,4 +38,5 @@ public class Company extends BaseEntity {
     private String webSocketTopicName;
     @JdbcTypeCode(SqlTypes.JSON)
     private Address address;
+    private String defaultProductImgUrl;
 }

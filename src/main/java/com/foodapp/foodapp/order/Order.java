@@ -1,31 +1,19 @@
 package com.foodapp.foodapp.order;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.orderProduct.OrderProduct;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -44,6 +32,8 @@ public class Order extends BaseEntity {
     private Company company;
     private String deliveryCode;
     private BigDecimal price;
+    @Size(max = 510)
+    @Column(length = 510)
     private String description;
     @Enumerated(EnumType.STRING)
     private OrderType orderType;

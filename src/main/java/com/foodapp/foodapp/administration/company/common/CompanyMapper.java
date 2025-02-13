@@ -58,6 +58,7 @@ public class CompanyMapper {
                 .address(company.getAddress())
                 .openHours(company.getContent().getOpenHours())
                 .webSocketTopicName(company.getWebSocketTopicName())
+                .defaultProductImgUrl(company.getDefaultProductImgUrl())
                 .createdDate(company.getCreatedDate());
     }
 }

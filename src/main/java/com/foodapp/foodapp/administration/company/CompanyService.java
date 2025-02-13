@@ -8,13 +8,17 @@ import com.foodapp.foodapp.administration.company.request.SaveCompanyRequest;
 import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.administration.company.sql.Content;
+import com.foodapp.foodapp.common.CommonUtils;
 import com.foodapp.foodapp.user.User;
 import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class CompanyService {
@@ -43,6 +47,7 @@ public class CompanyService {
                 .webSocketTopicName(UUID.randomUUID().toString())
                 .build();
         company = companyRepository.save(company);
+        company.setDefaultProductImgUrl(CommonUtils.createDefaultProductImgUrl(company.getId().toString()));
         return company.getId();
     }
 

@@ -19,6 +19,11 @@ i odrazu znikac ;/
 
 sql injection
 
+
+######
+
+moze ucinac id na liscie do % 1000?
+
 #####
 
 jest jakies dziwne gowno jak sie kilka w expandlina to jest jakis overflow i pokazuje sie scroll z prawiej strony na danym rekordzie ;/ przy zwijaniu jest troche randomowe bo nie za kazdym razem sie pojawia

@@ -16,12 +16,13 @@ public class OrderProductMapper {
     }
 
     public static OrderProductDto toOrderProductDto(final OrderProduct orderProduct, final OrderDto orderDto) {
+        var productPropertiesList = orderProduct.getContent() != null ? orderProduct.getContent().getProductPropertiesList() : null;
         return OrderProductDto.builder()
                 //.order(orderDto) todo zastanowic sie czy to jest napewno okej bo bedzie nieskonczona rekursja
                 .price(orderProduct.getPrice())
                 .product(ProductMapper.mapToProductDto(orderProduct.getProduct()))
                 .quantity(orderProduct.getQuantity())
-                .productPropertiesList(orderProduct.getContent().getProductPropertiesList())
+                .productPropertiesList(productPropertiesList)
                 .build();
     }
 

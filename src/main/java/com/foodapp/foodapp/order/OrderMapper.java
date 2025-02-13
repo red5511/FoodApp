@@ -7,6 +7,7 @@ import com.foodapp.foodapp.orderProduct.OrderProduct;
 import com.foodapp.foodapp.orderProduct.OrderProductMapper;
 import lombok.AllArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,7 @@ public class OrderMapper {
                 .status(orderDto.getStatus() == null ? OrderStatus.WAITING_FOR_ACCEPTANCE : orderDto.getStatus())
                 .customerName(orderDto.getCustomerName())
                 .deliveryAddress(orderDto.getDeliveryAddress())
-                .executionTime(orderDto.getExecutionTime())
+                .executionTime(orderDto.getExecutionTime() == null ? LocalDateTime.now() : orderDto.getExecutionTime())
                 .deliveryCode(orderDto.getDeliveryCode())
                 .paymentMethod(orderDto.getPaymentMethod())
                 .approvalDeadline(orderDto.getApprovalDeadline())

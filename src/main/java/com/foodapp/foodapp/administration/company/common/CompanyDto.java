@@ -9,7 +9,6 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Builder
 @Getter
@@ -28,4 +27,6 @@ public class CompanyDto {
     private LocalDateTime createdDate;
     @Schema(required = true)
     private List<UserDto> users;
+    private String defaultProductImgUrl;
+
 }
