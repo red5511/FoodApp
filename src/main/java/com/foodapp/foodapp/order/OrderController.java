@@ -26,6 +26,20 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/modify/{companyId}")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING')")
+    public ResponseEntity<Void> modifyOrder(final @RequestBody ModifyOrderRequest request, final @PathVariable Long companyId) {
+        orderService.modifyOrder(request, companyId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/finalize/{companyId}/{orderId}")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING')")
+    public ResponseEntity<Void> finalizeOrder(final @RequestBody FinalizeOrderRequest request, final @PathVariable Long companyId, final @PathVariable Long orderId) {
+        orderService.finalizeOrder(request, companyId, orderId);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/approve")
     @PreAuthorize("hasAuthority('VIEW_ONLINE_ORDERING')")
     public ResponseEntity<Void> approveNewIncomingOrder(final @RequestBody ApproveNewIncomingOrderRequest request) {

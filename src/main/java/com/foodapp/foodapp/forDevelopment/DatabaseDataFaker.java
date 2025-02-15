@@ -30,6 +30,7 @@ import com.foodapp.foodapp.user.permission.Permission;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -147,7 +148,9 @@ public class DatabaseDataFaker {
                     createFakeOrderProduct(companyProducts, productProperties);
             var order = createFakeOrder(orderProducts);
             order.setCompany(companies.get(i));
-            orders.add(order);
+            if (!CollectionUtils.isEmpty(order.getOrderProducts())){
+                orders.add(order);
+            }
         }
 
         return orders;
@@ -263,6 +266,7 @@ public class DatabaseDataFaker {
                 .status(OrderStatus.EXECUTED)
                 .executionTime(LocalDateTime.now())
                 .orderProducts(orderProducts)
+                .orderType(OrderType.OWN)
                 .build();
 
         // Ensure each OrderProduct references the parent order

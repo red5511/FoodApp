@@ -1,0 +1,16 @@
+package com.foodapp.foodapp.order.request;
+
+import com.foodapp.foodapp.order.PaymentMethod;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class FinalizeOrderRequest {
+    private PaymentMethod paymentMethod;
+    private boolean takeaway;
+}

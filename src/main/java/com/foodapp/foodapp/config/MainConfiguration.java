@@ -220,8 +220,9 @@ public class MainConfiguration {
     }
 
     @Bean
-    public OrderValidator orderValidator(final ContextProvider contextProvider) {
-        return new OrderValidator(contextProvider);
+    public OrderValidator orderValidator(final ContextProvider contextProvider,
+                                         final OrderRepository orderRepository) {
+        return new OrderValidator(contextProvider, orderRepository);
     }
 
     @Bean

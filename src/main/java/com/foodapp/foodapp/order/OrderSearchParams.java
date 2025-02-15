@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderSearchParams extends SearchParams {
     private List<OrderStatus> statuses;
+    private List<OrderStatus> statusesToExclude;
     private String name;
     private BigDecimal price;
     private List<Long> companyIds;

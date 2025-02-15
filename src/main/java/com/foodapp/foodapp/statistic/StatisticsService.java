@@ -2,8 +2,8 @@ package com.foodapp.foodapp.statistic;
 
 import com.foodapp.foodapp.common.CommonMapper;
 import com.foodapp.foodapp.common.DatePeriod;
-import com.foodapp.foodapp.common.DateRange;
 import com.foodapp.foodapp.order.OrderRepository;
+import com.foodapp.foodapp.order.OrderStatus;
 import com.foodapp.foodapp.product.ProductMapper;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.security.ContextProvider;
@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class StatisticsService {
+    public static List<OrderStatus> STATISTICS_ORDER_STATUSES_TO_EXCLUDE = List.of(OrderStatus.MODIFIED, OrderStatus.REJECTED);
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final ContextProvider contextProvider;
@@ -92,14 +93,16 @@ public class StatisticsService {
             return orderRepository.getOrderStatisticsChartWithEarnings(request.getCompanyIds(),
                     request.getDatePeriod().name().toLowerCase(),
                     dateFrom.atStartOfDay(),
-                    dateTo.atTime(23, 59)
+                    dateTo.atTime(23, 59),
+                    STATISTICS_ORDER_STATUSES_TO_EXCLUDE
             );
         }
         return orderRepository.getOrderStatisticsChartByProductIdWithEarnings(request.getCompanyIds(),
                 request.getDatePeriod().name().toLowerCase(),
                 dateFrom.atStartOfDay(),
                 dateTo.atTime(23, 59),
-                request.getProductId()
+                request.getProductId(),
+                STATISTICS_ORDER_STATUSES_TO_EXCLUDE
         );
     }
 
@@ -130,14 +133,16 @@ public class StatisticsService {
             return orderRepository.getOrderStatisticsChart(request.getCompanyIds(),
                     request.getDatePeriod().name().toLowerCase(),
                     dateFrom.atStartOfDay(),
-                    dateTo.atTime(23, 59)
+                    dateTo.atTime(23, 59),
+                    STATISTICS_ORDER_STATUSES_TO_EXCLUDE
             );
         }
         return orderRepository.getOrderStatisticsChartByProductId(request.getCompanyIds(),
                 request.getDatePeriod().name().toLowerCase(),
                 dateFrom.atStartOfDay(),
                 dateTo.atTime(23, 59),
-                request.getProductId()
+                request.getProductId(),
+                STATISTICS_ORDER_STATUSES_TO_EXCLUDE
         );
     }
 

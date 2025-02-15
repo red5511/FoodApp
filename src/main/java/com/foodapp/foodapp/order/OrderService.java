@@ -5,10 +5,7 @@ import com.foodapp.foodapp.common.CommonMapper;
 import com.foodapp.foodapp.common.OrdersPagedResult;
 import com.foodapp.foodapp.common.Sort;
 import com.foodapp.foodapp.order.dto.OrderDto;
-import com.foodapp.foodapp.order.request.ApproveNewIncomingOrderRequest;
-import com.foodapp.foodapp.order.request.CreateOrderRequest;
-import com.foodapp.foodapp.order.request.GetOrdersForCompanyRequest;
-import com.foodapp.foodapp.order.request.RejectNewIncomingOrderRequest;
+import com.foodapp.foodapp.order.request.*;
 import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.websocket.EventMapper;
 import com.foodapp.foodapp.websocket.WebSocketEventSender;
@@ -60,10 +57,33 @@ public class OrderService {
     @Transactional
     public void saveOrder(final CreateOrderRequest request, final Long companyId) {
         contextProvider.validateCompanyAccess(List.of(companyId));
-        //todo dorobic walidacje statusu i ogolnie pomyuslec czy cos robic
+        orderValidator.validateOrderSave(request.getOrder(), companyId);
         var company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new SecurityException("Wrong company Id"));
-        var order = OrderMapper.mapToOrder(request.getOrder(), company);
+        var order = OrderMapper.mapToOrder(request.getOrder(), company, null);
+        orderRepository.save(order);
+    }
+
+    @Transactional
+    public void modifyOrder(final ModifyOrderRequest request, final Long companyId) {
+        contextProvider.validateCompanyAccess(List.of(companyId));
+        var modifiedOrder = orderValidator.validateOrderModifyAndReturn(request.getOrder(), companyId, request.getModifiedOrderIf());
+        var company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new SecurityException("Wrong company Id"));
+
+        var order = OrderMapper.mapToOrder(request.getOrder(), company, modifiedOrder.getId());
+        modifiedOrder.setStatus(OrderStatus.MODIFIED);
+        orderRepository.save(order);
+        orderRepository.save(modifiedOrder);
+    }
+
+    @Transactional
+    public void finalizeOrder(final FinalizeOrderRequest request, final Long companyId, Long orderId) {
+        contextProvider.validateCompanyAccess(List.of(companyId));
+        var order = orderValidator.validateOrderFinalizationAndReturn(orderId, companyId);
+        order.setStatus(OrderStatus.EXECUTED);
+        order.setPaymentMethod(request.getPaymentMethod());
+        order.setTakeaway(request.isTakeaway());
         orderRepository.save(order);
     }
 

@@ -67,18 +67,20 @@ public class OrderMapper {
                 //.approvalDeadline(order.getId() % 2 == 0 ? order.getApprovalDeadline() : order.getApprovalDeadline().minusSeconds(20))
                 .approvalDeadline(order.getApprovalDeadline())
                 .actions(getActions(order))
+                .createdDate(order.getCreatedDate())
+                .paymentMethod(order.getPaymentMethod())
+                .isPaidWhenOrdered(order.isPaidWhenOrdered())
                 .build();
         orderDto = orderDto.toBuilder()
                 .orderProducts(OrderProductMapper.toOrderProductsDto(orderProducts, orderDto))
-                .createdDate(order.getCreatedDate())
-                .paymentMethod(order.getPaymentMethod())
                 .build();
         return orderDto;
     }
 
-    public static Order mapToOrder(final OrderDto orderDto, final Company company) {
+    public static Order mapToOrder(final OrderDto orderDto, final Company company, final Long parentId) {
         var orderProducts = OrderProductMapper.toOrderProducts(orderDto.getOrderProducts(), company);
         var order = Order.builder()
+                .parentId(parentId)
                 .orderType(orderDto.getOrderType())
                 .company(company)
                 .description(orderDto.getDescription())
@@ -92,6 +94,8 @@ public class OrderMapper {
                 .approvalDeadline(orderDto.getApprovalDeadline())
                 .orderProducts(orderProducts)
                 .takeaway(orderDto.isTakeaway())
+                .isPaidWhenOrdered(orderDto.isPaidWhenOrdered())
+                .orderType(OrderType.OWN)
                 .build();
         for (OrderProduct orderProduct : orderProducts) {
             orderProduct.setOrder(order);
@@ -99,15 +103,56 @@ public class OrderMapper {
         return order;
     }
 
-    public static OrderActions getActions(Order order) {
+    public static OrderActions getActions(final Order order) {
         return OrderActions.builder()
-                .showApprove(order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE)
-                .showReject(order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE)
-//                .showApprove(true)
-//                .showReject(true)
-                .showSetDeliveryTime(order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE)
-                .showPrint(true)
-                .showReadyToPickUp(order.getStatus() == OrderStatus.IN_EXECUTION)
+                .showApprove(showApprove(order))
+                .showReject(showReject(order))
+                .showSetExecutionTime(showSetExecutionTime(order))
+                .showPrint(showPrint(order))
+                .showToTheCashier(showToTheCashier(order))
+                .showCancel(showCancel(order))
+                .showReadyToPickUp(showReadyToPickUp(order))
+                .showModify(showModify(order))
                 .build();
+    }
+
+    private static boolean showPrint(final Order order) {
+        return order.getParentId() == null;
+    }
+
+    private static boolean showModify(final Order order) {
+        return order.getStatus() == OrderStatus.IN_EXECUTION &&
+                OrderType.OWN.equals(order.getOrderType()) &&
+                order.getParentId() == null;
+    }
+
+    private static boolean showReadyToPickUp(final Order order) {
+        return order.getStatus() == OrderStatus.IN_EXECUTION && !OrderType.OWN.equals(order.getOrderType()) &&
+                order.getParentId() == null;
+    }
+
+    private static boolean showCancel(final Order order) {
+        return order.getStatus() == OrderStatus.IN_EXECUTION &&
+                order.getParentId() == null;
+    }
+
+    private static boolean showToTheCashier(final Order order) {
+        return order.getStatus() == OrderStatus.IN_EXECUTION && !order.isPaidWhenOrdered() &&
+                order.getParentId() == null;
+    }
+
+    public static boolean showApprove(final Order order) {
+        return order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE &&
+                order.getParentId() == null;
+    }
+
+    public static boolean showReject(final Order order) {
+        return order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE &&
+                order.getParentId() == null;
+    }
+
+    public static boolean showSetExecutionTime(final Order order) {
+        return order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE &&
+                order.getParentId() == null;
     }
 }

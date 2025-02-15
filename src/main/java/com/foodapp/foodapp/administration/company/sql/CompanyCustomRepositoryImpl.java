@@ -3,7 +3,6 @@ package com.foodapp.foodapp.administration.company.sql;
 import com.foodapp.foodapp.administration.company.common.CompaniesPagedResult;
 import com.foodapp.foodapp.administration.company.common.CompanyMapper;
 import com.foodapp.foodapp.administration.company.common.CompanySearchParams;
-import com.foodapp.foodapp.user.UserSql;
 import io.jsonwebtoken.lang.Collections;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -21,7 +20,7 @@ public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
     private EntityManager entityManager;
 
     @Override
-    public CompaniesPagedResult searchOrders(CompanySearchParams params) {
+    public CompaniesPagedResult searchCompanies(CompanySearchParams params) {
         StringBuilder queryBuilder = new StringBuilder(CompanySql.BASE_QUERY);
         StringBuilder countQueryBuilder = new StringBuilder(CompanySql.BASE_COUNT_QUERY);
         Map<String, Object> valueParamsMap = new HashMap<>();

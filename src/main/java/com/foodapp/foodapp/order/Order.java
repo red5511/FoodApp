@@ -30,6 +30,7 @@ public class Order extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
+    private Long parentId;
     private String deliveryCode;
     private BigDecimal price;
     @Size(max = 510)
@@ -46,6 +47,7 @@ public class Order extends BaseEntity {
     private LocalDateTime executionTime;
     private LocalDateTime approvalDeadline;
     private boolean takeaway;
+    private boolean isPaidWhenOrdered; //opłacone przy tworzeniu ordera
     //    @JdbcTypeCode(SqlTypes.JSON)
     //    private OrderContent content;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

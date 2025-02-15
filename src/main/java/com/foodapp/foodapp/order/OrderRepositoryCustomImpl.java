@@ -41,6 +41,11 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             countQueryBuilder.append(STATUSES_QUERY);
             valueParamsMap.put(STATUSES_PARAM, params.getStatuses());
         }
+        if (!Collections.isEmpty(params.getStatusesToExclude())) {
+            queryBuilder.append(STATUSES_TO_EXCLUDE_QUERY);
+            countQueryBuilder.append(STATUSES_QUERY);
+            valueParamsMap.put(STATUSES_PARAM, params.getStatusesToExclude());
+        }
         if (StringUtils.isNotEmpty(params.getGlobal())) {
             queryBuilder.append(GLOBAL_QUERY);
             countQueryBuilder.append(GLOBAL_QUERY);

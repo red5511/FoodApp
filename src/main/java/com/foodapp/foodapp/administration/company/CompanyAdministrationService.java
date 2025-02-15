@@ -20,7 +20,7 @@ public class CompanyAdministrationService {
     public CompaniesPagedResult getCompanies(final GetCompanyAdministrationRequest request) {
         contextProvider.validateSuperAdminRights();
         var searchParams = CommonMapper.mapToSearchParams(request);
-        return companyRepository.searchOrders(searchParams);
+        return companyRepository.searchCompanies(searchParams);
     }
 
     @Transactional

@@ -1,5 +1,5 @@
 package com.foodapp.foodapp.order;
 
 public enum OrderType {
-    GLOVO, PYSZNE_PL
+    OWN, GLOVO, PYSZNE_PL
 }

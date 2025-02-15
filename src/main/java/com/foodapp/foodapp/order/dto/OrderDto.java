@@ -37,4 +37,5 @@ public class OrderDto {
     private OrderActions actions;
     private PaymentMethod paymentMethod;
     private boolean takeaway;
+    private boolean isPaidWhenOrdered;
 }
