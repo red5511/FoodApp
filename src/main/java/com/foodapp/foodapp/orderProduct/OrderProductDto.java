@@ -3,6 +3,7 @@ package com.foodapp.foodapp.orderProduct;
 import com.foodapp.foodapp.order.dto.OrderDto;
 import com.foodapp.foodapp.product.ProductDto;
 import com.foodapp.foodapp.productProperties.ProductPropertiesDto;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,4 +19,6 @@ public class OrderProductDto {
     private int quantity;
     private BigDecimal price;
     private List<ProductPropertiesDto> productPropertiesList;
+    @Size(max = 510)
+    private String note;
 }

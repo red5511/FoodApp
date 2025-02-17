@@ -6,7 +6,9 @@ import com.foodapp.foodapp.security.ContextProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -36,15 +38,20 @@ public class ProductCategoryService {
                                                  final Long companyId) {
         contextProvider.validateCompanyAccess(List.of(companyId));
         var categoryIds = categoriesDto.stream().map(ProductCategoryDto::getId).toList();
-        var categories = productCategoryRepository.findAllById(categoryIds);
-        validate(categories, companyId);
-        for (int i = 0; i < categories.size(); i++) {
-            categories.get(i).setSortOrder(i);
+        var categoryByIdMap = productCategoryRepository.findAllById(categoryIds).stream()
+                .collect(Collectors.toMap(ProductCategory::getId, Function.identity()));
+        validate(categoryByIdMap.values(), companyId, categoryIds);
+        for (int i = 0; i < categoriesDto.size(); i++) {
+            var category = categoryByIdMap.get(categoriesDto.get(i).getId());
+            category.setSortOrder(i);
         }
-        productCategoryRepository.saveAll(categories);
+        productCategoryRepository.saveAll(categoryByIdMap.values());
     }
 
-    private void validate(final List<ProductCategory> categories, final Long companyId) {
+    private void validate(final Collection<ProductCategory> categories, final Long companyId, final List<Long> categoryIds) {
+        if (categoryIds.size() != categories.size()) {
+            throw new SecurityException("Wrong list sizes");
+        }
         var oneEntryCompanyIdSet = categories.stream()
                 .map(el -> el.getCompany().getId())
                 .collect(Collectors.toSet());

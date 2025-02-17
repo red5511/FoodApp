@@ -18,9 +18,19 @@ i odrazu znikac ;/
 ##########
 
 sql injection
+######
 
+w logach nie leci np             throw new SecurityException("Order is modified");!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ######
+
+//todo walidacja ordera i redirect jak jest stary front
+
+######
+
+w statysytkach trzeba chyba dorobic zliczanie po pordukcie zeby uwzglednil produkty zmodyfikowane bo inaczej sie nie wyswitla dane 
+
+####
 
 moze ucinac id na liscie do % 1000?
 

@@ -62,11 +62,12 @@ public class OrderValidator {
         validateOrderSave(order, companyId);
         var modifiedOrder = orderRepository.findById(modifiedOrderId)
                 .orElseThrow(() -> new SecurityException("Wrong modified order id"));
-        if (modifiedOrder.getParentId() != null) {
-            throw new SecurityException("Order is modified");
-        }
         if (!modifiedOrder.getCompany().getId().equals(companyId)) {
             throw new SecurityException("Wrong company id in modified order");
+        }
+        if (!List.of(OrderStatus.IN_EXECUTION).contains(modifiedOrder.getStatus())){
+            throw new SecurityException("Wrong modified order status");
+
         }
         return modifiedOrder;
     }

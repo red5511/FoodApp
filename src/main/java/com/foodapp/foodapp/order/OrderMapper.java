@@ -117,42 +117,35 @@ public class OrderMapper {
     }
 
     private static boolean showPrint(final Order order) {
-        return order.getParentId() == null;
+        return true;
     }
 
     private static boolean showModify(final Order order) {
         return order.getStatus() == OrderStatus.IN_EXECUTION &&
-                OrderType.OWN.equals(order.getOrderType()) &&
-                order.getParentId() == null;
+                OrderType.OWN.equals(order.getOrderType());
     }
 
     private static boolean showReadyToPickUp(final Order order) {
-        return order.getStatus() == OrderStatus.IN_EXECUTION && !OrderType.OWN.equals(order.getOrderType()) &&
-                order.getParentId() == null;
+        return order.getStatus() == OrderStatus.IN_EXECUTION && !OrderType.OWN.equals(order.getOrderType());
     }
 
     private static boolean showCancel(final Order order) {
-        return order.getStatus() == OrderStatus.IN_EXECUTION &&
-                order.getParentId() == null;
+        return order.getStatus() == OrderStatus.IN_EXECUTION;
     }
 
     private static boolean showToTheCashier(final Order order) {
-        return order.getStatus() == OrderStatus.IN_EXECUTION && !order.isPaidWhenOrdered() &&
-                order.getParentId() == null;
+        return order.getStatus() == OrderStatus.IN_EXECUTION && !order.isPaidWhenOrdered();
     }
 
     public static boolean showApprove(final Order order) {
-        return order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE &&
-                order.getParentId() == null;
+        return order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE;
     }
 
     public static boolean showReject(final Order order) {
-        return order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE &&
-                order.getParentId() == null;
+        return order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE;
     }
 
     public static boolean showSetExecutionTime(final Order order) {
-        return order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE &&
-                order.getParentId() == null;
+        return order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE;
     }
 }

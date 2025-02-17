@@ -38,6 +38,7 @@ public class OrderProductMapper {
                 .price(orderProductDto.getPrice())
                 .content(OrderProductMapper.toOrderProductContent(orderProductDto.getProductPropertiesList()))
                 .product(ProductMapper.mapToProduct(orderProductDto.getProduct(), company))
+                .note(orderProductDto.getNote())
                 .build();
     }
 

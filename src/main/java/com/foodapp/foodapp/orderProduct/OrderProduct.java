@@ -4,6 +4,7 @@ import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.order.Order;
 import com.foodapp.foodapp.product.Product;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,4 +46,9 @@ public class OrderProduct extends BaseEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     private OrderProductContent content;
+
+    @Size(max = 510)
+    @Column(length = 510)
+    private String note;
+
 }

@@ -146,7 +146,8 @@ public class StatisticsService {
         );
     }
 
-    private List<LocalDate> getAllDates(final LocalDate dateFrom, final LocalDate dateTo, final DatePeriod datePeriod) {
+    private List<LocalDate> getAllDates(final LocalDate dateFrom, LocalDate dateTo, final DatePeriod datePeriod) {
+        dateTo = dateTo.plusDays(1);
         if (DatePeriod.DAY.equals(datePeriod)) {
             return dateFrom.datesUntil(dateTo).toList();
         } else if (DatePeriod.WEEK.equals(datePeriod)) {

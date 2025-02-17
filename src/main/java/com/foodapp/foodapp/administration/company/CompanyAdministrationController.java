@@ -79,7 +79,7 @@ public class CompanyAdministrationController {
     }
 
     @PostMapping("/add-or-remove-users-companies")
-    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @PreAuthorize("hasAuthority('SUPER_ADMINISTRATOR') or hasAuthority('ADMINISTRATOR')")
     public ResponseEntity<Void> addOrRemoveUsersCompanies(final @RequestBody AddOrDeleteUsersCompaniesAdministrationRequest request) {
         companyAdministrationService.addOrRemoveUsersCompanies(request);
         return ResponseEntity.ok().build();
