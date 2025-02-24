@@ -1,12 +1,15 @@
 package com.foodapp.foodapp.order;
 
 import com.foodapp.foodapp.administration.company.sql.Company;
+import com.foodapp.foodapp.bluetooth.BluetoothPrinter;
 import com.foodapp.foodapp.order.dto.OrderDto;
+import com.foodapp.foodapp.order.response.CreateOrderRequestResponse;
 import com.foodapp.foodapp.order.response.OrderStatusModel;
 import com.foodapp.foodapp.orderProduct.OrderProduct;
 import com.foodapp.foodapp.orderProduct.OrderProductMapper;
 import lombok.AllArgsConstructor;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -147,5 +150,16 @@ public class OrderMapper {
 
     public static boolean showSetExecutionTime(final Order order) {
         return order.getStatus() == OrderStatus.WAITING_FOR_ACCEPTANCE;
+    }
+
+    public static CreateOrderRequestResponse createOrderResponse(final OrderDto order,
+                                                                 final Long orderId,
+                                                                 final boolean printViaBluetooth)
+            throws UnsupportedEncodingException {
+        return CreateOrderRequestResponse.builder()
+                .orderId(orderId)
+                .encodedTextForBluetoothPrinterList(
+                        printViaBluetooth ? BluetoothPrinter.encodeTextForBluetooth(order, orderId) : List.of())
+                .build();
     }
 }

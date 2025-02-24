@@ -74,8 +74,17 @@ public class MainConfiguration {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-        config.setAllowedHeaders(Arrays.asList(
+        config.setAllowedOrigins(Arrays.asList(
+                "http://localhost",
+                "http://localhost:4200",   // Angular Web
+                "capacitor://localhost",   // Capacitor WebView
+                "http://10.0.2.2",          // Android Emulator accessing host machine
+                "192.168.1.5",
+                "192.168.56.1",
+                "192.168.56.2",
+                "192.168.1.21",
+                "192.168.56.1"
+        ));        config.setAllowedHeaders(Arrays.asList(
                 ORIGIN,
                 CONTENT_TYPE,
                 ACCEPT,

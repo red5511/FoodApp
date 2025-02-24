@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateOrderRequest {
     private OrderDto order;
+    private boolean printViaBluetooth;
 }

@@ -6,6 +6,7 @@ import com.foodapp.foodapp.common.OrdersPagedResult;
 import com.foodapp.foodapp.common.Sort;
 import com.foodapp.foodapp.order.dto.OrderDto;
 import com.foodapp.foodapp.order.request.*;
+import com.foodapp.foodapp.order.response.CreateOrderRequestResponse;
 import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.websocket.EventMapper;
 import com.foodapp.foodapp.websocket.WebSocketEventSender;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,13 +57,15 @@ public class OrderService {
     }
 
     @Transactional
-    public void saveOrder(final CreateOrderRequest request, final Long companyId) {
+    public CreateOrderRequestResponse saveOrder(final CreateOrderRequest request, final Long companyId)
+            throws UnsupportedEncodingException {
         contextProvider.validateCompanyAccess(List.of(companyId));
         orderValidator.validateOrderSave(request.getOrder(), companyId);
         var company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new SecurityException("Wrong company Id"));
         var order = OrderMapper.mapToOrder(request.getOrder(), company, null);
-        orderRepository.save(order);
+        order = orderRepository.save(order);
+        return OrderMapper.createOrderResponse(request.getOrder(), order.getId(), request.isPrintViaBluetooth());
     }
 
     @Transactional

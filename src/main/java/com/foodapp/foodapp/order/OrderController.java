@@ -1,6 +1,7 @@
 package com.foodapp.foodapp.order;
 
 import com.foodapp.foodapp.order.request.*;
+import com.foodapp.foodapp.order.response.CreateOrderRequestResponse;
 import com.foodapp.foodapp.order.response.GetOrdersConfigResponse;
 import com.foodapp.foodapp.order.response.PagedOrdersResponse;
 import com.foodapp.foodapp.statistic.StatisticsMapper;
@@ -10,6 +11,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/api/v1/order")
@@ -21,9 +24,11 @@ public class OrderController {
 
     @PostMapping("/save/{companyId}")
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING')")
-    public ResponseEntity<Void> saveOrder(final @RequestBody CreateOrderRequest request, final @PathVariable Long companyId) {
-        orderService.saveOrder(request, companyId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<CreateOrderRequestResponse> saveOrder(final @RequestBody CreateOrderRequest request,
+                                                                final @PathVariable Long companyId)
+            throws UnsupportedEncodingException {
+        var id = orderService.saveOrder(request, companyId);
+        return ResponseEntity.ok(id);
     }
 
     @PostMapping("/modify/{companyId}")
@@ -35,7 +40,8 @@ public class OrderController {
 
     @PostMapping("/finalize/{companyId}/{orderId}")
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING')")
-    public ResponseEntity<Void> finalizeOrder(final @RequestBody FinalizeOrderRequest request, final @PathVariable Long companyId, final @PathVariable Long orderId) {
+    public ResponseEntity<Void> finalizeOrder(final @RequestBody FinalizeOrderRequest request, final @PathVariable Long companyId,
+                                              final @PathVariable Long orderId) {
         orderService.finalizeOrder(request, companyId, orderId);
         return ResponseEntity.ok().build();
     }

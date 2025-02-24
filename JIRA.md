@@ -17,6 +17,19 @@ i odrazu znikac ;/
 
 ##########
 
+
+#######
+
+ogolnie BT na froncie dziala ale jest jakis dziwny blad kiedy mnie rozlaczy i sie jeszcze raz probuje polaczyc z usatwien i trzeba resetowac apke
+najpierw pokazuje ze sie polaczyc i w sumie drukarka swieci ze jest polacznie ale przy zmianie zakladki apka stwietrdeza ze jednka nie ma polaczenia
+
+
+######
+![img_10.png](img_10.png)
+
+####
+
+
 sql injection
 ######
 

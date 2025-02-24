@@ -1,5 +1,6 @@
 package com.foodapp.foodapp;
 
+import com.foodapp.foodapp.common.PolishCharConverter;
 import com.foodapp.foodapp.forDevelopment.DatabaseDataFaker;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @AllArgsConstructor
 public class FoodappApplication implements ApplicationRunner {
+    private static final String CHINESE = "GBK";
+
     @Autowired
     private final DatabaseDataFaker databaseDataFaker;
 
@@ -25,5 +28,8 @@ public class FoodappApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         databaseDataFaker.initFakeData();
+
+        var xd = PolishCharConverter.removePolishDiacritics("ąćęóżźłśŚ");
+        System.out.println(xd);
     }
 }
