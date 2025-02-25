@@ -17,6 +17,7 @@ i odrazu znikac ;/
 
 ##########
 
+poprawic klucz api google pod domene 
 
 #######
 
