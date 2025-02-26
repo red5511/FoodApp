@@ -34,6 +34,7 @@ public class Company extends BaseEntity {
             name = "company_user",
             joinColumns = @JoinColumn(name = "company_id"),
             inverseJoinColumns = @JoinColumn(name = "_user_id"))
+    @ToString.Exclude
     private Set<User> users;
     @Setter
     private boolean locked;

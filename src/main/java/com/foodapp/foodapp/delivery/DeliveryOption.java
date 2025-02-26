@@ -28,6 +28,7 @@ public class DeliveryOption extends BaseEntity {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
+    @ToString.Exclude
     private Company company;
     private BigDecimal deliveryPrice;
     private Float distance;
