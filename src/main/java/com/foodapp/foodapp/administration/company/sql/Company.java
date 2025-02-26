@@ -2,6 +2,8 @@ package com.foodapp.foodapp.administration.company.sql;
 
 import com.foodapp.foodapp.common.Address;
 import com.foodapp.foodapp.common.BaseEntity;
+import com.foodapp.foodapp.delivery.DeliveryOption;
+import com.foodapp.foodapp.orderProduct.OrderProduct;
 import com.foodapp.foodapp.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -39,4 +42,6 @@ public class Company extends BaseEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     private Address address;
     private String defaultProductImgUrl;
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeliveryOption> deliveryOptions;
 }

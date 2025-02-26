@@ -15,6 +15,8 @@ import com.foodapp.foodapp.auth.jwtToken.JwtTokenRepository;
 import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenRepository;
 import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
 import com.foodapp.foodapp.dashboard.DashboardService;
+import com.foodapp.foodapp.delivery.DeliveryOptionRepository;
+import com.foodapp.foodapp.delivery.DeliveryOptionService;
 import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
 import com.foodapp.foodapp.order.OrderRepository;
 import com.foodapp.foodapp.order.OrderService;
@@ -58,7 +60,6 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.HttpMethod.*;
@@ -84,7 +85,8 @@ public class MainConfiguration {
                 "192.168.56.2",
                 "192.168.1.21",
                 "192.168.56.1"
-        ));        config.setAllowedHeaders(Arrays.asList(
+        ));
+        config.setAllowedHeaders(Arrays.asList(
                 ORIGIN,
                 CONTENT_TYPE,
                 ACCEPT,
@@ -334,5 +336,14 @@ public class MainConfiguration {
     @Bean
     public ProductValidator productValidator(final ContextProvider contextProvider) {
         return new ProductValidator(contextProvider);
+    }
+
+    @Bean
+    public DeliveryOptionService deliveryOptionService(final DeliveryOptionRepository deliveryOptionRepository,
+                                                       final ContextProvider contextProvider,
+                                                       final CompanyRepository companyRepository) {
+        return new DeliveryOptionService(deliveryOptionRepository,
+                contextProvider,
+                companyRepository);
     }
 }
