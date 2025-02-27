@@ -27,9 +27,14 @@ public class OrderSql {
     public static final String STATUSES_TO_EXCLUDE_QUERY = " AND o.status NOT IN (:" + STATUSES_PARAM + ")";
     public static final String GLOBAL_QUERY = " AND (CAST(o.id AS text) LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%') " +
             " OR LOWER(o.description) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%') " +
-            " OR LOWER(o.deliveryAddress) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%') " +
             " OR LOWER(o.deliveryCode) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%') " +
-            " OR CAST(o.price AS text) LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%')) ";
+            " OR CAST(o.price AS text) LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%') " +
+            " OR LOWER(o.deliveryAddress.street) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+            " OR LOWER(o.deliveryAddress.streetNumber) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+            " OR LOWER(o.deliveryAddress.city) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+            " OR LOWER(o.deliveryAddress.postalCode) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+            " OR LOWER(o.deliveryAddress.country) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+            " OR LOWER(o.deliveryAddress.unstructuredAddress) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%'))";;
     //" OR CAST(o.deliveryTime AS text) LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%'))";
 
 

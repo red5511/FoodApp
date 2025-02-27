@@ -15,8 +15,16 @@ public class CompanySql {
     public static final String DATE_TO_QUERY =
             " AND (CAST(:" + DATE_TO_PARAM + " AS TIMESTAMP) IS NULL OR c.createdDate <= :" + DATE_TO_PARAM + ")";
 
-    public static final String GLOBAL_QUERY = " AND (CAST(c.id AS text) = :" + GLOBAL_PARAM +
-            " OR LOWER(c.name) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%'))";
+    public static final String GLOBAL_QUERY =
+            " AND (CAST(c.id AS text) = :" + GLOBAL_PARAM +
+                    " OR LOWER(c.name) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+                    " OR LOWER(c.address.street) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+                    " OR LOWER(c.address.streetNumber) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+                    " OR LOWER(c.address.city) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+                    " OR LOWER(c.address.postalCode) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+                    " OR LOWER(c.address.country) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+                    " OR LOWER(c.address.unstructuredAddress) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%'))";
+
 
     public static final String BASE_SORT_QUERY = " ORDER BY";
     public static final String USERS_AMOUNT_SORT_QUERY = " SIZE(c.users)";

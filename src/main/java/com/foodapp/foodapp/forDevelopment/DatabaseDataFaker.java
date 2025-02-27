@@ -148,7 +148,7 @@ public class DatabaseDataFaker {
                     createFakeOrderProduct(companyProducts, productProperties);
             var order = createFakeOrder(orderProducts);
             order.setCompany(companies.get(i));
-            if (!CollectionUtils.isEmpty(order.getOrderProducts())){
+            if (!CollectionUtils.isEmpty(order.getOrderProducts())) {
                 orders.add(order);
             }
         }
@@ -261,7 +261,13 @@ public class DatabaseDataFaker {
                 .price(orderProducts.stream()
                         .map(OrderProduct::getPrice)
                         .reduce(BigDecimal.ZERO, BigDecimal::add))
-                .deliveryAddress("Piłsudskiego 33 Warszawa")
+                .deliveryAddress(Address.builder()
+                        .country("Polska")
+                        .postalCode("43-999")
+                        .city("Warszawa")
+                        .street("Odry")
+                        .streetNumber("22")
+                        .build())
                 .description("Poproszę osobno frytki i colę bez lodu.")
                 .status(OrderStatus.EXECUTED)
                 .executionTime(LocalDateTime.now())

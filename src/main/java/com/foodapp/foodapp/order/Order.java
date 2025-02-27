@@ -1,6 +1,7 @@
 package com.foodapp.foodapp.order;
 
 import com.foodapp.foodapp.administration.company.sql.Company;
+import com.foodapp.foodapp.common.Address;
 import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.orderProduct.OrderProduct;
 import jakarta.persistence.*;
@@ -10,6 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -42,7 +45,6 @@ public class Order extends BaseEntity {
     private OrderStatus status;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
-    private String deliveryAddress;
     private String customerName;
     private LocalDateTime executionTime;
     private LocalDateTime approvalDeadline;
@@ -52,4 +54,7 @@ public class Order extends BaseEntity {
     //    private OrderContent content;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderProduct> orderProducts;
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Address deliveryAddress;
+
 }

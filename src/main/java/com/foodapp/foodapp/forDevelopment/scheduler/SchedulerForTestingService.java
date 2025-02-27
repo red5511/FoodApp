@@ -4,6 +4,7 @@ package com.foodapp.foodapp.forDevelopment.scheduler;
 import com.foodapp.foodapp.administration.cache.CacheService;
 import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
+import com.foodapp.foodapp.common.Address;
 import com.foodapp.foodapp.forDevelopment.TechnicalContextDev;
 import com.foodapp.foodapp.order.*;
 import com.foodapp.foodapp.orderProduct.OrderProduct;
@@ -103,7 +104,13 @@ public class SchedulerForTestingService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return Order.builder()
                 .executionTime(LocalDateTime.now().plusMinutes(66))
-                .deliveryAddress("Sikorskiego 33 Katowice 42-504")
+                .deliveryAddress(Address.builder()
+                        .country("Polska")
+                        .postalCode("43-999")
+                        .city("Katowice")
+                        .street("Paderewskiego")
+                        .streetNumber("22")
+                        .build())
                 .deliveryCode(UUID.randomUUID().toString().substring(0, 8))
                 .orderType(INDEX % 2 != 0 ? OrderType.GLOVO : OrderType.PYSZNE_PL)
                 .customerName("Maciek Franczak")

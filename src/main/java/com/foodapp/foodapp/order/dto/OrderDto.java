@@ -1,6 +1,7 @@
 package com.foodapp.foodapp.order.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.foodapp.foodapp.common.Address;
 import com.foodapp.foodapp.order.OrderActions;
 import com.foodapp.foodapp.order.OrderStatus;
 import com.foodapp.foodapp.order.OrderType;
@@ -26,7 +27,7 @@ public class OrderDto {
     private String description;
     private OrderType orderType;
     private OrderStatus status;
-    private String deliveryAddress;
+    private Address deliveryAddress;
     private String customerName;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime executionTime;
