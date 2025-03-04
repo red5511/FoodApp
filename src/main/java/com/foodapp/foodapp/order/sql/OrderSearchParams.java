@@ -1,6 +1,7 @@
-package com.foodapp.foodapp.order;
+package com.foodapp.foodapp.order.sql;
 
 import com.foodapp.foodapp.common.SearchParams;
+import com.foodapp.foodapp.order.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

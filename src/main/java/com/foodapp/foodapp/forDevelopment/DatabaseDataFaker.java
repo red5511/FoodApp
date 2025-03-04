@@ -6,8 +6,9 @@ import com.foodapp.foodapp.administration.company.sql.Content;
 import com.foodapp.foodapp.administration.company.sql.OpenHours;
 import com.foodapp.foodapp.common.Address;
 import com.foodapp.foodapp.common.CommonUtils;
-import com.foodapp.foodapp.order.Order;
-import com.foodapp.foodapp.order.OrderRepository;
+import com.foodapp.foodapp.order.sql.CustomOrderIdGenerator;
+import com.foodapp.foodapp.order.sql.Order;
+import com.foodapp.foodapp.order.sql.OrderRepository;
 import com.foodapp.foodapp.order.OrderStatus;
 import com.foodapp.foodapp.order.OrderType;
 import com.foodapp.foodapp.orderProduct.OrderProduct;
@@ -49,6 +50,7 @@ public class DatabaseDataFaker {
     private final ProductPropertyRepository productPropertyRepository;
     private final ProductPropertiesRepository productPropertiesRepository;
     Random rand;
+    private final CustomOrderIdGenerator customOrderIdGenerator;
 
     public List<Company> createCompanies() {
         var names = List.of("", "#2", "#3", "abd_", "_1234567890", "bbbbb", "GIGA_KEBAB");
@@ -147,6 +149,8 @@ public class DatabaseDataFaker {
             var orderProducts =
                     createFakeOrderProduct(companyProducts, productProperties);
             var order = createFakeOrder(orderProducts);
+//            Long nextDisplayableId = customOrderIdGenerator.generate(order); company musi miec id
+//            order.setDisplayableId(nextDisplayableId);
             order.setCompany(companies.get(i));
             if (!CollectionUtils.isEmpty(order.getOrderProducts())) {
                 orders.add(order);
@@ -254,13 +258,18 @@ public class DatabaseDataFaker {
     }
 
     private Order createFakeOrder(final List<OrderProduct> orderProducts) {
+        var foodPrice = orderProducts.stream()
+                .map(OrderProduct::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        var deliveryPrice = BigDecimal.valueOf(5);
         Order order = Order.builder()
                 .deliveryCode(UUID.randomUUID().toString())
                 .customerName("Iwona Kowalska")
                 .orderType(OrderType.PYSZNE_PL)
-                .price(orderProducts.stream()
-                        .map(OrderProduct::getPrice)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add))
+                .foodPrice(foodPrice)
+                .deliveryPrice(deliveryPrice)
+                .totalPrice(foodPrice.add(deliveryPrice))
+                .delivery(false)
                 .deliveryAddress(Address.builder()
                         .country("Polska")
                         .postalCode("43-999")
@@ -295,6 +304,8 @@ public class DatabaseDataFaker {
                         "Bardzo bardzo dlugiiiii opissssssssssssss extraaaa xddd")
                 .name(name)
                 .price(new BigDecimal("10"))
+                .deliveryPrice(new BigDecimal("2"))
+                .takeawayPrice(new BigDecimal("1"))
                 .build();
     }
 

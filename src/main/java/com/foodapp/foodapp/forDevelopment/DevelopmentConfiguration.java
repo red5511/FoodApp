@@ -3,7 +3,8 @@ package com.foodapp.foodapp.forDevelopment;
 import com.foodapp.foodapp.administration.cache.CacheService;
 import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
-import com.foodapp.foodapp.order.OrderRepository;
+import com.foodapp.foodapp.order.sql.CustomOrderIdGenerator;
+import com.foodapp.foodapp.order.sql.OrderRepository;
 import com.foodapp.foodapp.orderProduct.OrderProductRepository;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
@@ -34,7 +35,8 @@ public class DevelopmentConfiguration {
                                                final PasswordEncoder passwordEncoder,
                                                final ProductCategoryRepository productCategoryRepository,
                                                final ProductPropertyRepository productPropertyRepository,
-                                               final ProductPropertiesRepository productPropertiesRepository) {
+                                               final ProductPropertiesRepository productPropertiesRepository,
+                                               final CustomOrderIdGenerator customOrderIdGenerator) {
         return new DatabaseDataFaker(companyRepository,
                 userRepository,
                 productRepository,
@@ -44,7 +46,8 @@ public class DevelopmentConfiguration {
                 productCategoryRepository,
                 productPropertyRepository,
                 productPropertiesRepository,
-                new Random()
+                new Random(),
+                customOrderIdGenerator
         );
     }
 
@@ -55,14 +58,16 @@ public class DevelopmentConfiguration {
                                                                  final CompanyRepository companyRepository,
                                                                  final ProductRepository productRepository,
                                                                  final CacheService cacheService,
-                                                                 final RabbitMQSender rabbitMQSender) {
+                                                                 final RabbitMQSender rabbitMQSender,
+                                                                 final CustomOrderIdGenerator customOrderIdGenerator) {
         return new SchedulerForTestingService(webSocketService,
                 orderRepository,
                 companyRepository,
                 productRepository,
                 timeToAcceptOrder,
                 cacheService,
-                rabbitMQSender
+                rabbitMQSender,
+                customOrderIdGenerator
         );
     }
 

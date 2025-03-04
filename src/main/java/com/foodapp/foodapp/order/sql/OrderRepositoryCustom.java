@@ -1,4 +1,4 @@
-package com.foodapp.foodapp.order;
+package com.foodapp.foodapp.order.sql;
 
 import com.foodapp.foodapp.common.OrdersPagedResult;
 

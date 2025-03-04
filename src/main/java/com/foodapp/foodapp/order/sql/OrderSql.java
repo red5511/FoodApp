@@ -1,4 +1,4 @@
-package com.foodapp.foodapp.order;
+package com.foodapp.foodapp.order.sql;
 
 public class OrderSql {
     public static final String COMPANY_ID_PARAM = "companyId";
@@ -34,6 +34,8 @@ public class OrderSql {
             " OR LOWER(o.deliveryAddress.city) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
             " OR LOWER(o.deliveryAddress.postalCode) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
             " OR LOWER(o.deliveryAddress.country) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+            " OR LOWER(o.deliveryAddress.apartmentNumber) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
+            " OR LOWER(o.deliveryAddress.floor) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
             " OR LOWER(o.deliveryAddress.unstructuredAddress) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%'))";;
     //" OR CAST(o.deliveryTime AS text) LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%'))";
 

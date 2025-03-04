@@ -2,7 +2,7 @@ package com.foodapp.foodapp.statistic;
 
 import com.foodapp.foodapp.common.CommonMapper;
 import com.foodapp.foodapp.common.DatePeriod;
-import com.foodapp.foodapp.order.OrderRepository;
+import com.foodapp.foodapp.order.sql.OrderRepository;
 import com.foodapp.foodapp.order.OrderStatus;
 import com.foodapp.foodapp.product.ProductMapper;
 import com.foodapp.foodapp.product.ProductRepository;

@@ -7,6 +7,10 @@ import com.foodapp.foodapp.common.Sort;
 import com.foodapp.foodapp.order.dto.OrderDto;
 import com.foodapp.foodapp.order.request.*;
 import com.foodapp.foodapp.order.response.CreateOrderRequestResponse;
+import com.foodapp.foodapp.order.response.ModifyOrderResponse;
+import com.foodapp.foodapp.order.sql.Order;
+import com.foodapp.foodapp.order.sql.OrderRepository;
+import com.foodapp.foodapp.orderProduct.OrderProductRepository;
 import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.websocket.EventMapper;
 import com.foodapp.foodapp.websocket.WebSocketEventSender;
@@ -17,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,6 +33,8 @@ public class OrderService {
     private final ContextProvider contextProvider;
     private final OrderValidator orderValidator;
     private final WebSocketEventSender webSocketEventSender;
+    private final OrderMapper orderMapper;
+    private final OrderProductRepository orderProductRepository;
 
     public void approveNewIncomingOrder(final ApproveNewIncomingOrderRequest request) {
         var topicName = handleWaitingForAcceptanceOrder(OrderStatus.IN_EXECUTION, request.getCompanyId(), request.getOrderId());
@@ -63,22 +70,24 @@ public class OrderService {
         orderValidator.validateOrderSave(request.getOrder(), companyId);
         var company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new SecurityException("Wrong company Id"));
-        var order = OrderMapper.mapToOrder(request.getOrder(), company, null);
+        var order = orderMapper.mapToOrder(request.getOrder(), company, Optional.empty());
         order = orderRepository.save(order);
-        return OrderMapper.createOrderResponse(request.getOrder(), order.getId(), request.isPrintViaBluetooth());
+        return OrderMapper.createOrderResponse(request.getOrder(), order.getDisplayableId(), request.isPrintViaBluetooth());
     }
 
     @Transactional
-    public void modifyOrder(final ModifyOrderRequest request, final Long companyId) {
+    public ModifyOrderResponse modifyOrder(final ModifyOrderRequest request, final Long companyId) {
         contextProvider.validateCompanyAccess(List.of(companyId));
         var modifiedOrder = orderValidator.validateOrderModifyAndReturn(request.getOrder(), companyId, request.getModifiedOrderIf());
         var company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new SecurityException("Wrong company Id"));
-
-        var order = OrderMapper.mapToOrder(request.getOrder(), company, modifiedOrder.getId());
+        var order = orderMapper.mapToOrder(request.getOrder(), company, Optional.of(modifiedOrder));
         modifiedOrder.setStatus(OrderStatus.MODIFIED);
         orderRepository.save(order);
         orderRepository.save(modifiedOrder);
+        return ModifyOrderResponse.builder()
+                .displayableOrderId(order.getDisplayableId())
+                .build();
     }
 
     @Transactional

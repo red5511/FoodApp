@@ -18,9 +18,12 @@ import com.foodapp.foodapp.dashboard.DashboardService;
 import com.foodapp.foodapp.delivery.DeliveryOptionRepository;
 import com.foodapp.foodapp.delivery.DeliveryOptionService;
 import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
-import com.foodapp.foodapp.order.OrderRepository;
+import com.foodapp.foodapp.order.OrderMapper;
 import com.foodapp.foodapp.order.OrderService;
 import com.foodapp.foodapp.order.OrderValidator;
+import com.foodapp.foodapp.order.sql.CustomOrderIdGenerator;
+import com.foodapp.foodapp.order.sql.OrderRepository;
+import com.foodapp.foodapp.orderProduct.OrderProductRepository;
 import com.foodapp.foodapp.product.ProductMapper;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.product.ProductService;
@@ -221,12 +224,16 @@ public class MainConfiguration {
                                      final CompanyRepository companyRepository,
                                      final OrderValidator orderValidator,
                                      final ContextProvider contextProvider,
-                                     final WebSocketEventSender webSocketEventSender) {
+                                     final WebSocketEventSender webSocketEventSender,
+                                     final OrderMapper orderMapper,
+                                     final OrderProductRepository orderProductRepository) {
         return new OrderService(orderRepository,
                 companyRepository,
                 contextProvider,
                 orderValidator,
-                webSocketEventSender
+                webSocketEventSender,
+                orderMapper,
+                orderProductRepository
         );
     }
 
@@ -345,5 +352,15 @@ public class MainConfiguration {
         return new DeliveryOptionService(deliveryOptionRepository,
                 contextProvider,
                 companyRepository);
+    }
+
+//    @Bean
+//    public CustomOrderIdGenerator customOrderIdGenerator() {
+//        return new CustomOrderIdGenerator();
+//    }
+
+    @Bean
+    public OrderMapper orderMapper(final CustomOrderIdGenerator customOrderIdGenerator) {
+        return new OrderMapper(customOrderIdGenerator);
     }
 }

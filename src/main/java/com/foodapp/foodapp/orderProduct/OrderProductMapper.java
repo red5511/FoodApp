@@ -18,8 +18,11 @@ public class OrderProductMapper {
     public static OrderProductDto toOrderProductDto(final OrderProduct orderProduct, final OrderDto orderDto) {
         var productPropertiesList = orderProduct.getContent() != null ? orderProduct.getContent().getProductPropertiesList() : null;
         return OrderProductDto.builder()
+                .id(orderProduct.getId())
                 //.order(orderDto) todo zastanowic sie czy to jest napewno okej bo bedzie nieskonczona rekursja
                 .price(orderProduct.getPrice())
+                .takeawayPrice(orderProduct.getTakeawayPrice())
+                .extraDeliveryPrice(orderProduct.getExtraDeliveryPrice())
                 .product(ProductMapper.mapToProductDto(orderProduct.getProduct()))
                 .quantity(orderProduct.getQuantity())
                 .productPropertiesList(productPropertiesList)
@@ -36,6 +39,8 @@ public class OrderProductMapper {
         return OrderProduct.builder()
                 .quantity(orderProductDto.getQuantity())
                 .price(orderProductDto.getPrice())
+                .takeawayPrice(orderProductDto.getTakeawayPrice())
+                .extraDeliveryPrice(orderProductDto.getExtraDeliveryPrice())
                 .content(OrderProductMapper.toOrderProductContent(orderProductDto.getProductPropertiesList()))
                 .product(ProductMapper.mapToProduct(orderProductDto.getProduct(), company))
                 .note(orderProductDto.getNote())

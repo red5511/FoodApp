@@ -34,6 +34,8 @@ public class Product extends BaseEntity {
     @Size(max = 255)
     private String name;
     private BigDecimal price;
+    private BigDecimal deliveryPrice;
+    private BigDecimal takeawayPrice;
     private String imgUrl;
     private String description;
     private boolean soldOut;

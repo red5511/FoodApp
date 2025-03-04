@@ -19,10 +19,11 @@ import java.util.List;
 @Builder(toBuilder = true)
 public class OrderDto {
     private Long id;
+    private Long displayableId;
     private Long companyId;
     private String deliveryCode;
     private String companyName;
-    private BigDecimal price;
+    private BigDecimal totalPrice;
     @Size(max = 510)
     private String description;
     private OrderType orderType;
@@ -38,5 +39,9 @@ public class OrderDto {
     private OrderActions actions;
     private PaymentMethod paymentMethod;
     private boolean takeaway;
-    private boolean isPaidWhenOrdered;
+    private boolean paidWhenOrdered;
+    private boolean delivery;
+    private BigDecimal deliveryPrice;
+    private BigDecimal foodPrice;
+    private String deliveryNote;
 }

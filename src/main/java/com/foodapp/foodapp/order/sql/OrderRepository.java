@@ -1,5 +1,6 @@
-package com.foodapp.foodapp.order;
+package com.foodapp.foodapp.order.sql;
 
+import com.foodapp.foodapp.order.OrderStatus;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -44,7 +45,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, OrderReposi
                                                       @Param("productId") Long productId,
                                                       @Param("statusesToExclude") List<OrderStatus> statusesToExclude);
 
-    @Query("SELECT COUNT(o), SUM(o.price), DATE_TRUNC(:range, o.executionTime) AS timePeriod " +
+    @Query("SELECT COUNT(o), SUM(o.totalPrice), DATE_TRUNC(:range, o.executionTime) AS timePeriod " +
             "FROM Order o " +
             "WHERE o.company.id IN (:companyIds) " +
             "AND o.executionTime BETWEEN :dateFrom AND :dateTo " +

@@ -1,7 +1,7 @@
 package com.foodapp.foodapp.orderProduct;
 
 import com.foodapp.foodapp.common.BaseEntity;
-import com.foodapp.foodapp.order.Order;
+import com.foodapp.foodapp.order.sql.Order;
 import com.foodapp.foodapp.product.Product;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -43,6 +43,10 @@ public class OrderProduct extends BaseEntity {
 
     @Column(nullable = false)
     private BigDecimal price;
+
+    private BigDecimal extraDeliveryPrice;
+
+    private BigDecimal takeawayPrice;
 
     @JdbcTypeCode(SqlTypes.JSON)
     private OrderProductContent content;

@@ -6,15 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrderRequestResponse {
+public class ModifyOrderResponse {
     @Schema(required = true)
     Long displayableOrderId;
-    @Schema(required = true)
-    List<String> encodedTextForBluetoothPrinterList;
 }

@@ -19,6 +19,10 @@ i odrazu znikac ;/
 
 poprawic klucz api google pod domene 
 
+######
+
+statystyki z uwglednieniem dowozoow
+
 #######
 
 ogolnie BT na froncie dziala ale jest jakis dziwny blad kiedy mnie rozlaczy i sie jeszcze raz probuje polaczyc z usatwien i trzeba resetowac apke

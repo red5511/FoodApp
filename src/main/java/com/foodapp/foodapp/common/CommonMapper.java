@@ -4,7 +4,7 @@ import com.foodapp.foodapp.administration.company.common.CompanySearchParams;
 import com.foodapp.foodapp.administration.company.request.GetCompanyAdministrationRequest;
 import com.foodapp.foodapp.administration.userAdministration.UsersSearchParams;
 import com.foodapp.foodapp.administration.userAdministration.request.GetUsersAdministrationRequest;
-import com.foodapp.foodapp.order.OrderSearchParams;
+import com.foodapp.foodapp.order.sql.OrderSearchParams;
 import com.foodapp.foodapp.order.OrderStatus;
 import com.foodapp.foodapp.order.request.GetOrdersForCompanyRequest;
 import com.foodapp.foodapp.product.ProductSearchParams;

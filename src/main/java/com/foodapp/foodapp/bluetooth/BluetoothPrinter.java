@@ -18,14 +18,15 @@ import java.util.stream.Collectors;
 public class BluetoothPrinter {
     public static final byte YHDAA_MAX_ROW_NUMBER_OF_CHARS_FOR_SMALL_TEXT = 31;
     private static final String CHINESE = "GBK";
+    private static final String DELIVERY_NAME = "Dostawa: ";
 
-    public static List<String> encodeTextForBluetooth(final OrderDto order, final Long orderId) throws UnsupportedEncodingException {
+    public static List<String> encodeTextForBluetooth(final OrderDto order, final Long displayableOrderId) throws UnsupportedEncodingException {
         var bigCenteredText1 = Command.ESC_Align.clone();
         bigCenteredText1[2] = 1; // to centruje text
         var bigCenteredText2 = Command.GS_ExclamationMark.clone();
         bigCenteredText2[2] = 17;//to powieksza text
 
-        var header = "Zamowienie #" + orderId + "\n";
+        var header = "Zamowienie #" + displayableOrderId + "\n";
         var headerBytes = header.getBytes(CHINESE);
         var header2 = order.getExecutionTime().toString().replace('T', ' ');
         var headerBytes2 = header2.getBytes(CHINESE);
@@ -59,13 +60,22 @@ public class BluetoothPrinter {
         if (StringUtils.isNotEmpty(order.getDescription())) {
             stringToPrint.append("Opis: ").append(PolishCharConverter.removePolishDiacritics(order.getDescription())).append("\n");
         }
+        if (order.getDeliveryPrice() != null) {
+            stringToPrint.append("\n");
+            stringToPrint.append("\n");
+            stringToPrint.append(DELIVERY_NAME);
+            String deliveryPrice = order.getDeliveryPrice().setScale(2).toString();
+            stringToPrint.append(" ".repeat(Math.max(0, YHDAA_MAX_ROW_NUMBER_OF_CHARS_FOR_SMALL_TEXT - (deliveryPrice.length() + DELIVERY_NAME.length()))));
+            stringToPrint.append(deliveryPrice);
+            stringToPrint.append("\n");
+        }
 
         System.out.println(stringToPrint);
 
         var byteResult = PrinterCommand.POS_Print_Text(stringToPrint.toString(), CHINESE, 0, 0, 0, 0);
         byteListToEncode.add(byteResult);
 
-        String totalPrice = "Suma: " + order.getPrice().setScale(2, RoundingMode.HALF_UP).toString();
+        String totalPrice = "Suma: " + order.getTotalPrice().setScale(2, RoundingMode.HALF_UP).toString();
         byteListToEncode.add(bigCenteredText1);
         byteListToEncode.add(bigCenteredText2);
         byteListToEncode.add(totalPrice.getBytes(CHINESE));

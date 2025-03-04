@@ -1,6 +1,6 @@
 package com.foodapp.foodapp.config;
 
-import com.foodapp.foodapp.order.OrderRepository;
+import com.foodapp.foodapp.order.sql.OrderRepository;
 import com.foodapp.foodapp.rabbitMQ.RabbitMQListener;
 import com.foodapp.foodapp.rabbitMQ.RabbitMQSender;
 import com.foodapp.foodapp.websocket.WebSocketEventSender;

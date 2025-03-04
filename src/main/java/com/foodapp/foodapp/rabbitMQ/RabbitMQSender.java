@@ -1,7 +1,7 @@
 package com.foodapp.foodapp.rabbitMQ;
 
 import com.foodapp.foodapp.config.RabbitMQConfig;
-import com.foodapp.foodapp.order.Order;
+import com.foodapp.foodapp.order.sql.Order;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

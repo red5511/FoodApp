@@ -2,6 +2,8 @@ package com.foodapp.foodapp.order;
 
 import com.foodapp.foodapp.advice.BusinessException;
 import com.foodapp.foodapp.order.dto.OrderDto;
+import com.foodapp.foodapp.order.sql.Order;
+import com.foodapp.foodapp.order.sql.OrderRepository;
 import com.foodapp.foodapp.orderProduct.OrderProductDto;
 import com.foodapp.foodapp.product.ProductDto;
 import com.foodapp.foodapp.security.ContextProvider;
@@ -34,6 +36,9 @@ public class OrderValidator {
 
     public void validateOrderSave(final OrderDto order, final Long companyId) {
         validateOrderProducts(order.getOrderProducts(), companyId);
+        if(!List.of(OrderStatus.IN_EXECUTION, OrderStatus.EXECUTED).contains(order.getStatus())){
+            throw new SecurityException("Wrong order status");
+        }
     }
 
     private void validateOrderProducts(final List<OrderProductDto> orderProducts, final Long companyId) {

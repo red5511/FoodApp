@@ -7,6 +7,9 @@ import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.common.Address;
 import com.foodapp.foodapp.forDevelopment.TechnicalContextDev;
 import com.foodapp.foodapp.order.*;
+import com.foodapp.foodapp.order.sql.CustomOrderIdGenerator;
+import com.foodapp.foodapp.order.sql.Order;
+import com.foodapp.foodapp.order.sql.OrderRepository;
 import com.foodapp.foodapp.orderProduct.OrderProduct;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.rabbitMQ.RabbitMQSender;
@@ -43,6 +46,7 @@ public class SchedulerForTestingService {
     private final Set<String> companyTopics = ConcurrentHashMap.newKeySet();
     private final CacheService cacheService;
     private final RabbitMQSender rabbitMQSender;
+    private final CustomOrderIdGenerator customOrderIdGenerator;
 
     @Scheduled(fixedRate = 10000)
     public void xd() {
@@ -99,10 +103,11 @@ public class SchedulerForTestingService {
 
     public Order createOrderForTest(final List<OrderProduct> orderProducts, final Company company) {
         INDEX += 1;
-        var price = orderProducts.stream()
+        var foodPrice = orderProducts.stream()
                 .map(OrderProduct::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return Order.builder()
+        var deliveryPrice = BigDecimal.valueOf(5);
+        var order = Order.builder()
                 .executionTime(LocalDateTime.now().plusMinutes(66))
                 .deliveryAddress(Address.builder()
                         .country("Polska")
@@ -118,8 +123,10 @@ public class SchedulerForTestingService {
                         "Poprosze osobno frytki i cole bez lodu. W razie problemow ze znalezeniem numry zostawic na portierni"
                 )
                 .status(OrderStatus.WAITING_FOR_ACCEPTANCE)
-                .price(price)
-                .company(Company.builder()
+                .delivery(true)
+                .foodPrice(foodPrice)
+                .deliveryPrice(deliveryPrice)
+                .totalPrice(foodPrice.add(deliveryPrice)).company(Company.builder()
                         .build())
                 .company(company)
 //                .approvalDeadline(LocalDateTime.now().plusSeconds(INDEX % 2 != 0 ? 25 : 10))
@@ -127,6 +134,9 @@ public class SchedulerForTestingService {
                 .orderProducts(orderProducts)
                 //.approvalDeadline(LocalDateTime.now().plusMinutes(timeToAcceptOrder))
                 .build();
+        Long nextDisplayableId = customOrderIdGenerator.generate(order);
+        order.setDisplayableId(nextDisplayableId);
+        return order;
     }
 
     public void updateTopicToSend(final Set<Long> companyIdsToAdd, final Set<Long> companyIdsToRemove) {

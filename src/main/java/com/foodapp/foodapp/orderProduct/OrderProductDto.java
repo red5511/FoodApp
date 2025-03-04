@@ -18,6 +18,8 @@ public class OrderProductDto {
     private ProductDto product;
     private int quantity;
     private BigDecimal price;
+    private BigDecimal extraDeliveryPrice;
+    private BigDecimal takeawayPrice;
     private List<ProductPropertiesDto> productPropertiesList;
     @Size(max = 510)
     private String note;

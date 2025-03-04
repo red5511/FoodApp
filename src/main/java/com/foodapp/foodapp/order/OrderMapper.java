@@ -5,6 +5,8 @@ import com.foodapp.foodapp.bluetooth.BluetoothPrinter;
 import com.foodapp.foodapp.order.dto.OrderDto;
 import com.foodapp.foodapp.order.response.CreateOrderRequestResponse;
 import com.foodapp.foodapp.order.response.OrderStatusModel;
+import com.foodapp.foodapp.order.sql.CustomOrderIdGenerator;
+import com.foodapp.foodapp.order.sql.Order;
 import com.foodapp.foodapp.orderProduct.OrderProduct;
 import com.foodapp.foodapp.orderProduct.OrderProductMapper;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -34,6 +37,7 @@ public class OrderMapper {
             OrderStatus.READY_FOR_PICK_UP, Severity.info,
             OrderStatus.NOT_ACCEPTED, Severity.contrast
     );
+    private final CustomOrderIdGenerator customOrderIdGenerator;
 
     public static List<OrderStatusModel> getStatusModels() {
         var statuses = OrderStatus.values();
@@ -56,11 +60,16 @@ public class OrderMapper {
 
         var orderDto = OrderDto.builder()
                 .id(order.getId())
+                .displayableId(order.getDisplayableId())
                 .companyId(order.getCompany().getId())
                 .deliveryCode(order.getDeliveryCode())
                 .companyName(order.getCompany().getName())
                 .description(order.getDescription())
-                .price(order.getPrice())
+                .totalPrice(order.getTotalPrice())
+                .foodPrice(order.getFoodPrice())
+                .deliveryPrice(order.getDeliveryPrice())
+                .delivery(order.isDelivery())
+                .deliveryNote(order.getDeliveryNote())
                 .orderType(order.getOrderType())
                 .status(order.getStatus())
                 .customerName(order.getCustomerName())
@@ -72,38 +81,12 @@ public class OrderMapper {
                 .actions(getActions(order))
                 .createdDate(order.getCreatedDate())
                 .paymentMethod(order.getPaymentMethod())
-                .isPaidWhenOrdered(order.isPaidWhenOrdered())
+                .paidWhenOrdered(order.isPaidWhenOrdered())
                 .build();
         orderDto = orderDto.toBuilder()
                 .orderProducts(OrderProductMapper.toOrderProductsDto(orderProducts, orderDto))
                 .build();
         return orderDto;
-    }
-
-    public static Order mapToOrder(final OrderDto orderDto, final Company company, final Long parentId) {
-        var orderProducts = OrderProductMapper.toOrderProducts(orderDto.getOrderProducts(), company);
-        var order = Order.builder()
-                .parentId(parentId)
-                .orderType(orderDto.getOrderType())
-                .company(company)
-                .description(orderDto.getDescription())
-                .price(orderDto.getPrice())
-                .status(orderDto.getStatus() == null ? OrderStatus.WAITING_FOR_ACCEPTANCE : orderDto.getStatus())
-                .customerName(orderDto.getCustomerName())
-                .deliveryAddress(orderDto.getDeliveryAddress())
-                .executionTime(orderDto.getExecutionTime() == null ? LocalDateTime.now() : orderDto.getExecutionTime())
-                .deliveryCode(orderDto.getDeliveryCode())
-                .paymentMethod(orderDto.getPaymentMethod())
-                .approvalDeadline(orderDto.getApprovalDeadline())
-                .orderProducts(orderProducts)
-                .takeaway(orderDto.isTakeaway())
-                .isPaidWhenOrdered(orderDto.isPaidWhenOrdered())
-                .orderType(OrderType.OWN)
-                .build();
-        for (OrderProduct orderProduct : orderProducts) {
-            orderProduct.setOrder(order);
-        }
-        return order;
     }
 
     public static OrderActions getActions(final Order order) {
@@ -153,13 +136,51 @@ public class OrderMapper {
     }
 
     public static CreateOrderRequestResponse createOrderResponse(final OrderDto order,
-                                                                 final Long orderId,
+                                                                 final Long displayableOrderId,
                                                                  final boolean printViaBluetooth)
             throws UnsupportedEncodingException {
         return CreateOrderRequestResponse.builder()
-                .orderId(orderId)
+                .displayableOrderId(displayableOrderId)
                 .encodedTextForBluetoothPrinterList(
-                        printViaBluetooth ? BluetoothPrinter.encodeTextForBluetooth(order, orderId) : List.of())
+                        printViaBluetooth ? BluetoothPrinter.encodeTextForBluetooth(order, displayableOrderId) : List.of())
                 .build();
+    }
+
+    public Order mapToOrder(final OrderDto orderDto, final Company company, final Optional<Order> modifiedOrderOptional) {
+
+        var orderProducts = OrderProductMapper.toOrderProducts(orderDto.getOrderProducts(), company);
+
+        var order = Order.builder()
+                .parentId(modifiedOrderOptional.map(Order::getParentId).orElse(null))
+                .orderType(orderDto.getOrderType())
+                .company(company)
+                .description(orderDto.getDescription())
+                .totalPrice(orderDto.getTotalPrice())
+                .deliveryPrice(orderDto.getDeliveryPrice())
+                .foodPrice(orderDto.getFoodPrice())
+                .status(orderDto.getStatus() == null ? OrderStatus.WAITING_FOR_ACCEPTANCE : orderDto.getStatus())
+                .customerName(orderDto.getCustomerName())
+                .deliveryAddress(orderDto.getDeliveryAddress())
+                .executionTime(orderDto.getExecutionTime() == null ? LocalDateTime.now() : orderDto.getExecutionTime())
+                .deliveryCode(orderDto.getDeliveryCode())
+                .paymentMethod(orderDto.getPaymentMethod())
+                .deliveryNote(orderDto.getDeliveryNote())
+                .approvalDeadline(orderDto.getApprovalDeadline())
+                .orderProducts(orderProducts)
+                .takeaway(orderDto.isTakeaway())
+                .paidWhenOrdered(orderDto.isPaidWhenOrdered())
+                .orderType(OrderType.OWN)
+                .delivery(orderDto.isDelivery())
+                .build();
+        for (OrderProduct orderProduct : orderProducts) {
+            orderProduct.setOrder(order);
+        }
+        if (modifiedOrderOptional.isPresent()) {
+            order.setDisplayableId(modifiedOrderOptional.map(Order::getDisplayableId).orElse(null));
+        } else {
+            Long nextDisplayableId = customOrderIdGenerator.generate(order);
+            order.setDisplayableId(nextDisplayableId);
+        }
+        return order;
     }
 }

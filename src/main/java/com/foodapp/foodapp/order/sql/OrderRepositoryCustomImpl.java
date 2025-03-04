@@ -1,6 +1,7 @@
-package com.foodapp.foodapp.order;
+package com.foodapp.foodapp.order.sql;
 
 import com.foodapp.foodapp.common.OrdersPagedResult;
+import com.foodapp.foodapp.order.OrderMapper;
 import io.jsonwebtoken.lang.Collections;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.foodapp.foodapp.order.OrderSql.*;
+import static com.foodapp.foodapp.order.sql.OrderSql.*;
 
 @Repository
 public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {

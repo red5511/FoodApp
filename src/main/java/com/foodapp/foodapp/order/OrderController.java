@@ -3,6 +3,7 @@ package com.foodapp.foodapp.order;
 import com.foodapp.foodapp.order.request.*;
 import com.foodapp.foodapp.order.response.CreateOrderRequestResponse;
 import com.foodapp.foodapp.order.response.GetOrdersConfigResponse;
+import com.foodapp.foodapp.order.response.ModifyOrderResponse;
 import com.foodapp.foodapp.order.response.PagedOrdersResponse;
 import com.foodapp.foodapp.statistic.StatisticsMapper;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -33,9 +34,10 @@ public class OrderController {
 
     @PostMapping("/modify/{companyId}")
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING')")
-    public ResponseEntity<Void> modifyOrder(final @RequestBody ModifyOrderRequest request, final @PathVariable Long companyId) {
-        orderService.modifyOrder(request, companyId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ModifyOrderResponse> modifyOrder(final @RequestBody ModifyOrderRequest request,
+                                                           final @PathVariable Long companyId) {
+        var response = orderService.modifyOrder(request, companyId);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/finalize/{companyId}/{orderId}")
