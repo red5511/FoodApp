@@ -2,6 +2,8 @@ package com.foodapp.foodapp.productCategory;
 
 import com.foodapp.foodapp.productCategory.request.ChangeProductCategoriesSortOrderRequest;
 import com.foodapp.foodapp.productCategory.request.CreateProductCategoryRequest;
+import com.foodapp.foodapp.productCategory.request.DeleteProductCategoryRequest;
+import com.foodapp.foodapp.productCategory.request.ModifyProductCategoryRequest;
 import com.foodapp.foodapp.productCategory.response.CreateProductCategoryResponse;
 import com.foodapp.foodapp.productCategory.response.GetAllCategoriesResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -30,6 +32,30 @@ public class ProductCategoryController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/modify")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
+    public ResponseEntity<Void> modifyProductCategory(
+            final @RequestBody ModifyProductCategoryRequest request) {
+        productCategoryService.modifyProductCategory(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
+    public ResponseEntity<Void> deleteProductCategory(
+            final @RequestBody DeleteProductCategoryRequest request) {
+        productCategoryService.deleteProductCategory(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/delete-with-products")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
+    public ResponseEntity<Void> deleteProductCategoryWithProducts(
+            final @RequestBody DeleteProductCategoryRequest request) {
+        productCategoryService.deleteProductCategoryWithProducts(request);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/menu/category/{companyId}")
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
     public ResponseEntity<GetAllCategoriesResponse> getAllCategories(final @PathVariable Long companyId) {
@@ -47,4 +73,5 @@ public class ProductCategoryController {
         productCategoryService.changeProductCategoriesSortOrder(request.getCategories(), companyId);
         return ResponseEntity.ok().build();
     }
+
 }

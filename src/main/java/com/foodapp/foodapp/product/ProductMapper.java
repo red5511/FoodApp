@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class ProductMapper {
+    public final static String NO_CATEGORY = "Bez kategorii";
     private final ProductCategoryRepository productCategoryRepository;
     private final CompanyRepository companyRepository;
     private final ProductPropertiesRepository productPropertiesRepository;
@@ -53,6 +54,10 @@ public class ProductMapper {
     }
 
     public static Product mapToProduct(final ProductDto product, final Company company) {
+        var productCategory =
+                product.getProductCategory() != null ?
+                        ProductCategoryMapper.toProductCategory(product.getProductCategory(), company) :
+                        null;
         return Product.builder()
                 .id(product.getId())
                 .status(product.getProductStatus())
@@ -64,7 +69,7 @@ public class ProductMapper {
                 .imgUrl(product.getImgUrl())
                 .description(product.getDescription())
                 .soldOut(product.isSoldOut())
-                .productCategory(ProductCategoryMapper.toProductCategory(product.getProductCategory(), company))
+                .productCategory(productCategory)
                 .productPropertiesList(ProductPropertiesMapper.toProductProperties(product.getProductPropertiesList(), company))
                 .build();
     }
@@ -94,6 +99,15 @@ public class ProductMapper {
                 .productsByCategoryList(forAllListOfMaps)
                 .build();
         productsByCategoryTabViews.add(0, forAllProductsByCategoryTabView);
+        if (productsByCategories.containsKey(NO_CATEGORY)) {
+            var products = productsByCategories.get(NO_CATEGORY);
+
+            var withoutCategoryProductsByCategoryTabView = ProductsByCategoryTabView.builder()
+                    .categoryTabTitle(NO_CATEGORY)
+                    .productsByCategoryList(List.of(Map.of(NO_CATEGORY, products)))
+                    .build();
+            productsByCategoryTabViews.add(withoutCategoryProductsByCategoryTabView);
+        }
         return productsByCategoryTabViews;
     }
 

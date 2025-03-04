@@ -26,6 +26,7 @@ public class OrderProductMapper {
                 .product(ProductMapper.mapToProductDto(orderProduct.getProduct()))
                 .quantity(orderProduct.getQuantity())
                 .productPropertiesList(productPropertiesList)
+                .note(orderProduct.getNote())
                 .build();
     }
 

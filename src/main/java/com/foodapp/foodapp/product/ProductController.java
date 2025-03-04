@@ -1,16 +1,5 @@
 package com.foodapp.foodapp.product;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.foodapp.foodapp.product.request.CreateProductRequest;
 import com.foodapp.foodapp.product.request.DeleteProductRequest;
 import com.foodapp.foodapp.product.request.GetProductsRequest;
@@ -19,10 +8,14 @@ import com.foodapp.foodapp.product.response.GetPagedProductsResponse;
 import com.foodapp.foodapp.product.response.GetProductsByCategoriesResponse;
 import com.foodapp.foodapp.productCategory.ProductCategoryService;
 import com.foodapp.foodapp.productProperties.ProductPropertiesService;
-
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/product")
@@ -46,7 +39,7 @@ public class ProductController {
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING') or hasAuthority('VIEW_MENU_PANEL')")
     public ResponseEntity<Void> deleteProduct(final @RequestBody DeleteProductRequest request) {
-        productService.softDeleteProduct(request);
+        productService.softDeleteProducts(List.of(request.getProductId()), request.getCompanyId());
         return ResponseEntity.ok().build();
     }
 
@@ -64,10 +57,10 @@ public class ProductController {
         var productCategories = productCategoryService.getAllProductCategoriesByCompanyId(request.getCompanyId());
         var productPropertiesList = productPropertiesService.getAllProductPropertiesByCompanyId(request.getCompanyId());
         var response = GetPagedProductsResponse.builder()
-                                               .pagedResult(pagedResult)
-                                               .productCategories(productCategories)
-                                               .productPropertiesList(productPropertiesList)
-                                               .build();
+                .pagedResult(pagedResult)
+                .productCategories(productCategories)
+                .productPropertiesList(productPropertiesList)
+                .build();
         return ResponseEntity.ok(response);
     }
 
@@ -77,8 +70,8 @@ public class ProductController {
         var productsByCategories = productService.getProductsByCategories(companyId);
         var result = productMapper.toMenuOrderingTabs(productsByCategories, companyId);
         var response = GetProductsByCategoriesResponse.builder()
-                                               .menuOrderingTabs(result)
-                                               .build();
+                .menuOrderingTabs(result)
+                .build();
         return ResponseEntity.ok(response);
     }
 }

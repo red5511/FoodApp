@@ -58,7 +58,7 @@ public class OrderValidator {
             throw new SecurityException("Wrong company id in product");
         }
         var category = product.getProductCategory();
-        if (category == null || !category.getCompanyId().equals(companyId)) {
+        if (category != null && !category.getCompanyId().equals(companyId)) {
             throw new SecurityException("Wrong company id in category");
         }
     }

@@ -1,6 +1,7 @@
 package com.foodapp.foodapp.productCategory;
 
 import com.foodapp.foodapp.administration.company.sql.Company;
+import com.foodapp.foodapp.product.ProductMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ public class ProductCategoryMapper {
                 .id(productCategory.getId())
                 .name(productCategory.getName())
                 .companyId(productCategory.getCompany().getId())
+                .products(ProductMapper.mapToProductsDto(productCategory.getProducts()))
                 .build();
     }
 

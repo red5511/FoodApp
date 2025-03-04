@@ -315,8 +315,9 @@ public class MainConfiguration {
     @Bean
     public ProductCategoryService productCategoryService(final ProductCategoryRepository productCategoryRepository,
                                                          final ContextProvider contextProvider,
-                                                         final CompanyRepository companyRepository) {
-        return new ProductCategoryService(productCategoryRepository, contextProvider, companyRepository);
+                                                         final CompanyRepository companyRepository,
+                                                         final ProductService productService) {
+        return new ProductCategoryService(productCategoryRepository, contextProvider, companyRepository, productService);
     }
 
     @Bean
