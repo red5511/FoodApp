@@ -10,7 +10,7 @@ spring:
   application:
     name: foodApp
   profiles:
-    active: TEST #, ENABLE_SCHEDULER_WEBSOCKET_TEST
+    active: U_BULY_INIT_FAKE_COMPANY #, ENABLE_SCHEDULER_WEBSOCKET_TEST, TEST
   datasource:
     url: jdbc:postgresql://localhost:5332/food_app
     username: 'red55'
@@ -45,3 +45,5 @@ spring:
     password: admin
 app:
   time-to-accept-order: 2
+  admin-password: admin
+  admin-login: admin

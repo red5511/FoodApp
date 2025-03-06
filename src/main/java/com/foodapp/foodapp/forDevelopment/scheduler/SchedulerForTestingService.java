@@ -13,7 +13,7 @@ import com.foodapp.foodapp.order.sql.OrderRepository;
 import com.foodapp.foodapp.orderProduct.OrderProduct;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.rabbitMQ.RabbitMQSender;
-import com.foodapp.foodapp.websocket.WebSocketService;
+import com.foodapp.foodapp.websocket.WebSocketServiceForTesting;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -38,7 +38,7 @@ public class SchedulerForTestingService {
             "Topic3", 3L
     );
     public static int INDEX = 0;
-    private final WebSocketService webSocketService;
+    private final WebSocketServiceForTesting webSocketService;
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
     private final ProductRepository productRepository;

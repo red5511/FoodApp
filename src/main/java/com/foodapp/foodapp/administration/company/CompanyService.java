@@ -44,10 +44,10 @@ public class CompanyService {
                 .content(Content.builder()
                         .openHours(companyDto.getOpenHours())
                         .build())
-                .webSocketTopicName(UUID.randomUUID().toString())
                 .build();
         company = companyRepository.save(company);
         company.setDefaultProductImgUrl(CommonUtils.createDefaultProductImgUrl(company.getId().toString()));
+        company.setWebSocketTopicName(company.getId() + "_" + UUID.randomUUID().toString().substring(0, 8));
         return company.getId();
     }
 

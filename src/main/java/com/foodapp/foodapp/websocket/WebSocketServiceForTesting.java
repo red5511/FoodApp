@@ -10,11 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashSet;
-import java.util.List;
 
 @AllArgsConstructor
 @Slf4j
-public class WebSocketService {
+public class WebSocketServiceForTesting implements WebSocketServiceInterface{
     private final ContextProvider contextProvider;
     private final SchedulerForTestingService schedulerForTestingService;
     private final CacheService cacheService;

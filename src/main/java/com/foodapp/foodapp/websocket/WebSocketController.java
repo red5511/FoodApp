@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "WebSocket")
 public class WebSocketController {
-    private final WebSocketService webSocketService;
+    private final WebSocketServiceInterface webSocketService;
 
     @PreAuthorize("hasAuthority('VIEW_ONLINE_ORDERING')")
     @PostMapping("/init-main-topic")

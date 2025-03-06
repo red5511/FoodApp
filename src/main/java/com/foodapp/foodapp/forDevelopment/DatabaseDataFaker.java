@@ -5,12 +5,12 @@ import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.administration.company.sql.Content;
 import com.foodapp.foodapp.administration.company.sql.OpenHours;
 import com.foodapp.foodapp.common.Address;
-import com.foodapp.foodapp.common.CommonUtils;
+import com.foodapp.foodapp.forDevelopment.common.DatabaseFakerUtils;
+import com.foodapp.foodapp.order.OrderStatus;
+import com.foodapp.foodapp.order.OrderType;
 import com.foodapp.foodapp.order.sql.CustomOrderIdGenerator;
 import com.foodapp.foodapp.order.sql.Order;
 import com.foodapp.foodapp.order.sql.OrderRepository;
-import com.foodapp.foodapp.order.OrderStatus;
-import com.foodapp.foodapp.order.OrderType;
 import com.foodapp.foodapp.orderProduct.OrderProduct;
 import com.foodapp.foodapp.orderProduct.OrderProductContent;
 import com.foodapp.foodapp.orderProduct.OrderProductRepository;
@@ -24,11 +24,10 @@ import com.foodapp.foodapp.productProperties.ProductPropertiesMapper;
 import com.foodapp.foodapp.productProperties.ProductPropertiesRepository;
 import com.foodapp.foodapp.productProperties.productProperty.ProductProperty;
 import com.foodapp.foodapp.productProperties.productProperty.ProductPropertyRepository;
-import com.foodapp.foodapp.user.Role;
 import com.foodapp.foodapp.user.User;
 import com.foodapp.foodapp.user.UserRepository;
-import com.foodapp.foodapp.user.permission.Permission;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -39,7 +38,8 @@ import java.time.LocalTime;
 import java.util.*;
 
 @AllArgsConstructor
-public class DatabaseDataFaker {
+@Slf4j
+public class DatabaseDataFaker implements DatabaseDataFakerInterface {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
@@ -49,20 +49,21 @@ public class DatabaseDataFaker {
     private final ProductCategoryRepository productCategoryRepository;
     private final ProductPropertyRepository productPropertyRepository;
     private final ProductPropertiesRepository productPropertiesRepository;
-    Random rand;
     private final CustomOrderIdGenerator customOrderIdGenerator;
+    Random rand;
 
     public List<Company> createCompanies() {
         var names = List.of("", "#2", "#3", "abd_", "_1234567890", "bbbbb", "GIGA_KEBAB");
         List<Company> companies = new ArrayList<>();
         for (int i = 0; i < names.size(); i++) {
-            companies.add(createFakeCompany(names.get(i), i + 1L));
+            companies.add(DatabaseFakerUtils.createFakeCompany(names.get(i), i + 1L));
         }
         return companies;
     }
 
     @TechnicalContextDev
     @Transactional
+    @Override
     public void initFakeData() {
         var companyOptional = companyRepository.findById(1L);
         var userOptional = userRepository.findById(1L);
@@ -73,9 +74,19 @@ public class DatabaseDataFaker {
         }
         var companies = createCompanies();
         var users = createFakeUsers();
-        var admin = createFakeAdmin();
         setUsersAndCompaniesAndSave(companies, users);
-        var productCategories = createCategories(companies);
+
+        var categoryStrings = List.of("Kebab ciasto",
+                "Kebab bułka",
+                "Napoje",
+                "Desery",
+                "Desery2",
+                "Desery3",
+                "Desery4",
+                "Desery5"
+        );
+
+        var productCategories = DatabaseFakerUtils.createCategories(companies, categoryStrings);
         var productPropertyList = createProductPropertyList();
         var productPropertiesList = createProductPropertiesList(companies, productPropertyList);
         productPropertyList = productPropertyRepository.saveAll(productPropertyList);
@@ -87,10 +98,12 @@ public class DatabaseDataFaker {
         var orders = createFakeOrders(companies, products, productPropertiesList);
 
         companyRepository.saveAll(companies);
-        userRepository.save(admin);
         productCategoryRepository.saveAll(productCategories);
         productRepository.saveAll(products);
         orderRepository.saveAll(orders);
+
+        log.info("Fake dane dla zostały utworzone");
+
     }
 
     private void setProductProperty(List<ProductProperty> productPropertyList, List<ProductProperties> productPropertiesList) {
@@ -186,8 +199,8 @@ public class DatabaseDataFaker {
             List<Company> companies,
             List<ProductProperty> productPropertyList) {
         return List.of(
-                createFakeProductProperties("Sosy", true, companies.get(0), productPropertyList.subList(0, 2)),
-                createFakeProductProperties("Dodatki", false, companies.get(0),
+                DatabaseFakerUtils.createFakeProductProperties("Sosy", true, companies.get(0), productPropertyList.subList(0, 2)),
+                DatabaseFakerUtils. createFakeProductProperties("Dodatki", false, companies.get(0),
                         productPropertyList.subList(2, productPropertyList.size())
                 ));
     }
@@ -201,29 +214,6 @@ public class DatabaseDataFaker {
                 createFakeProductProperty("Podwójny ser", new BigDecimal("4.99")),
                 createFakeProductProperty("Buraki", new BigDecimal("19.99"))
         );
-    }
-
-    private List<ProductCategory> createCategories(final List<Company> companies) {
-        var categoryStrings = List.of("Kebab ciasto",
-                "Kebab bułka",
-                "Napoje",
-                "Desery",
-                "Desery2",
-                "Desery3",
-                "Desery4",
-                "Desery5"
-        );
-        return categoryStrings.stream().map(el -> createFakeProductCategory(el, companies.get(0))).toList();
-    }
-
-    private ProductProperties createFakeProductProperties(final String name, final boolean required, final Company company,
-                                                          final List<ProductProperty> productPropertyList) {
-        return ProductProperties.builder()
-                .required(required)
-                .name(name)
-                .company(company)
-                .productPropertyList(productPropertyList)
-                .build();
     }
 
     private ProductProperty createFakeProductProperty(final String name, final BigDecimal price) {
@@ -319,62 +309,8 @@ public class DatabaseDataFaker {
     }
 
     private List<User> createFakeUsers() {
-        var user = createFakeUser();
+        var user = DatabaseFakerUtils.createFakeUser("macmac2", passwordEncoder.encode("password123"));
         return List.of(user);
-    }
-
-    private User createFakeUser() {
-        Set<Permission> permissions;
-        permissions = new HashSet<>();
-        permissions.add(Permission.VIEW_ONLINE_ORDERING);
-        permissions.add(Permission.VIEW_ORDERS_HISTORY);
-        permissions.add(Permission.VIEW_STATISTICS);
-        permissions.add(Permission.VIEW_RESTAURANT_ORDERING);
-        permissions.add(Permission.VIEW_MENU_PANEL);
-
-        return User.builder()
-                .email("macmac")
-                .firstName("Eustachy")
-                .lastName("Motyka")
-                .password(passwordEncoder.encode("password123"))
-                .role(Role.USER)
-                .enabled(true)
-                .permissions(permissions)
-                .phoneNumber("987654321")
-                .build();
-    }
-
-    private User createFakeAdmin() {
-        Set<Permission> permissions = new HashSet<>();
-        permissions.add(Permission.SUPER_ADMINISTRATOR);
-
-        return User.builder()
-                .email("admin")
-                .firstName("Admin Eustachy")
-                .lastName("Admin Motyka")
-                .password(passwordEncoder.encode("admin"))
-                .role(Role.SUPER_ADMIN)
-                .enabled(true)
-                .permissions(permissions)
-                .phoneNumber("123456789")
-                .build();
-    }
-
-    private Company createFakeCompany(final String name, final Long i) {
-        return Company.builder()
-                .id(i)
-                .name("Firma Testowa" + name)
-                .content(createContent())
-                .webSocketTopicName(UUID.randomUUID().toString())
-                .webSocketTopicName("Topic" + i)
-                .address(Address.builder()
-                        .street(new Random().nextInt(2) % 2 == 1 ? "Generała Piłsudskiego" : "Piastów")
-                        .city(new Random().nextInt(2) % 2 == 1 ? "Warszawa" : "Kraków")
-                        .streetNumber("555 / 102b")
-                        .postalCode("34-999")
-                        .build())
-                .defaultProductImgUrl(CommonUtils.createDefaultProductImgUrl(i.toString()))
-                .build();
     }
 
     private Content createContent() {

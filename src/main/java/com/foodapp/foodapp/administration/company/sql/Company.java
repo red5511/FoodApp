@@ -3,7 +3,6 @@ package com.foodapp.foodapp.administration.company.sql;
 import com.foodapp.foodapp.common.Address;
 import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.delivery.DeliveryOption;
-import com.foodapp.foodapp.orderProduct.OrderProduct;
 import com.foodapp.foodapp.user.User;
 import jakarta.persistence.*;
 import lombok.*;

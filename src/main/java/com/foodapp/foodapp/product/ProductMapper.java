@@ -106,6 +106,7 @@ public class ProductMapper {
                     .categoryTabTitle(NO_CATEGORY)
                     .productsByCategoryList(List.of(Map.of(NO_CATEGORY, products)))
                     .build();
+            forAllListOfMaps.add(Map.of(NO_CATEGORY, products));
             productsByCategoryTabViews.add(withoutCategoryProductsByCategoryTabView);
         }
         return productsByCategoryTabViews;

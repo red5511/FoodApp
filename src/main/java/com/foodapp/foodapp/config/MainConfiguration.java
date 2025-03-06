@@ -17,7 +17,11 @@ import com.foodapp.foodapp.auth.passwordResetToken.PasswordResetTokenService;
 import com.foodapp.foodapp.dashboard.DashboardService;
 import com.foodapp.foodapp.delivery.DeliveryOptionRepository;
 import com.foodapp.foodapp.delivery.DeliveryOptionService;
-import com.foodapp.foodapp.forDevelopment.scheduler.SchedulerForTestingService;
+import com.foodapp.foodapp.forDevelopment.DatabaseDataFakerInterface;
+import com.foodapp.foodapp.forDevelopment.DatabaseDataFakerMock;
+import com.foodapp.foodapp.forDevelopment.uBuly.UBulyDatabaseDataFakerInterface;
+import com.foodapp.foodapp.forDevelopment.uBuly.UBulyDatabaseDataFakerMock;
+import com.foodapp.foodapp.forDevelopment.websocket.WebSocketServiceMock;
 import com.foodapp.foodapp.order.OrderMapper;
 import com.foodapp.foodapp.order.OrderService;
 import com.foodapp.foodapp.order.OrderValidator;
@@ -33,7 +37,6 @@ import com.foodapp.foodapp.productCategory.ProductCategoryService;
 import com.foodapp.foodapp.productProperties.ProductPropertiesController;
 import com.foodapp.foodapp.productProperties.ProductPropertiesRepository;
 import com.foodapp.foodapp.productProperties.ProductPropertiesService;
-import com.foodapp.foodapp.rabbitMQ.RabbitMQSender;
 import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
 import com.foodapp.foodapp.security.JwtService;
@@ -42,10 +45,9 @@ import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
 import com.foodapp.foodapp.user.email.EmailSender;
 import com.foodapp.foodapp.user.email.EmailService;
-import com.foodapp.foodapp.websocket.WebSocketEventHandler;
-import com.foodapp.foodapp.websocket.WebSocketEventSender;
-import com.foodapp.foodapp.websocket.WebSocketService;
+import com.foodapp.foodapp.websocket.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -267,21 +269,6 @@ public class MainConfiguration {
     }
 
     @Bean
-    public WebSocketService webSocketService(final ContextProvider contextProvider,
-                                             final SchedulerForTestingService schedulerForTestingService,
-                                             final CacheService cacheService,
-                                             final WebSocketEventSender webSocketEventSender,
-                                             final RabbitMQSender rabbitMQSender) {
-        return new WebSocketService(
-                contextProvider,
-                schedulerForTestingService,
-                cacheService,
-                webSocketEventSender,
-                rabbitMQSender
-        );
-    }
-
-    @Bean
     public WebSocketEventHandler webSocketEventHandler(final CacheService cacheService,
                                                        final WebSocketEventSender webSocketEventSender,
                                                        final CompanyRepository companyRepository) {
@@ -363,5 +350,23 @@ public class MainConfiguration {
     @Bean
     public OrderMapper orderMapper(final CustomOrderIdGenerator customOrderIdGenerator) {
         return new OrderMapper(customOrderIdGenerator);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(DatabaseDataFakerInterface.class)
+    public DatabaseDataFakerInterface databaseDataMock() {
+        return new DatabaseDataFakerMock();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(UBulyDatabaseDataFakerInterface.class)
+    public UBulyDatabaseDataFakerInterface uBulyDatabaseDataFakerMock() {
+        return new UBulyDatabaseDataFakerMock();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(WebSocketServiceInterface.class)
+    public WebSocketServiceInterface webSocketService() {
+        return new WebSocketServiceMock();
     }
 }
