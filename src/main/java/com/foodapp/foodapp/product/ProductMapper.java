@@ -58,6 +58,10 @@ public class ProductMapper {
                 product.getProductCategory() != null ?
                         ProductCategoryMapper.toProductCategory(product.getProductCategory(), company) :
                         null;
+        var productPropertiesList =
+                product.getProductPropertiesList() != null ?
+                ProductPropertiesMapper.toProductProperties(product.getProductPropertiesList(), company) :
+                        null;
         return Product.builder()
                 .id(product.getId())
                 .status(product.getProductStatus())
@@ -70,7 +74,7 @@ public class ProductMapper {
                 .description(product.getDescription())
                 .soldOut(product.isSoldOut())
                 .productCategory(productCategory)
-                .productPropertiesList(ProductPropertiesMapper.toProductProperties(product.getProductPropertiesList(), company))
+                .productPropertiesList(productPropertiesList)
                 .build();
     }
 
