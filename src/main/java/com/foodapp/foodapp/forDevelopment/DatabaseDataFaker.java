@@ -199,9 +199,9 @@ public class DatabaseDataFaker implements DatabaseDataFakerInterface {
             List<Company> companies,
             List<ProductProperty> productPropertyList) {
         return List.of(
-                DatabaseFakerUtils.createFakeProductProperties("Sosy", true, companies.get(0), productPropertyList.subList(0, 2)),
-                DatabaseFakerUtils. createFakeProductProperties("Dodatki", false, companies.get(0),
-                        productPropertyList.subList(2, productPropertyList.size())
+                DatabaseFakerUtils.createFakeProductProperties("Sosy", true, companies.get(0), productPropertyList.subList(0, 2), 4),
+                DatabaseFakerUtils.createFakeProductProperties("Dodatki", false, companies.get(0),
+                        productPropertyList.subList(2, productPropertyList.size()), null
                 ));
     }
 

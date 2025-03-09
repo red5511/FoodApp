@@ -44,4 +44,5 @@ public class Company extends BaseEntity {
     private String defaultProductImgUrl;
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeliveryOption> deliveryOptions;
+    private String logoUrl;
 }

@@ -6,6 +6,7 @@ import com.foodapp.foodapp.administration.cache.CompanyWithActiveReceivingUsersC
 import com.foodapp.foodapp.administration.cache.UsersConnectedToWebSocketCacheWrapper;
 import com.foodapp.foodapp.administration.company.CompanyAdministrationService;
 import com.foodapp.foodapp.administration.company.CompanyService;
+import com.foodapp.foodapp.administration.company.common.CompanyMapper;
 import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.administration.userAdministration.UserAdministrationService;
 import com.foodapp.foodapp.auth.AuthenticationService;
@@ -189,8 +190,9 @@ public class MainConfiguration {
     @Bean
     public CompanyService companyService(final CompanyRepository companyRepository,
                                          final UserDetailsServiceImpl userDetailsService,
-                                         final UserRepository userRepository) {
-        return new CompanyService(companyRepository, userDetailsService, userRepository);
+                                         final UserRepository userRepository,
+                                         final CompanyMapper companyMapper) {
+        return new CompanyService(companyRepository, userDetailsService, userRepository, companyMapper);
     }
 
     @Bean
@@ -368,5 +370,10 @@ public class MainConfiguration {
     @ConditionalOnMissingBean(WebSocketServiceInterface.class)
     public WebSocketServiceInterface webSocketService() {
         return new WebSocketServiceMock();
+    }
+
+    @Bean
+    public CompanyMapper companyMapper(final CompanyRepository companyRepository){
+        return new CompanyMapper(companyRepository);
     }
 }

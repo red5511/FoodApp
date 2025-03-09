@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,7 +29,9 @@ public class ProductMapper {
 
     public static List<ProductDto> mapToProductsDto(final List<Product> products) {
         return products.stream()
-                .map(ProductMapper::mapToProductDto)
+                .sorted(
+                        Comparator.comparing(Product::getName)
+                ).map(ProductMapper::mapToProductDto)
                 .collect(Collectors.toList());
     }
 
@@ -60,7 +63,7 @@ public class ProductMapper {
                         null;
         var productPropertiesList =
                 product.getProductPropertiesList() != null ?
-                ProductPropertiesMapper.toProductProperties(product.getProductPropertiesList(), company) :
+                        ProductPropertiesMapper.toProductProperties(product.getProductPropertiesList(), company) :
                         null;
         return Product.builder()
                 .id(product.getId())

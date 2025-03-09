@@ -5,8 +5,9 @@ public class OrderSql {
     public static final String COMPANY_IDS_PARAM = "companyIds";
     public static final String EXECUTION_DATE_PARAM = "executionTime";
     public static final String DESCRIPTION_PARAM = "description";
-    public static final String PRICE_PARAM = "price";
+    public static final String PRICE_PARAM = "priceTotal";
     public static final String STATUSES_PARAM = "statuses";
+    public static final String STATUSES_TO_EXCLUDE_PARAM = "statusesToExclude";
     public static final String CREATED_DATE_PARAM = "createdDate";
     public static final String GLOBAL_PARAM = "global";
     public static final String DATE_FROM_PARAM = "dateFrom";
@@ -22,13 +23,14 @@ public class OrderSql {
     public static final String DATE_BEFORE_QUERY = " AND :" + EXECUTION_DATE_PARAM + " > DATE(o.deliveryTime)";
     public static final String DATE_AFTER_QUERY = " AND :" + EXECUTION_DATE_PARAM + " < DATE(o.deliveryTime)";
     public static final String DESCRIPTION_QUERY = " AND o.description LIKE CONCAT('%', :" + DESCRIPTION_PARAM + ", '%')";
-    public static final String PRICE_QUERY = " AND o.price = :" + PRICE_PARAM;
+    public static final String PRICE_QUERY = " AND o.totalPrice = :" + PRICE_PARAM;
     public static final String STATUSES_QUERY = " AND o.status IN (:" + STATUSES_PARAM + ")";
-    public static final String STATUSES_TO_EXCLUDE_QUERY = " AND o.status NOT IN (:" + STATUSES_PARAM + ")";
-    public static final String GLOBAL_QUERY = " AND (CAST(o.id AS text) LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%') " +
+    public static final String STATUSES_TO_EXCLUDE_QUERY = " AND o.status NOT IN (:" + STATUSES_TO_EXCLUDE_PARAM + ")";
+    public static final String GLOBAL_QUERY = " AND (CAST(o.displayableId AS text) LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%') " +
             " OR LOWER(o.description) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%') " +
             " OR LOWER(o.deliveryCode) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%') " +
-            " OR CAST(o.price AS text) LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%') " +
+            " OR LOWER(o.deliveryNote) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%') " +
+            " OR CAST(o.totalPrice AS text) LIKE CONCAT('%', :" + GLOBAL_PARAM + ", '%') " +
             " OR LOWER(o.deliveryAddress.street) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
             " OR LOWER(o.deliveryAddress.streetNumber) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +
             " OR LOWER(o.deliveryAddress.city) LIKE CONCAT('%', LOWER(:" + GLOBAL_PARAM + "), '%')" +

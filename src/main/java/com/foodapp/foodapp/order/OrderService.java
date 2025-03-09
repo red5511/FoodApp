@@ -97,6 +97,7 @@ public class OrderService {
         order.setStatus(OrderStatus.EXECUTED);
         order.setPaymentMethod(request.getPaymentMethod());
         order.setTakeaway(request.isTakeaway());
+        order.setTotalPrice(request.getNewTotalPrice());
         orderRepository.save(order);
     }
 

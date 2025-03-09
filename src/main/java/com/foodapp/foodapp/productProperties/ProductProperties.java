@@ -1,32 +1,16 @@
 package com.foodapp.foodapp.productProperties;
 
-import java.util.List;
-
 import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.product.Product;
 import com.foodapp.foodapp.productProperties.productProperty.ProductProperty;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -35,8 +19,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @ToString
 @Table(
-    name = "product_properties",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"company_id", "name"})
+        name = "product_properties",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"company_id", "name"})
 )
 public class ProductProperties extends BaseEntity {
     @Id
@@ -54,4 +38,6 @@ public class ProductProperties extends BaseEntity {
     @Size(max = 255)
     private String name;
     private boolean required;
+    @Builder.Default
+    private Integer maxChosenOptions = 1;
 }

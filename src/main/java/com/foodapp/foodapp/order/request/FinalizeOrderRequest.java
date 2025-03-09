@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,4 +15,5 @@ import lombok.NoArgsConstructor;
 public class FinalizeOrderRequest {
     private PaymentMethod paymentMethod;
     private boolean takeaway;
+    private BigDecimal newTotalPrice;
 }

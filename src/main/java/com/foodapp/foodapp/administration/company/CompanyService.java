@@ -8,7 +8,6 @@ import com.foodapp.foodapp.administration.company.request.SaveCompanyRequest;
 import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.administration.company.sql.Content;
-import com.foodapp.foodapp.common.CommonUtils;
 import com.foodapp.foodapp.user.User;
 import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
@@ -18,13 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 @AllArgsConstructor
 public class CompanyService {
     private final CompanyRepository companyRepository;
     private final UserDetailsServiceImpl userDetailsService;
     private final UserRepository userRepository;
+    private final CompanyMapper companyMapper;
 
     public Set<Company> getCompaniesByUserId(final String userEmail) {
         var user = (User) userDetailsService.loadUserByUsername2(userEmail);
@@ -37,17 +36,8 @@ public class CompanyService {
 
     @Transactional
     public Long saveCompany(final SaveCompanyRequest request) {
-        var companyDto = request.getCompany();
-        var company = Company.builder()
-                .name(companyDto.getName())
-                .address(companyDto.getAddress())
-                .content(Content.builder()
-                        .openHours(companyDto.getOpenHours())
-                        .build())
-                .build();
-        company = companyRepository.save(company);
-        company.setDefaultProductImgUrl(CommonUtils.createDefaultProductImgUrl(company.getId().toString()));
-        company.setWebSocketTopicName(company.getId() + "_" + UUID.randomUUID().toString().substring(0, 8));
+        var company = companyMapper.toCompany(request.getCompany());
+        companyRepository.save(company);
         return company.getId();
     }
 

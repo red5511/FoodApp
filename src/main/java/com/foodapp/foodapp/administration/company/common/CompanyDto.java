@@ -28,5 +28,6 @@ public class CompanyDto {
     @Schema(required = true)
     private List<UserDto> users;
     private String defaultProductImgUrl;
+    private String logoUrl;
 
 }

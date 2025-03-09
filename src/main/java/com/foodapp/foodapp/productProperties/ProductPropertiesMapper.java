@@ -4,6 +4,7 @@ import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.product.Product;
 import com.foodapp.foodapp.productProperties.productProperty.ProductPropertyMapper;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,11 +19,16 @@ public class ProductPropertiesMapper {
                 .propertyList(ProductPropertyMapper.toProductPropertyDto(productProperties.getProductPropertyList()))
                 .required(productProperties.isRequired())
                 .productIds(productIds)
+                .maxChosenOptions(productProperties.getMaxChosenOptions())
                 .build();
     }
 
     public static List<ProductPropertiesDto> toProductPropertiesDto(final List<ProductProperties> productPropertiesList) {
         return productPropertiesList.stream()
+                .sorted(
+                        Comparator.comparing(ProductProperties::isRequired).reversed()
+                                .thenComparing(ProductProperties::getCreatedDate)
+                )
                 .map(ProductPropertiesMapper::toProductPropertiesDto)
                 .collect(Collectors.toList());
     }
@@ -42,6 +48,7 @@ public class ProductPropertiesMapper {
                 .required(productPropertiesDto.isRequired())
                 .company(company)
                 .productPropertyList(ProductPropertyMapper.toProductProperty(productPropertiesDto.getPropertyList()))
+                .maxChosenOptions(productPropertiesDto.getMaxChosenOptions())
                 .build();
     }
 }

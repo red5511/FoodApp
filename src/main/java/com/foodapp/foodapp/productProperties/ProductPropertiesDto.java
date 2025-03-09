@@ -19,4 +19,6 @@ public class ProductPropertiesDto implements Serializable {
     @JdbcTypeCode(SqlTypes.JSON)
     private List<ProductPropertyDto> propertyList;
     private boolean required;
+    private Integer maxChosenOptions;
+
 }

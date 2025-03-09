@@ -11,6 +11,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.foodapp.foodapp.common.PolishCharConverter;
+import com.foodapp.foodapp.productProperties.ProductPropertiesDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +54,7 @@ public class UBulyDatabaseDataFaker implements UBulyDatabaseDataFakerInterface {
     public static String KEBAB_ZESTAW_NAME = "Kebab zestaw";
     public static String BOX_SALATKOWY_NAME = "Box sałatkowy";
     public static String KEBAB_VEGE_NAME = "Kebab wegetariański";
-    public static String FRYTKI_NAME = "Frytki duże";
+    public static String FRYTKI_NAME = "Frytki";
     public static List<String> PRODUCTS_NAMES =
         List.of(KEBAB_W_CIESCIE_NAME, KEBAB_W_CIESCIE_Z_FRYTKAMI_NAME, KEBAB_W_CIESCIE_SAMO_MIESO_NAME, KEBAB_W_BULCE_NAME, KEBAB_W_BULCE_Z_FRYTKAMI_FRYTKAMI_NAME,
                 ROG_NAME, KEBAB_ZESTAW_NAME, BOX_SALATKOWY_NAME, KEBAB_VEGE_NAME, FRYTKI_NAME
@@ -63,11 +65,11 @@ public class UBulyDatabaseDataFaker implements UBulyDatabaseDataFakerInterface {
                                            BigDecimal.valueOf(1), ""
         );
     public static ProductDto KEBAB_W_CIESCIE_Z_FRYTKAMI =
-        DatabaseFakerUtils.buildProductDto(KEBAB_W_CIESCIE_Z_FRYTKAMI_NAME,  getImgUrl(KEBAB_W_CIESCIE_Z_FRYTKAMI_NAME), BigDecimal.valueOf(29),
+        DatabaseFakerUtils.buildProductDto(KEBAB_W_CIESCIE_Z_FRYTKAMI_NAME,  getImgUrl(KEBAB_W_CIESCIE_NAME), BigDecimal.valueOf(29),
                                            BigDecimal.valueOf(2), BigDecimal.valueOf(1), ""
         );
     public static ProductDto KEBAB_W_CIESCIE_SAMO_MIESO =
-        DatabaseFakerUtils.buildProductDto(KEBAB_W_CIESCIE_SAMO_MIESO_NAME,  getImgUrl(KEBAB_W_CIESCIE_SAMO_MIESO_NAME), BigDecimal.valueOf(29),
+        DatabaseFakerUtils.buildProductDto(KEBAB_W_CIESCIE_SAMO_MIESO_NAME,  getImgUrl(KEBAB_W_CIESCIE_NAME), BigDecimal.valueOf(29),
                                            BigDecimal.valueOf(2), BigDecimal.valueOf(1), ""
         );
     public static ProductDto KEBAB_W_BULCE =
@@ -79,7 +81,7 @@ public class UBulyDatabaseDataFaker implements UBulyDatabaseDataFakerInterface {
                                            BigDecimal.valueOf(2), BigDecimal.valueOf(1), ""
         );
     public static ProductDto ROG =
-        DatabaseFakerUtils.buildProductDto(ROG_NAME,  getImgUrl(ROG_NAME), BigDecimal.valueOf(29),
+        DatabaseFakerUtils.buildProductDto(ROG_NAME,  null, BigDecimal.valueOf(29),
                                            BigDecimal.valueOf(2), BigDecimal.valueOf(1), ""
         );
     public static ProductDto KEBAB_ZESTAW =
@@ -92,7 +94,7 @@ public class UBulyDatabaseDataFaker implements UBulyDatabaseDataFakerInterface {
         );
 
     public static ProductDto KEBAB_VEGE =
-        DatabaseFakerUtils.buildProductDto(KEBAB_VEGE_NAME,  getImgUrl(KEBAB_VEGE_NAME), BigDecimal.valueOf(22), BigDecimal.valueOf(2),
+        DatabaseFakerUtils.buildProductDto(KEBAB_VEGE_NAME,  getImgUrl(KEBAB_W_CIESCIE_NAME), BigDecimal.valueOf(22), BigDecimal.valueOf(2),
                                            BigDecimal.valueOf(1), ""
         );
 
@@ -110,29 +112,28 @@ public class UBulyDatabaseDataFaker implements UBulyDatabaseDataFakerInterface {
     public static String PRODUKT_NAME2_3 = "Kebab małe ciasto samo mięso";
     public static String PRODUKT_NAME2_4 = "Kebab mała bułka";
     public static String PRODUKT_NAME2_5 = "Kebab mała bułka z frytkami";
-    public static String PRODUKT_NAME2_6 = "Mały róg";
-    public static String PRODUKT_NAME2_7 = "Mały zestaw";
-    public static String PRODUKT_NAME2_8 = "Frytki";
+    public static String PRODUKT_NAME2_6 = "Róg mały";
+    public static String PRODUKT_NAME2_7 = "Zestaw mały";
+    public static String PRODUKT_NAME2_8 = "Frytki małe";
     public static List<String> PRODUCTS_NAMES2 = List.of(PRODUKT_NAME2_1, PRODUKT_NAME2_2, PRODUKT_NAME2_3, PRODUKT_NAME2_4, PRODUKT_NAME2_5,
-                                                         PRODUKT_NAME2_6, PRODUKT_NAME2_7, PRODUKT_NAME2_8);
-
+                                                         PRODUKT_NAME2_6, PRODUKT_NAME2_7);
 
     public static ProductDto PRODUKT2_1 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_1, getImgUrl(PRODUKT_NAME2_1), BigDecimal.valueOf(22), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_1, getImgUrl(KEBAB_W_CIESCIE_NAME), BigDecimal.valueOf(22), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
     public static ProductDto PRODUKT2_2 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_2, getImgUrl(PRODUKT_NAME2_2), BigDecimal.valueOf(24), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_2, getImgUrl(KEBAB_W_CIESCIE_NAME), BigDecimal.valueOf(24), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
     public static ProductDto PRODUKT2_3 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_3, getImgUrl(PRODUKT_NAME2_3), BigDecimal.valueOf(24), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_3, getImgUrl(KEBAB_W_CIESCIE_NAME), BigDecimal.valueOf(24), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
     public static ProductDto PRODUKT2_4 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_4, getImgUrl(PRODUKT_NAME2_4), BigDecimal.valueOf(22), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_4, getImgUrl(KEBAB_W_BULCE_NAME), BigDecimal.valueOf(22), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
     public static ProductDto PRODUKT2_5 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_5, getImgUrl(PRODUKT_NAME2_5), BigDecimal.valueOf(24), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_5, getImgUrl(KEBAB_W_BULCE_Z_FRYTKAMI_FRYTKAMI_NAME), BigDecimal.valueOf(24), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
     public static ProductDto PRODUKT2_6 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_6, getImgUrl(PRODUKT_NAME2_6), BigDecimal.valueOf(25), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_6, null, BigDecimal.valueOf(25), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
     public static ProductDto PRODUKT2_7 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_7, getImgUrl(PRODUKT_NAME2_7), BigDecimal.valueOf(26), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_7, getImgUrl(KEBAB_ZESTAW_NAME), BigDecimal.valueOf(26), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
     public static ProductDto PRODUKT2_8 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_8, getImgUrl(PRODUKT_NAME2_8), BigDecimal.valueOf(10), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME2_8, getImgUrl(FRYTKI_NAME), BigDecimal.valueOf(10), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
 
 
     public static List<ProductDto> PRODUCTS2 = List.of(PRODUKT2_1, PRODUKT2_2, PRODUKT2_3, PRODUKT2_4,
@@ -143,12 +144,14 @@ public class UBulyDatabaseDataFaker implements UBulyDatabaseDataFakerInterface {
     public static String PRODUKT_NAME3_2 = "Zapiekanka wół";
     public static String PRODUKT_NAME3_3 = "Zapiekanka kura";
 
+    public static List<String> PRODUCTS_NAMES3 = List.of(PRODUKT_NAME3_1, PRODUKT_NAME3_2, PRODUKT_NAME3_3);
+
     public static ProductDto PRODUKT3_1 =
         DatabaseFakerUtils.buildProductDto(PRODUKT_NAME3_1, getImgUrl(PRODUKT_NAME3_1), BigDecimal.valueOf(15), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
     public static ProductDto PRODUKT3_2 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME3_2, getImgUrl(PRODUKT_NAME3_2), BigDecimal.valueOf(24), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME3_2, getImgUrl(PRODUKT_NAME3_1), BigDecimal.valueOf(24), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
     public static ProductDto PRODUKT3_3 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME3_3, getImgUrl(PRODUKT_NAME3_3), BigDecimal.valueOf(24), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME3_3, getImgUrl(PRODUKT_NAME3_1), BigDecimal.valueOf(24), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
 
     public static List<ProductDto> PRODUCTS3 = List.of(PRODUKT3_1, PRODUKT3_2, PRODUKT3_3);
 
@@ -157,11 +160,11 @@ public class UBulyDatabaseDataFaker implements UBulyDatabaseDataFakerInterface {
     public static String PRODUKT_NAME4_3 = "Woda";
 
     public static ProductDto PRODUKT4_1 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME4_1, getImgUrl(PRODUKT_NAME4_1), BigDecimal.valueOf(6), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME4_1, getImgUrl(PRODUKT_NAME4_1), BigDecimal.valueOf(6), BigDecimal.valueOf(0), BigDecimal.valueOf(0), "");
     public static ProductDto PRODUKT4_2 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME4_2, getImgUrl(PRODUKT_NAME4_2), BigDecimal.valueOf(8), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME4_2, getImgUrl(PRODUKT_NAME4_2), BigDecimal.valueOf(8), BigDecimal.valueOf(0), BigDecimal.valueOf(0), "");
     public static ProductDto PRODUKT4_3 =
-        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME4_3, getImgUrl(PRODUKT_NAME4_3), BigDecimal.valueOf(4), BigDecimal.valueOf(2), BigDecimal.valueOf(1), "");
+        DatabaseFakerUtils.buildProductDto(PRODUKT_NAME4_3, getImgUrl(PRODUKT_NAME4_3), BigDecimal.valueOf(4), BigDecimal.valueOf(0), BigDecimal.valueOf(0), "");
 
     public static List<ProductDto> PRODUCTS4 = List.of(PRODUKT4_1, PRODUKT4_2, PRODUKT4_3);
 
@@ -187,8 +190,7 @@ public class UBulyDatabaseDataFaker implements UBulyDatabaseDataFakerInterface {
     public static String SOS2 = "Koperkowy";
     public static String SOS3 = "Ostry";
     public static String SOS4 = "Brak sosu";
-    public static String SOS5 = "Mieszany";
-    public static List<String> PROPERTY_LIST2 = List.of(SOS1, SOS2, SOS3, SOS4, SOS5);
+    public static List<String> PROPERTY_LIST2 = List.of(SOS1, SOS2, SOS3, SOS4);
 
     public static String WOLOWINA = "Wołowina";
     public static String KURCZAK = "Kurczak";
@@ -207,7 +209,6 @@ public class UBulyDatabaseDataFaker implements UBulyDatabaseDataFakerInterface {
         put(SOS2, BigDecimal.valueOf(0));
         put(SOS3, BigDecimal.valueOf(0));
         put(SOS4, BigDecimal.valueOf(0));
-        put(SOS5, BigDecimal.valueOf(0));
 
         put(WOLOWINA, BigDecimal.valueOf(0));
         put(KURCZAK, BigDecimal.valueOf(0));
@@ -224,15 +225,15 @@ public class UBulyDatabaseDataFaker implements UBulyDatabaseDataFakerInterface {
         PROPERTIES_MIESO, PROPERTY_LIST3
     );
 
-    public static Map<String, Boolean> PRODUCT_PROPERTIES_NAMES = Map.of(PROPERTIES_DODATKI, false,
-                                                                         PROPERTIES_SOSY, true,
-                                                                         PROPERTIES_MIESO, true
+    public static Map<String, ProductPropertiesDto> PRODUCT_PROPERTIES_NAMES = Map.of(PROPERTIES_DODATKI, ProductPropertiesDto.builder().required(false).name(PROPERTIES_DODATKI).build(),
+                                                                         PROPERTIES_SOSY, ProductPropertiesDto.builder().required(true).maxChosenOptions(3).name(PROPERTIES_DODATKI).build(),
+                                                                         PROPERTIES_MIESO, ProductPropertiesDto.builder().required(true).maxChosenOptions(2).name(PROPERTIES_DODATKI).build()
     );
 
     public static Map<String, List<String>> PROPERTIES_PRODUCTS_MAP = Map.of(
-        PROPERTIES_DODATKI, Stream.concat(PRODUCTS_NAMES.stream(), PRODUCTS_NAMES2.stream())
+        PROPERTIES_DODATKI, Stream.concat(Stream.concat(PRODUCTS_NAMES.stream(), PRODUCTS_NAMES2.stream()),  Stream.concat(Stream.of(PRODUKT_NAME2_8), PRODUCTS_NAMES3.stream()))
                                   .collect(Collectors.toList()),
-        PROPERTIES_SOSY, Stream.concat(PRODUCTS_NAMES.stream(), PRODUCTS_NAMES2.stream())
+        PROPERTIES_SOSY, Stream.concat(Stream.concat(PRODUCTS_NAMES.stream(), PRODUCTS_NAMES2.stream()),  Stream.concat(Stream.of(PRODUKT_NAME2_8), PRODUCTS_NAMES3.stream()))
                                .collect(Collectors.toList()),
         PROPERTIES_MIESO, Stream.concat(PRODUCTS_NAMES.stream(), PRODUCTS_NAMES2.stream())
                                 .collect(Collectors.toList())
@@ -290,7 +291,8 @@ public class UBulyDatabaseDataFaker implements UBulyDatabaseDataFakerInterface {
     }
 
     public static String getImgUrl(final String name){
-        return "U_BULY/" + name.replaceAll(" ", "_").toUpperCase() + ".jpg";
+        var mainUrl = PolishCharConverter.removePolishDiacritics(name.replaceAll(" ", "_"));
+        return "images/U_BULY/" + mainUrl.toUpperCase() + ".jpg";
     }
 
     private List<User> createFakeUsers() {

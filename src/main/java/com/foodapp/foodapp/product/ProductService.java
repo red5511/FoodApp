@@ -8,6 +8,7 @@ import com.foodapp.foodapp.security.ContextProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -63,7 +64,9 @@ public class ProductService {
     public Map<String, List<ProductDto>> getProductsByCategories(final Long companyId) {
         contextProvider.validateCompanyAccess(List.of(companyId));
         var productDtoList = productRepository.findByCompanyIdAndStatus(companyId, ProductStatus.ACTIVE).stream()
-                .map(ProductMapper::mapToProductDto)
+                .sorted(
+                        Comparator.comparing(Product::getName)
+                ).map(ProductMapper::mapToProductDto)
                 .toList();
         return productDtoList.stream().collect(
                 Collectors.groupingBy(el -> el.getProductCategory() != null ? el.getProductCategory().getName() : NO_CATEGORY,
