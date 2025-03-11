@@ -3,6 +3,7 @@ package com.foodapp.foodapp.config;
 import com.foodapp.foodapp.administration.AdministrationService;
 import com.foodapp.foodapp.administration.cache.CacheService;
 import com.foodapp.foodapp.administration.cache.CompanyWithActiveReceivingUsersCacheWrapper;
+import com.foodapp.foodapp.administration.cache.LoginAttemptCacheWrapper;
 import com.foodapp.foodapp.administration.cache.UsersConnectedToWebSocketCacheWrapper;
 import com.foodapp.foodapp.administration.company.CompanyAdministrationService;
 import com.foodapp.foodapp.administration.company.CompanyService;
@@ -10,6 +11,7 @@ import com.foodapp.foodapp.administration.company.common.CompanyMapper;
 import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.administration.userAdministration.UserAdministrationService;
 import com.foodapp.foodapp.auth.AuthenticationService;
+import com.foodapp.foodapp.auth.LoginAttemptService;
 import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationRepository;
 import com.foodapp.foodapp.auth.activationToken.ActivationTokenConfirmationService;
 import com.foodapp.foodapp.auth.jwtToken.JwtTokenRepository;
@@ -38,6 +40,7 @@ import com.foodapp.foodapp.productCategory.ProductCategoryService;
 import com.foodapp.foodapp.productProperties.ProductPropertiesController;
 import com.foodapp.foodapp.productProperties.ProductPropertiesRepository;
 import com.foodapp.foodapp.productProperties.ProductPropertiesService;
+import com.foodapp.foodapp.productProperties.productProperty.ProductPropertyRepository;
 import com.foodapp.foodapp.security.ContextProvider;
 import com.foodapp.foodapp.security.JwtAuthenticationFilter;
 import com.foodapp.foodapp.security.JwtService;
@@ -46,7 +49,9 @@ import com.foodapp.foodapp.user.UserDetailsServiceImpl;
 import com.foodapp.foodapp.user.UserRepository;
 import com.foodapp.foodapp.user.email.EmailSender;
 import com.foodapp.foodapp.user.email.EmailService;
-import com.foodapp.foodapp.websocket.*;
+import com.foodapp.foodapp.websocket.WebSocketEventHandler;
+import com.foodapp.foodapp.websocket.WebSocketEventSender;
+import com.foodapp.foodapp.websocket.WebSocketServiceInterface;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -152,7 +157,8 @@ public class MainConfiguration {
                                                        final PasswordResetTokenService passwordResetTokenService,
                                                        final JwtTokenRepository jwtTokenRepository,
                                                        final ActivationTokenConfirmationService activationTokenConfirmationService,
-                                                       final ContextProvider contextProvider) {
+                                                       final ContextProvider contextProvider,
+                                                       final LoginAttemptService loginAttemptService) {
         return new AuthenticationService(userRepository,
                 passwordEncoder,
                 jwtService,
@@ -162,7 +168,8 @@ public class MainConfiguration {
                 passwordResetTokenService,
                 jwtTokenRepository,
                 activationTokenConfirmationService,
-                contextProvider
+                contextProvider,
+                loginAttemptService
         );
     }
 
@@ -248,10 +255,18 @@ public class MainConfiguration {
     }
 
     @Bean
-    public AdministrationService administrationService(CompanyRepository companyRepository,
-                                                       final UserRepository userRepository) {
+    public AdministrationService administrationService(final CompanyRepository companyRepository,
+                                                       final UserRepository userRepository,
+                                                       final ProductCategoryRepository categoryRepository,
+                                                       final ProductPropertyRepository productPropertyRepository,
+                                                       final ProductPropertiesRepository productPropertiesRepository,
+                                                       final ProductRepository productRepository) {
         return new AdministrationService(companyRepository,
-                userRepository
+                userRepository,
+                categoryRepository,
+                productPropertyRepository,
+                productPropertiesRepository,
+                productRepository
         );
     }
 
@@ -373,7 +388,12 @@ public class MainConfiguration {
     }
 
     @Bean
-    public CompanyMapper companyMapper(final CompanyRepository companyRepository){
+    public CompanyMapper companyMapper(final CompanyRepository companyRepository) {
         return new CompanyMapper(companyRepository);
+    }
+
+    @Bean
+    public LoginAttemptService loginAttemptService(final LoginAttemptCacheWrapper loginAttemptCacheWrapper) {
+        return new LoginAttemptService(loginAttemptCacheWrapper);
     }
 }

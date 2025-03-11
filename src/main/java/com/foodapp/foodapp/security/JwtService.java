@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.security.Key;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,10 +40,26 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 240))// todo refresh token
+                .setExpiration(getTokenExpirationDateAt3am())
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
 
+    }
+
+    private Date getTokenExpirationDateAt3am(){
+        Calendar calendar = Calendar.getInstance();
+
+        // Set the calendar to the next day
+        calendar.add(Calendar.DATE, 1);
+
+        // Set the time to 3:00 AM
+        calendar.set(Calendar.HOUR_OF_DAY, 3);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // Get the expiration date (3:00 AM next day)
+        return calendar.getTime();
     }
 
     public boolean isTokenValid(final String token, final UserDetails userDetails) {

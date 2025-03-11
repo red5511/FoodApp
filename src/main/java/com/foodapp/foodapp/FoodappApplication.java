@@ -48,8 +48,12 @@ public class FoodappApplication implements ApplicationRunner {
     @TechnicalContextDev
     @Transactional
     public void run(ApplicationArguments args) throws Exception {
-        var admin = DatabaseFakerUtils.createFakeAdmin(adminLogin, passwordEncoder.encode(adminPassword));
-        userRepository.save(admin);
+        var adminOptional = userRepository.findByEmail(adminLogin);
+
+        if (adminOptional.isEmpty()) {
+            var admin = DatabaseFakerUtils.createFakeAdmin(adminLogin, passwordEncoder.encode(adminPassword));
+            userRepository.save(admin);
+        }
 
         //To moze byc zmockowane
         databaseDataFaker.initFakeData();

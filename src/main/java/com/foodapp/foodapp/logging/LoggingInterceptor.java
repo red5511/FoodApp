@@ -7,24 +7,35 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Arrays;
-
 @Component
 @Slf4j
 public class LoggingInterceptor implements HandlerInterceptor {
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        log.info("Request URL: {} | Method: {}", request.getRequestURI(), request.getMethod());
-        return true;
+        String clientIp = getClientIp(request);
+        log.error("URL: {} | Method: {} | IP: {}",
+                request.getRequestURI(),
+                request.getMethod(),
+                clientIp);
+        return true; // Allow request to proceed
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-            throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         if (ex != null) {
-            log.error("Exception " + ex);
-            log.error(Arrays.toString(ex.getStackTrace()));
-            response.setStatus(403);
+            log.error("Exception occurred: ", ex);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 Forbidden
         }
         log.info("Response Status: {}", response.getStatus());
     }
+
+    private String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For"); // Get IP from proxy headers
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr(); // Fallback to standard method
+        }
+        return ip;
+    }
 }
+

@@ -30,4 +30,11 @@ public class ProductCategoryMapper {
                 .company(company)
                 .build();
     }
+
+    public static List<ProductCategory> toProductCategory(final List<ProductCategoryDto> productCategoryDtos,
+                                                          final Company company) {
+        return productCategoryDtos.stream()
+                .map(el -> toProductCategory(el, company))
+                .collect(Collectors.toList());
+    }
 }

@@ -44,24 +44,28 @@ public class CompanyAdministrationController {
     }
 
     @DeleteMapping("/delete")
+    @PreAuthorize("hasAuthority('SUPER_ADMINISTRATOR') or hasAuthority('ADMINISTRATOR')")
     public ResponseEntity<String> deleteCompany(final @RequestBody DeleteCompanyRequest request) {
         companyService.deleteCompany(request);
         return ResponseEntity.ok("Deleted");
     }
 
     @PutMapping("/modify")
+    @PreAuthorize("hasAuthority('SUPER_ADMINISTRATOR') or hasAuthority('ADMINISTRATOR')")
     public ResponseEntity<String> modifyCompany(final @RequestBody ModifyCompanyRequest request) {
         companyService.modifyCompany(request);
         return ResponseEntity.ok("Modified");
     }
 
     @GetMapping("/companies")
+    @PreAuthorize("hasAuthority('SUPER_ADMINISTRATOR') or hasAuthority('ADMINISTRATOR')")
     public ResponseEntity<GetAllCompaniesResponse> getAllCompanies() {
         var response = CompanyMapper.toGetAllCompaniesResponse(companyService.getCompaniesDto());
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{companyId}/details")
+    @PreAuthorize("hasAuthority('SUPER_ADMINISTRATOR') or hasAuthority('ADMINISTRATOR')")
     public ResponseEntity<GetCompanyDetailsResponse> getCompanyDetails(final @PathVariable Long companyId) {
         var response = CompanyMapper.toGetCompanyDetailsResponse(companyService.getCompanyDetails(companyId));
         return ResponseEntity.ok(response);

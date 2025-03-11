@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,9 +30,11 @@ public class ProductProperties extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
-    @OneToMany(mappedBy = "productProperties", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "productProperties", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @ToString.Exclude
     private List<ProductProperty> productPropertyList;
     @ManyToMany(mappedBy = "productPropertiesList")
+    @ToString.Exclude
     private List<Product> products;
     @NotNull
     @Size(max = 255)

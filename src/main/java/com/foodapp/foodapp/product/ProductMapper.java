@@ -81,6 +81,12 @@ public class ProductMapper {
                 .build();
     }
 
+    public static List<Product> mapToProduct(final List<ProductDto> mapToProductsDto, final Company company) {
+        return mapToProductsDto.stream()
+                .map(el -> mapToProduct(el, company))
+                .collect(Collectors.toList());
+    }
+
     public List<ProductsByCategoryTabView> toMenuOrderingTabs(final Map<String, List<ProductDto>> productsByCategories,
                                                               final Long companyId) {
         List<ProductsByCategoryTabView> productsByCategoryTabViews = new ArrayList<>();

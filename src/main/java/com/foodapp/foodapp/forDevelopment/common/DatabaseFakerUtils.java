@@ -41,6 +41,7 @@ public class DatabaseFakerUtils {
     public static User createFakeAdmin(final String email, final String encodedPassword) {
         Set<Permission> permissions = new HashSet<>();
         permissions.add(Permission.SUPER_ADMINISTRATOR);
+        permissions.add(Permission.ADMINISTRATOR);
 
         return User.builder()
                 .email(email)

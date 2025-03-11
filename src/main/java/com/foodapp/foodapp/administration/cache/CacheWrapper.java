@@ -63,4 +63,10 @@ public abstract class CacheWrapper<KEY, CACHED_VALUE> {
         CaffeineCache caffeineCache = (CaffeineCache) cache;
         cache.evictIfPresent(key);
     }
-}
+
+    public CACHED_VALUE getOrDefault(KEY key, CACHED_VALUE defaultValue) {
+        CaffeineCache caffeineCache = (CaffeineCache) cache;
+        var mapCache = caffeineCache.getNativeCache().asMap();
+        var result = (CACHED_VALUE) mapCache.get(key);
+        return result == null ? defaultValue : result;
+    }}

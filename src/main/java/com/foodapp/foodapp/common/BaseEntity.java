@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass

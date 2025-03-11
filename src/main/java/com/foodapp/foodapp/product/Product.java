@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,7 +42,7 @@ public class Product extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "product_category_id")
     private ProductCategory productCategory;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "product_product_properties", // Join table name
             joinColumns = @JoinColumn(name = "product_id"),  // Column for the Product side of the relationship

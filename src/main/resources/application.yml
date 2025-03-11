@@ -37,7 +37,7 @@ spring:
           auth: true
           starttls.enable: true
   cache:
-    cache-names: usersConnectedToWebSocket,companyWithActiveReceivingUsers,companyWithActiveReceivingTopicNames
+    cache-names: usersConnectedToWebSocket,companyWithActiveReceivingUsers,companyWithActiveReceivingTopicNames,loginAttempt
   rabbitmq:
     host: localhost
     port: 5672
@@ -47,3 +47,7 @@ app:
   time-to-accept-order: 2
   admin-password: admin
   admin-login: admin
+logging:
+  level:
+    org.springframework.security: ERROR
+    org.springframework.web: INFO

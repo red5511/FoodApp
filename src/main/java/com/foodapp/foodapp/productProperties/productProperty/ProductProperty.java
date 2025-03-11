@@ -24,7 +24,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

@@ -39,6 +39,7 @@ public class AuthenticationService {
     private final JwtTokenRepository jwtTokenRepository;
     private final ActivationTokenConfirmationService activationTokenConfirmationService;
     private final ContextProvider contextProvider;
+    private final LoginAttemptService loginAttemptService;
 
     @Transactional
     public AuthenticationResponse register(final RegisterRequest request) throws BusinessException {
@@ -61,9 +62,22 @@ public class AuthenticationService {
     @Transactional
     @SneakyThrows
     public AuthenticationResponse authenticate(final AuthenticationRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        var email = request.getEmail();
+        if (loginAttemptService.isBlocked(request.getEmail())) {
+            throw new BusinessException("Zbyt wiele nieudanych prób logowania na konto, odczekaj 10min");
+        }
+
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
+        } catch (Exception e) {
+            loginAttemptService.loginFailed(email);
+            throw e;
+        }
         var user =
-                userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new SecurityException("Wrong email or password"));
+                userRepository.findByEmail(request.getEmail()).orElseThrow(() -> {
+                    loginAttemptService.loginFailed(email);
+                    return new SecurityException("Wrong email or password");
+                });
         if (!user.getEnabled()) {
             throw new BusinessException("Konto nie zostało aktywowane, sprawdź maila");
         }
@@ -72,6 +86,7 @@ public class AuthenticationService {
         }
         var jwtToken = jwtService.generateToken(user);
         saveJwtToken(user, jwtToken);
+        loginAttemptService.loginSucceeded(email);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -127,9 +142,9 @@ public class AuthenticationService {
     public void resendActivationEmail(final String email) throws BusinessException {
         validEmail(email);
         var userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             var user = userOptional.get();
-            if (BooleanUtils.isFalse(user.getEnabled())){
+            if (BooleanUtils.isFalse(user.getEnabled())) {
                 var activationToken = activationTokenConfirmationService.initTokenConfirmation(user);
                 emailService.sendUserActivationEmail(email, user.getEmail(), activationToken);
             }
