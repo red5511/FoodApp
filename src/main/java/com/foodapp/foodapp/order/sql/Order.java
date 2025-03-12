@@ -44,11 +44,10 @@ public class Order extends BaseEntity {
     @Size(max = 510)
     @Column(length = 510)
     private String description;
-    @Enumerated(EnumType.STRING)
     private OrderType orderType;
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = OrderStatusConverter.class)
     private OrderStatus status;
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = PaymentMethodConverter.class)
     private PaymentMethod paymentMethod;
     private String customerName;
     private LocalDateTime executionTime;

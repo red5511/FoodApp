@@ -2,6 +2,7 @@ package com.foodapp.foodapp.user;
 
 import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.administration.company.sql.Company;
+import com.foodapp.foodapp.order.sql.OrderStatusConverter;
 import com.foodapp.foodapp.user.permission.Permission;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,7 +34,7 @@ public class User extends BaseEntity implements UserDetails {
     private String password;
     private String phoneNumber;
     private boolean marketingConsent;
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = RoleConverter.class)
     private Role role;
     @Builder.Default
     @Setter
@@ -45,7 +46,7 @@ public class User extends BaseEntity implements UserDetails {
     @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     private Set<Company> companies;
     @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = PermissionConverter.class)
     private Set<Permission> permissions;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

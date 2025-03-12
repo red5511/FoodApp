@@ -2,6 +2,7 @@ package com.foodapp.foodapp.product;
 
 import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.common.BaseEntity;
+import com.foodapp.foodapp.order.sql.OrderStatusConverter;
 import com.foodapp.foodapp.productCategory.ProductCategory;
 import com.foodapp.foodapp.productProperties.ProductProperties;
 import jakarta.persistence.*;
@@ -24,7 +25,7 @@ public class Product extends BaseEntity {
     @SequenceGenerator(name = "product_sequence", sequenceName = "product_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_sequence")
     private Long id;
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ProductStatusConverter.class)
     @Builder.Default
     public ProductStatus status = ProductStatus.ACTIVE;
     @ManyToOne(fetch = FetchType.LAZY)
