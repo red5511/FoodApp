@@ -35,7 +35,7 @@ public class CommonMapper {
         createBaseSearchParams(builder, request);
         return builder
                 .statuses(request.getStatuses())
-                .statusesToExclude(List.of(OrderStatus.MODIFIED))
+                .statusesToExclude(List.of(OrderStatus.MODIFIED, OrderStatus.DELETED))
                 .companyIds(companyIds)
                 .price(request.getPrice())
                 .global(request.getGlobalSearch())

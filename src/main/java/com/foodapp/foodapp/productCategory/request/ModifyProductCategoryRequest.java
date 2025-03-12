@@ -15,3 +15,5 @@ public class ModifyProductCategoryRequest {
     private Long modifiedId;
     private ProductCategoryDto category;
 }
+
+

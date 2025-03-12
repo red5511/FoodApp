@@ -40,6 +40,22 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/delete/{companyId}/{orderId}")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING')")
+    public ResponseEntity<Void> softDeleteOrder(final @PathVariable Long orderId,
+                                                final @PathVariable Long companyId) {
+        orderService.softDeleteOrder(orderId, companyId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/revoke/{companyId}/{orderId}")
+    @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING')")
+    public ResponseEntity<Void> revokeToHandleOrder(final @PathVariable Long orderId,
+                                                final @PathVariable Long companyId) {
+        orderService.revokeToHandleOrder(orderId, companyId);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/finalize/{companyId}/{orderId}")
     @PreAuthorize("hasAuthority('VIEW_RESTAURANT_ORDERING')")
     public ResponseEntity<Void> finalizeOrder(final @RequestBody FinalizeOrderRequest request, final @PathVariable Long companyId,

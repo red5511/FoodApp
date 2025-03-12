@@ -32,4 +32,5 @@ public class UserDto {
     private LocalDateTime createdDate;
     @Schema(required = true)
     private Set<Permission> permissions;
+    private boolean marketingConsent;
 }

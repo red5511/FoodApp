@@ -43,4 +43,5 @@ public class RegisterRequest {
     @NotEmpty(message = "Phone number is mandatory")
     @NotNull(message = "hone number is mandatory")
     private String phoneNumber;
+    private boolean marketingConsent;
 }

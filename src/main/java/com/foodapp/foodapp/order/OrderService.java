@@ -117,4 +117,18 @@ public class OrderService {
                 CommonMapper.mapToSearchParams(request, companyIds);
         return orderRepository.searchOrders(searchParams);
     }
+
+    public void softDeleteOrder(final Long orderId, final Long companyId) {
+        contextProvider.validateCompanyAccessWithHolding(List.of(companyId));
+        var order = orderValidator.validateOrderDeleteAndReturn(orderId, companyId);
+        order.setStatus(OrderStatus.DELETED);
+        orderRepository.save(order);
+    }
+
+    public void revokeToHandleOrder(final Long orderId, final Long companyId) {
+        contextProvider.validateCompanyAccessWithHolding(List.of(companyId));
+        var order = orderValidator.validateOrderRevokeAndReturn(orderId, companyId);
+        order.setStatus(OrderStatus.IN_EXECUTION);
+        orderRepository.save(order);
+    }
 }

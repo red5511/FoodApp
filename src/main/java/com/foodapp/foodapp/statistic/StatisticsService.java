@@ -2,8 +2,8 @@ package com.foodapp.foodapp.statistic;
 
 import com.foodapp.foodapp.common.CommonMapper;
 import com.foodapp.foodapp.common.DatePeriod;
-import com.foodapp.foodapp.order.sql.OrderRepository;
 import com.foodapp.foodapp.order.OrderStatus;
+import com.foodapp.foodapp.order.sql.OrderRepository;
 import com.foodapp.foodapp.product.ProductMapper;
 import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.security.ContextProvider;
@@ -25,7 +25,8 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class StatisticsService {
-    public static List<OrderStatus> STATISTICS_ORDER_STATUSES_TO_EXCLUDE = List.of(OrderStatus.MODIFIED, OrderStatus.REJECTED);
+    public static List<OrderStatus> STATISTICS_ORDER_STATUSES_TO_EXCLUDE =
+            List.of(OrderStatus.MODIFIED, OrderStatus.REJECTED, OrderStatus.DELETED);
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final ContextProvider contextProvider;

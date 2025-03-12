@@ -42,6 +42,7 @@ public class OrderMapper {
     public static List<OrderStatusModel> getStatusModels() {
         var statuses = OrderStatus.values();
         return Arrays.stream(statuses)
+                .filter(el -> !List.of(OrderStatus.MODIFIED, OrderStatus.DELETED).contains(el))
                 .map(status -> OrderStatusModel.builder()
                         .orderStatus(status)
                         .translatedValue(TRANSLATED_ORDER_STATUSES_MAP.get(status))
@@ -99,7 +100,14 @@ public class OrderMapper {
                 .showCancel(showCancel(order))
                 .showReadyToPickUp(showReadyToPickUp(order))
                 .showModify(showModify(order))
+                .showDelete(showDelete(order))
+                .showRevokeToHandle(showRevokeToHandle(order))
                 .build();
+    }
+
+    private static boolean showRevokeToHandle(final Order order) {
+        return order.getStatus() == OrderStatus.EXECUTED &&
+                OrderType.OWN.equals(order.getOrderType());
     }
 
     private static boolean showPrint(final Order order) {
@@ -108,6 +116,11 @@ public class OrderMapper {
 
     private static boolean showModify(final Order order) {
         return order.getStatus() == OrderStatus.IN_EXECUTION &&
+                OrderType.OWN.equals(order.getOrderType());
+    }
+
+    private static boolean showDelete(final Order order) {
+        return List.of(OrderStatus.IN_EXECUTION, OrderStatus.EXECUTED).contains(order.getStatus()) &&
                 OrderType.OWN.equals(order.getOrderType());
     }
 

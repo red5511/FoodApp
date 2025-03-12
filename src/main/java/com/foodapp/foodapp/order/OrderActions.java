@@ -16,6 +16,8 @@ public class OrderActions {
     private boolean showCancel;
     private boolean showToTheCashier;
     private boolean showModify;
+    private boolean showDelete;
+    private boolean showRevokeToHandle;
 
     public enum OrderAction {
         APPROVE,

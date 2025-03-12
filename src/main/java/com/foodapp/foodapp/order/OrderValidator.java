@@ -36,7 +36,7 @@ public class OrderValidator {
 
     public void validateOrderSave(final OrderDto order, final Long companyId) {
         validateOrderProducts(order.getOrderProducts(), companyId);
-        if(!List.of(OrderStatus.IN_EXECUTION, OrderStatus.EXECUTED).contains(order.getStatus())){
+        if (!List.of(OrderStatus.IN_EXECUTION, OrderStatus.EXECUTED).contains(order.getStatus())) {
             throw new SecurityException("Wrong order status");
         }
     }
@@ -70,7 +70,7 @@ public class OrderValidator {
         if (!modifiedOrder.getCompany().getId().equals(companyId)) {
             throw new SecurityException("Wrong company id in modified order");
         }
-        if (!List.of(OrderStatus.IN_EXECUTION).contains(modifiedOrder.getStatus())){
+        if (!List.of(OrderStatus.IN_EXECUTION).contains(modifiedOrder.getStatus())) {
             throw new SecurityException("Wrong modified order status");
 
         }
@@ -82,6 +82,34 @@ public class OrderValidator {
         if (!order.getCompany().getId().equals(companyId)) {
             throw new SecurityException("Wrong company id");
 
+        }
+        return order;
+    }
+
+    public Order validateOrderDeleteAndReturn(final Long orderId, final Long companyId) {
+        var order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new SecurityException("Wrong order id"));
+
+        if (!List.of(OrderStatus.IN_EXECUTION, OrderStatus.EXECUTED).contains(order.getStatus())) {
+            throw new SecurityException("Wrong order status");
+        }
+
+        if (!order.getCompany().getId().equals(companyId)) {
+            throw new SecurityException("Wrong company id in modified order");
+        }
+        return order;
+    }
+
+    public Order validateOrderRevokeAndReturn(final Long orderId, final Long companyId) {
+        var order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new SecurityException("Wrong order id"));
+
+        if (!List.of(OrderStatus.EXECUTED).contains(order.getStatus())) {
+            throw new SecurityException("Wrong order status");
+        }
+
+        if (!order.getCompany().getId().equals(companyId)) {
+            throw new SecurityException("Wrong company id in modified order");
         }
         return order;
     }

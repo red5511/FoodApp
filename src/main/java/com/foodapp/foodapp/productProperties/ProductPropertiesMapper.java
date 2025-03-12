@@ -2,10 +2,13 @@ package com.foodapp.foodapp.productProperties;
 
 import com.foodapp.foodapp.administration.company.sql.Company;
 import com.foodapp.foodapp.product.Product;
+import com.foodapp.foodapp.productProperties.productProperty.ProductProperty;
+import com.foodapp.foodapp.productProperties.productProperty.ProductPropertyDto;
 import com.foodapp.foodapp.productProperties.productProperty.ProductPropertyMapper;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ProductPropertiesMapper {
@@ -50,5 +53,26 @@ public class ProductPropertiesMapper {
                 .productPropertyList(ProductPropertyMapper.toProductProperty(productPropertiesDto.getPropertyList()))
                 .maxChosenOptions(productPropertiesDto.getMaxChosenOptions())
                 .build();
+    }
+
+    public static void modifiedProductProperties(final ProductPropertiesDto productPropertiesDto,
+                                                 final ProductProperties productProperties) {
+        productProperties.setName(productPropertiesDto.getName());
+        productProperties.setRequired(productPropertiesDto.isRequired());
+        productProperties.setMaxChosenOptions(productPropertiesDto.getMaxChosenOptions());
+
+        var propertyDtoListMap = productPropertiesDto.getPropertyList().stream()
+                .collect(Collectors.toMap(ProductPropertyDto::getId, Function.identity()));
+        var legitModifiedPropertyList = productProperties.getProductPropertyList().stream()
+                .filter(el -> propertyDtoListMap.containsKey(el.getId()))
+                .peek(el -> {
+                    var modifiedPropertyDto = propertyDtoListMap.get(el.getId());
+                    el.setName(modifiedPropertyDto.getName());
+                    el.setPrice(modifiedPropertyDto.getPrice());
+                })
+                .collect(Collectors.toList());
+        List<ProductProperty> currentProperties = productProperties.getProductPropertyList();
+        currentProperties.clear();
+        currentProperties.addAll(legitModifiedPropertyList);
     }
 }

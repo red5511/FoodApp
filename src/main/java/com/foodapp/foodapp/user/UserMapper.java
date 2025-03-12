@@ -42,6 +42,7 @@ public class UserMapper {
                 .locked(user.getLocked())
                 .enabled(user.getEnabled())
                 .createdDate(user.getCreatedDate())
+                .marketingConsent(user.isMarketingConsent())
                 .permissions(user.getPermissions());
     }
 }
