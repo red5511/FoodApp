@@ -89,6 +89,7 @@ public class MainConfiguration {
         config.setAllowedOrigins(Arrays.asList(
                 "http://localhost",
                 "http://localhost:4200",   // Angular Web
+                "http://localhost:8081",   // Angular Web przez dockera
                 "capacitor://localhost",   // Capacitor WebView
                 "http://10.0.2.2",          // Android Emulator accessing host machine
                 "192.168.1.5",
