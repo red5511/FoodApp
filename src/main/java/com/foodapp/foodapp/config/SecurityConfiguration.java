@@ -41,6 +41,7 @@ public class SecurityConfiguration {
                         "swagger-ui.html",
                         "/ws/**",
                         "/api/v1/ws/**").permitAll()
+                .requestMatchers("/health").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

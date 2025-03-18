@@ -71,6 +71,7 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.HttpMethod.*;
@@ -80,24 +81,37 @@ import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 public class MainConfiguration {
     @Value("${app.time-to-accept-order}")
     private Long timeToAcceptOrder;
+    @Value("${app.domain-name:https://mniampos.pl}")
+    private String domainName;
+    @Value("${app.domain-email:mniampos@gmail.com}")
+    private String domainEmail;
 
     @Bean
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
+//        config.setAllowedOriginPatterns(Collections.singletonList("*"));
         config.setAllowedOrigins(Arrays.asList(
                 "http://localhost",
                 "http://localhost:4200",   // Angular Web
                 "http://localhost:8081",   // Angular Web przez dockera
                 "capacitor://localhost",   // Capacitor WebView
                 "http://10.0.2.2",          // Android Emulator accessing host machine
+                "ionic://localhost",
+                "http://localhost",
+                "https://localhost",
                 "192.168.1.5",
                 "192.168.56.1",
                 "192.168.56.2",
                 "192.168.1.21",
-                "192.168.56.1"
+                "192.168.56.1",
+                "https://mniampos.pl",
+                "http://mniampos.pl",
+                "https://46.202.153.252" // or use "*" to allow all origins in dev -- my vps serve
+
         ));
+        config.setAllowedOriginPatterns(Collections.singletonList("capacitor://*"));
         config.setAllowedHeaders(Arrays.asList(
                 ORIGIN,
                 CONTENT_TYPE,
@@ -181,7 +195,7 @@ public class MainConfiguration {
 
     @Bean
     public EmailSender emailService(final JavaMailSender javaMailSender) {
-        return new EmailService(javaMailSender);
+        return new EmailService(javaMailSender, domainName, domainEmail);
     }
 
     @Bean

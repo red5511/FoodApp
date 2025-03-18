@@ -1,35 +1,97 @@
 version: "3.8"
 
 services:
+  traefik:
+    image: traefik:v3.1
+    command:
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=mniampos@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+    ports:
+      - mode: host
+        protocol: tcp
+        published: 80
+        target: 80
+      - mode: host
+        protocol: tcp
+        published: 443
+        target: 443
+    volumes:
+      - letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
   foodapp:
-    image: foodapp/foodapp:1.0.0
+    image: foodapp/foodapp:1.0.0-test6
     secrets:
       - postgres-db-password
+      - mail-app-password
+      - admin-login
+      - admin-password
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/food_app
+      DB_USER: red55
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres-db-password
+      MAIL_APP_PASSWORD: /run/secrets/mail-app-password
       JAR_VERSION: 1.0.0
-    ports:
-      - 8080:8080
+      SPRING_PROFILES_ACTIVE: prod
+      MAIL_APP: mniampos@gmail.com
+      ADMIN_LOGIN: /run/secrets/admin-login
+      ADMIN_PASSWORD: /run/secrets/admin-password
+    labels:
+      - "traefik.enable=true"
+      # Route all requests with path starting with /api to this service
+      - "traefik.http.routers.foodapp.rule=PathPrefix(`/api`)"
+      # web,websecure pozwala na hhtp i https chyba do zmienienia an tylko websecure w przyszlosic
+      - "traefik.http.routers.foodapp.entrypoints=web,websecure"
+      - "traefik.http.routers.foodapp.tls.certresolver=myresolver"
+      - "traefik.http.services.foodapp.loadbalancer.server.port=8080"
+      # Give API router a higher priority so /api requests don’t get caught by the UI router.
+      - "traefik.http.routers.foodapp.priority=10"
+      - "traefik.http.services.foodapp.loadbalancer.healthcheck.path=/health"
+      - "traefik.http.services.foodapp.loadbalancer.healthcheck.interval=20s"
+      - "traefik.http.services.foodapp.loadbalancer.healthcheck.timeout=3s"
     depends_on:
       - postgres
     deploy:
+      replicas: 3
       update_config:
         order: start-first
-#    networks:
-#      - spring-boot-foodapp
-
+        parallelism: 1   # Update one replica at a time
+        delay: 10s       # Wait 10 seconds between updates
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
   foodapp-ui:
     image: foodapp/foodapp-ui:1.0.0
-    ports:
-      - 8081:80
+    labels:
+      - "traefik.enable=true"
+      # Route all other requests (non-/api) to the UI service.
+      - "traefik.http.routers.foodappui.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.foodappui.entrypoints=web,websecure"
+      - "traefik.http.routers.foodappui.tls.certresolver=myresolver"
+      - "traefik.http.services.foodappui.loadbalancer.server.port=80"
+      # Give UI router a lower priority than the API router.
+      - "traefik.http.routers.foodappui.priority=1"
     depends_on:
       - foodapp
     deploy:
       update_config:
         order: start-first
-#    networks:
-#      - spring-boot-foodapp
+
   postgres:
     image: postgres
     secrets:
@@ -38,48 +100,57 @@ services:
       POSTGRES_USER: red55
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres-db-password
       PGDATA: /data/postgres
-      POSTGRES_DB: food_app
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres:/data/postgres
     ports:
       - "5332:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U red55 -d food_app"]
+      test: [ "CMD-SHELL", "pg_isready -U red55 -d food_app" ]
       interval: 15s
       timeout: 5s
       retries: 20
-#    networks:
-#      - spring-boot-foodapp
 
   pgadmin:
     image: dpage/pgadmin4
+    secrets:
+      - pgadmin-email
+      - pgadmin-password
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_DEFAULT_EMAIL: /run/secrets/pgadmin-email
+      PGADMIN_DEFAULT_PASSWORD: /run/secrets/pgadmin-password
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
       - pgadmin:/var/lib/pgadmin
     ports:
       - "5050:5050"
-#    networks:
-#      - spring-boot-foodapp
   rabbitmq:
     image: rabbitmq:3.9.11-management-alpine
     ports:
       - "5672:5672"
       - "15672:15672"
+    secrets:
+      - rabbitmq-password
     environment:
       RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: admin
-#    networks:
-#      - spring-boot-foodapp
-#networks:
-#  spring-boot-foodapp:
-#    driver: overlay
+      RABBITMQ_DEFAULT_PASS: /run/secrets/rabbitmq-password
 volumes:
   postgres:
   pgadmin:
+  letsencrypt:
 
 secrets:
   postgres-db-password:
+    external: true
+  mail-app-password:
+    external: true
+  rabbitmq-password:
+    external: true
+  admin-login:
+    external: true
+  admin-password:
+    external: true
+  pgadmin-email:
+    external: true
+  pgadmin-password:
     external: true

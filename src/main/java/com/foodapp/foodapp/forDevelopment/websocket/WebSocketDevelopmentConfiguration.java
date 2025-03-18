@@ -12,10 +12,14 @@ import com.foodapp.foodapp.websocket.WebSocketEventSender;
 import com.foodapp.foodapp.websocket.WebSocketServiceForTesting;
 import com.foodapp.foodapp.websocket.WebSocketServiceInterface;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Lazy;
 
 @Configuration
-@Profile("ENABLE_SCHEDULER_WEBSOCKET_TEST")
+@ConditionalOnProperty(name = "app.feature-toggle.enable-sending-orders", havingValue = "true", matchIfMissing = false)
 @EnableAspectJAutoProxy
 public class WebSocketDevelopmentConfiguration {
     @Value("${app.time-to-accept-order}")

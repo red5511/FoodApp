@@ -1,8 +1,7 @@
 package com.foodapp.foodapp.user;
 
-import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.administration.company.sql.Company;
-import com.foodapp.foodapp.order.sql.OrderStatusConverter;
+import com.foodapp.foodapp.common.BaseEntity;
 import com.foodapp.foodapp.user.permission.Permission;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,6 +29,7 @@ public class User extends BaseEntity implements UserDetails {
     private Long id;
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String email;
     private String password;
     private String phoneNumber;
@@ -48,6 +48,7 @@ public class User extends BaseEntity implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     @Convert(converter = PermissionConverter.class)
     private Set<Permission> permissions;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
@@ -56,7 +57,8 @@ public class User extends BaseEntity implements UserDetails {
         for (Permission permission : permissions) {
             authorities.add(new SimpleGrantedAuthority(permission.name()));
         }
-        return authorities;    }
+        return authorities;
+    }
 
     @Override
     public String getUsername() {

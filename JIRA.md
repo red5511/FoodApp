@@ -18,7 +18,7 @@ najpierw pokazuje ze sie polaczyc i w sumie drukarka swieci ze jest polacznie al
 
 
 ######
-![img_10.png](img_10.png)
+![img_10.png](jiraImgs/img_10.png)
 
 ####
 
@@ -31,7 +31,7 @@ w statysytkach trzeba chyba dorobic zliczanie po pordukcie zeby uwzglednil produ
 
 
 ta rura robi resiza jak sie wyswielta caly opis xd
-![img_1.png](img_1.png)
+![img_1.png](jiraImgs/img_1.png)
 (prime ng ma tooltipa fjanie bedzie go uzyc)
 ty chyba w zaleznosci od thema inaczej te rzeczy reaguja xdddd fluent-light
 ########
@@ -59,19 +59,19 @@ kurla przy przelogowaniy sie usera wyswietlaja sie te same zakladki co na poprze
 
 HTTPS! https://chatgpt.com/c/6780130b-bdc4-8002-ae13-69d7c107ca9c
 
-![img_6.png](img_6.png)
+![img_6.png](jiraImgs/img_6.png)
 
-![img_7.png](img_7.png)
+![img_7.png](jiraImgs/img_7.png)
 
-![img_8.png](img_8.png)
+![img_8.png](jiraImgs/img_8.png)
 
-![img_9.png](img_9.png)
+![img_9.png](jiraImgs/img_9.png)
 
 https://www.youtube.com/watch?v=jrR_WfgmWEw
 
 ####
 
-![img_3.png](img_3.png)
+![img_3.png](jiraImgs/img_3.png)
 
 cos z tym soundListenerem
 
@@ -80,7 +80,7 @@ cos z tym soundListenerem
 
 no niestaty ten sidebar na tabletowej rozdzialce nie podswietla wybranego (to wiedzialem) ale kiedy sie kilknie w inna ikonke to sie pdosweitlaja dwa na raz na rozwiniecie xd
 
-![img_5.png](img_5.png)
+![img_5.png](jiraImgs/img_5.png)
 
 ###
 
@@ -108,7 +108,7 @@ tego zamowienia xd do pomyslenia czy nie lepiel byloby dac tylko jednemu userowi
 
 ##########
 
-![img_4.png](img_4.png)
+![img_4.png](jiraImgs/img_4.png)
 moze to powino byc tak jak unas na rozwijajce zeby byla tylko jedna linia?
 
 PERMISSIONS

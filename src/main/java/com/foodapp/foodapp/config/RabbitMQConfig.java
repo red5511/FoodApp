@@ -7,12 +7,14 @@ import com.foodapp.foodapp.websocket.WebSocketEventSender;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.SimpleMessageConverter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
 @Configuration
+@ConditionalOnProperty(name = "app.feature-toggle.enable-sending-orders", havingValue = "true", matchIfMissing = false)
 public class RabbitMQConfig {
 
     public static final String ORDER_DELAY_EXCHANGE = "order.delay.exchange";

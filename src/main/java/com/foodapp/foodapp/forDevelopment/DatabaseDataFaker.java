@@ -102,7 +102,7 @@ public class DatabaseDataFaker implements DatabaseDataFakerInterface {
         productRepository.saveAll(products);
         orderRepository.saveAll(orders);
 
-        log.info("Fake dane dla zostały utworzone");
+        log.info("Default fake dane zostały utworzone");
 
     }
 

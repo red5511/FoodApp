@@ -292,7 +292,7 @@ public class UBulyDatabaseDataFaker implements UBulyDatabaseDataFakerInterface {
 
     public static String getImgUrl(final String name){
         var mainUrl = PolishCharConverter.removePolishDiacritics(name.replaceAll(" ", "_"));
-        return "images/U_BULY/" + mainUrl.toUpperCase() + ".jpg";
+        return "images/U_BULY/" + mainUrl.toUpperCase() + ".webp";
     }
 
     private List<User> createFakeUsers() {

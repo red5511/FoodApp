@@ -12,13 +12,16 @@ import javax.mail.internet.MimeMessage;
 @AllArgsConstructor
 @Slf4j
 public class EmailService implements EmailSender {
-    public static final String ACTIVATION_LINK_BASE_PATH = "http://localhost:8080/api/v1/auth/register/confirm/";
+    public static final String ACTIVATION_LINK_BASE_PATH = "/api/v1/auth/register/confirm/";
     public static final String ACTIVATION_TXT_MSG =
             "Dziękujemy za rejestracje w naszym serwisie. Aby aktywować konto kliknij na podany link: ";
-    public static final String PASSWORD_RESET_LINK_BASE_PATH = "http://localhost:8080/api/v1/auth/password/change/confirm/";
+    public static final String PASSWORD_RESET_LINK_BASE_PATH = "/api/v1/auth/password/change/confirm/";
     public static final String PASSWORD_RESET_TXT_MSG =
             "Zarządałeś zmiany hasła. Klikinj na podany link, aby kontynuować: ";
+
     private final JavaMailSender mailSender;
+    private final String domainName;
+    private final String domainEmail;
 
     @Override
     @Async
@@ -26,12 +29,12 @@ public class EmailService implements EmailSender {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-            String link = ACTIVATION_LINK_BASE_PATH + token;
+            String link = domainName + ACTIVATION_LINK_BASE_PATH + token;
             var msg = buildActivationEmail(name, link, ACTIVATION_TXT_MSG, "Aktywuj swoje konto", "Aktywuj");
             helper.setText(msg, true);
             helper.setTo(to);
             helper.setSubject("Aktywuj swoje konto");
-            helper.setFrom("maciekKox@gamil.com");
+            helper.setFrom(domainEmail);
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
             log.error("Failed to send email");
@@ -48,12 +51,12 @@ public class EmailService implements EmailSender {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-            String link = PASSWORD_RESET_LINK_BASE_PATH + token;
+            String link = domainName + PASSWORD_RESET_LINK_BASE_PATH + token;
             var msg = buildActivationEmail(to, link, PASSWORD_RESET_TXT_MSG, "Zresetuj swoje hasło", "Zresetuj");
             helper.setText(msg, true);
             helper.setTo(to);
             helper.setSubject("Reset your password");
-            helper.setFrom("maciekKox@gamil.com");
+            helper.setFrom(domainEmail);
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
             log.error("failed to send email");
@@ -138,7 +141,7 @@ public class EmailService implements EmailSender {
                 "            <h1>" + title + "</h1>" +
                 "        </div>" +
                 "        <div class=\"content\">" +
-                "            <p>Cześć " + name + ",</p>" +
+                "            <p>Witaj " + name + ",</p>" +
                 "            <p>" + txtMsg + "</p>" +
                 "            <a href=\"" + link + "\" class=\"cta-button\">" + btnText + "</a>" +
                 "        </div>" +

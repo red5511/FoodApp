@@ -3,21 +3,21 @@ package com.foodapp.foodapp.forDevelopment.uBuly;
 import com.foodapp.foodapp.administration.company.sql.CompanyRepository;
 import com.foodapp.foodapp.order.sql.CustomOrderIdGenerator;
 import com.foodapp.foodapp.order.sql.OrderRepository;
-import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.orderProduct.OrderProductRepository;
+import com.foodapp.foodapp.product.ProductRepository;
 import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
 import com.foodapp.foodapp.productProperties.ProductPropertiesRepository;
 import com.foodapp.foodapp.productProperties.productProperty.ProductPropertyRepository;
 import com.foodapp.foodapp.user.UserRepository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Random;
 
-@Profile("U_BULY_INIT_FAKE_COMPANY)")
+@ConditionalOnProperty(name = "app.feature-toggle.create-fake-u-buly-stuff", havingValue = "true", matchIfMissing = false)
 @Configuration
 @EnableAspectJAutoProxy
 public class UBulyDevelopmentConfiguration {

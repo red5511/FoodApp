@@ -9,6 +9,7 @@ import com.foodapp.foodapp.productCategory.ProductCategoryRepository;
 import com.foodapp.foodapp.productProperties.ProductPropertiesRepository;
 import com.foodapp.foodapp.productProperties.productProperty.ProductPropertyRepository;
 import com.foodapp.foodapp.user.UserRepository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -18,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Random;
 
 @Configuration
-@Profile("TEST")
+@ConditionalOnProperty(name = "app.feature-toggle.create-fake-default-stuff", havingValue = "true", matchIfMissing = false)
 @EnableAspectJAutoProxy
 public class DevelopmentConfiguration {
 

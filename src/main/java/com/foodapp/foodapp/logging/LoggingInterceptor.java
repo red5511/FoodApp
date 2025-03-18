@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.util.Arrays;
 @Component
 @Slf4j
 public class LoggingInterceptor implements HandlerInterceptor {
@@ -14,7 +13,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String clientIp = getClientIp(request);
-        log.error("URL: {} | Method: {} | IP: {}",
+        log.info("URL: {} | Method: {} | IP: {}",
                 request.getRequestURI(),
                 request.getMethod(),
                 clientIp);
